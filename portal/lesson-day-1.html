@@ -8,7 +8,7 @@
     :root{--bg:#0d0a08;--panel:rgba(20,15,12,.80);--panelSoft:rgba(31,23,18,.56);--line:rgba(228,183,103,.18);--text:#f4eadc;--muted:rgba(244,234,220,.72);--gold:#efc578;--gold2:#dca453}
     *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:linear-gradient(180deg,#0c0908,#17110f 60%,#0d0908);color:var(--text);line-height:1.6}.shell{width:min(980px,calc(100% - 32px));margin:0 auto;padding:24px 0 48px}.card{border:1px solid var(--line);border-radius:28px;background:var(--panel);padding:26px;box-shadow:0 24px 60px rgba(0,0,0,.34)}.eyebrow{margin:0 0 10px;color:var(--gold);font-size:12px;letter-spacing:.16em;text-transform:uppercase}p{color:var(--muted)}
     .video{height:320px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02)), url('https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1200&q=80') center/cover;display:flex;align-items:end;justify-content:flex-start;color:var(--text);margin:16px 0;padding:18px}.video span{background:rgba(16,12,10,.55);padding:10px 12px;border-radius:14px;border:1px solid rgba(239,197,120,.14)}
-    .stack{display:flex;flex-direction:column;gap:12px;align-items:flex-start}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 16px;border-radius:999px;text-decoration:none;font-weight:700;border:1px solid var(--line);cursor:pointer}.btn-primary{background:linear-gradient(180deg,#efc578,#dca453);color:#2d1b10;border:0}.btn-secondary{background:rgba(255,255,255,.04);color:var(--text)}
+    .stack{display:flex;flex-direction:column;gap:12px;align-items:flex-start}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 16px;border-radius:999px;text-decoration:none;font-weight:700;border:1px solid var(--line);cursor:pointer;font-size:16px;line-height:1}.btn-primary{background:linear-gradient(180deg,#efc578,#dca453);color:#2d1b10;border:0}.btn-secondary{background:rgba(255,255,255,.04);color:var(--text)}
     .reveal-block,.journal-block{display:none;width:100%;margin-top:2px;padding:18px;border-radius:20px;border:1px solid rgba(239,197,120,.12);background:var(--panelSoft)}.prompt-list{padding-left:18px;color:var(--muted)}.prompt-list li + li{margin-top:12px}.journal-block textarea{width:100%;min-height:180px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--text);padding:14px;font:inherit;margin-top:12px}
   </style>
 </head>
@@ -24,7 +24,7 @@
       <div class="stack">
         <button class="btn btn-secondary" id="videoDoneBtn" title="Use this after you’ve watched the intro and day 1 video.">Video complete</button>
 
-        <button class="btn btn-primary" id="revealBtn" title="Reveal the reflection questions and best-practice guidance.">Reveal task</button>
+        <button class="btn btn-primary" id="revealBtn" title="Reveal the reflection questions and best-practice guidance.">Reveal reflection/task</button>
         <div class="reveal-block" id="revealBlock">
           <h2>Reflect on these questions</h2>
           <ol class="prompt-list">
@@ -41,7 +41,7 @@
           <textarea placeholder="Write what comes..."></textarea>
         </div>
 
-        <a class="btn btn-primary" href="complete.html" title="Mark this day complete and move into the waiting/unlock state.">Mark day complete</a>
+        <button class="btn btn-primary" id="completeBtn" title="Mark this day complete and move into the waiting/unlock state.">Mark day complete</button>
       </div>
     </div>
   </div>
@@ -51,6 +51,11 @@
     const revealBlock = document.getElementById('revealBlock');
     const journalBtn = document.getElementById('journalBtn');
     const journalBlock = document.getElementById('journalBlock');
+    const completeBtn = document.getElementById('completeBtn');
+
+    if (localStorage.getItem('mhq-day1-complete') === 'true') {
+      completeBtn.textContent = 'Mark day complete ✓';
+    }
 
     videoDoneBtn.addEventListener('click', () => {
       videoDoneBtn.textContent = 'Video complete ✓';
@@ -60,13 +65,20 @@
     revealBtn.addEventListener('click', () => {
       const open = revealBlock.style.display === 'block';
       revealBlock.style.display = open ? 'none' : 'block';
-      revealBtn.textContent = open ? 'Reveal task' : 'Hide task';
+      revealBtn.textContent = open ? 'Reveal reflection/task' : 'Hide reflection/task';
     });
 
     journalBtn.addEventListener('click', () => {
       const open = journalBlock.style.display === 'block';
       journalBlock.style.display = open ? 'none' : 'block';
-      journalBtn.textContent = open ? 'Digital journal' : 'Hide journal';
+    });
+
+    completeBtn.addEventListener('click', () => {
+      completeBtn.textContent = 'Mark day complete ✓';
+      localStorage.setItem('mhq-day1-complete', 'true');
+      setTimeout(() => {
+        window.location.href = 'complete.html';
+      }, 180);
     });
   </script>
 </body>
