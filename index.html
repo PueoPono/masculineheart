@@ -7,206 +7,247 @@
   <meta name="description" content="A 21-day guided quest into the heart, archetype, masculinity, intention, and lived vitality." />
   <style>
     :root {
-      --bg: #120d0b;
-      --bg-2: #1d1411;
-      --panel: rgba(30, 21, 17, 0.82);
-      --panel-soft: rgba(43, 30, 24, 0.62);
-      --line: rgba(239, 192, 106, 0.16);
-      --text: #f3eadf;
-      --muted: rgba(243, 234, 223, 0.72);
-      --gold: #d8a14a;
-      --gold-bright: #efc06a;
-      --shadow: rgba(0,0,0,0.34);
+      --bg: #0d0a08;
+      --bg2: #16110e;
+      --earth: #221915;
+      --panel: rgba(20, 15, 12, 0.76);
+      --panel-soft: rgba(31, 23, 18, 0.58);
+      --line: rgba(228, 183, 103, 0.18);
+      --text: #f4eadc;
+      --muted: rgba(244, 234, 220, 0.72);
+      --gold: #dca453;
+      --gold2: #efc578;
+      --shadow: rgba(0,0,0,0.42);
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
+      color: var(--text);
       font-family: Inter, ui-sans-serif, system-ui, sans-serif;
       background:
-        radial-gradient(circle at top, rgba(216,161,74,0.10), transparent 30%),
-        linear-gradient(180deg, #120d0b 0%, #17100d 35%, #0d0908 100%);
-      color: var(--text);
-      line-height: 1.55;
+        radial-gradient(circle at 20% 0%, rgba(239,197,120,0.08), transparent 26%),
+        radial-gradient(circle at 80% 20%, rgba(92,61,26,0.18), transparent 34%),
+        linear-gradient(180deg, #0c0908 0%, #120e0c 30%, #17110f 60%, #0d0908 100%);
+      line-height: 1.6;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.16), rgba(0,0,0,0.28)),
+        radial-gradient(ellipse at bottom, rgba(80,56,25,0.18), transparent 55%);
+      z-index: -2;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.14;
+      background-image:
+        radial-gradient(circle at 10% 90%, rgba(255,255,255,0.05) 0 1px, transparent 1px),
+        radial-gradient(circle at 80% 25%, rgba(255,255,255,0.04) 0 1px, transparent 1px),
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0 1px, transparent 1px);
+      background-size: 220px 220px, 260px 260px, 300px 300px;
+      z-index: -1;
     }
     .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
     .topbar {
-      padding: 22px 0;
+      padding: 24px 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 16px;
     }
     .brand {
-      letter-spacing: 0.16em;
+      color: var(--gold2);
       text-transform: uppercase;
+      letter-spacing: 0.16em;
       font-size: 12px;
-      color: var(--gold-bright);
     }
-    .nav { display: flex; gap: 14px; flex-wrap: wrap; }
-    .nav a { color: var(--muted); text-decoration: none; font-size: 14px; }
+    .nav { display:flex; gap:14px; flex-wrap:wrap; }
+    .nav a { color: var(--muted); text-decoration:none; font-size:14px; }
     .hero {
-      position: relative;
-      padding: 48px 0 36px;
-      overflow: hidden;
+      padding: 36px 0 28px;
     }
     .hero-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 28px;
+      display:grid;
+      grid-template-columns: 1.12fr 0.88fr;
+      gap: 24px;
       align-items: stretch;
     }
-    .hero-copy,
-    .hero-side,
-    .panel,
-    .arc-card,
-    .day-card,
-    .quote-band,
-    .cta-band {
+    .card, .hero-copy, .hero-side, .image-panel, .arc-card, .quote-band, .cta-band, .soft-panel {
       border: 1px solid var(--line);
-      border-radius: 28px;
+      border-radius: 30px;
       background: var(--panel);
-      box-shadow: 0 24px 60px var(--shadow);
-      backdrop-filter: blur(10px);
+      box-shadow: 0 28px 80px var(--shadow);
+      backdrop-filter: blur(8px);
+      overflow: hidden;
     }
-    .hero-copy { padding: 34px; }
+    .hero-copy {
+      padding: 36px;
+      position: relative;
+      min-height: 560px;
+      background:
+        linear-gradient(180deg, rgba(8,6,5,0.28), rgba(8,6,5,0.58)),
+        linear-gradient(160deg, rgba(31,22,15,0.52), rgba(17,13,11,0.82)),
+        url('https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1600&q=80') center/cover;
+    }
+    .hero-copy::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 32%;
+      background: linear-gradient(180deg, transparent, rgba(7,5,4,0.62));
+      pointer-events:none;
+    }
+    .hero-inner { position: relative; z-index: 1; max-width: 760px; }
     .eyebrow {
       margin: 0 0 14px;
-      color: var(--gold-bright);
+      color: var(--gold2);
       text-transform: uppercase;
       letter-spacing: 0.18em;
       font-size: 12px;
     }
     h1 {
       margin: 0 0 18px;
-      font-size: clamp(2.5rem, 6vw, 5rem);
-      line-height: 0.95;
-      letter-spacing: -0.04em;
+      font-size: clamp(2.7rem, 6vw, 5.2rem);
+      line-height: 0.94;
+      letter-spacing: -0.045em;
+      text-shadow: 0 2px 22px rgba(0,0,0,0.36);
     }
-    .hero-copy p {
-      max-width: 62ch;
-      color: var(--muted);
-      font-size: 1.03rem;
+    .lead {
+      font-size: 1.08rem;
+      color: var(--text);
+      max-width: 56ch;
     }
-    .button-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+    .hero-copy p { color: var(--muted); max-width: 58ch; }
+    .button-row { display:flex; flex-wrap:wrap; gap:12px; margin-top: 24px; }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
       min-height: 48px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
       padding: 0 18px;
       border-radius: 999px;
-      text-decoration: none;
-      font-weight: 700;
+      text-decoration:none;
+      font-weight:700;
       border: 1px solid var(--line);
     }
-    .btn-primary {
-      background: linear-gradient(180deg, #efc06a 0%, #d8a14a 100%);
-      color: #2d1b10;
-      border: 0;
-    }
-    .btn-secondary {
-      color: var(--text);
-      background: rgba(255,255,255,0.04);
-    }
+    .btn-primary { background: linear-gradient(180deg, #efc578, #dca453); color:#2d1b10; border:0; }
+    .btn-secondary { color:var(--text); background: rgba(255,255,255,0.04); }
     .hero-side {
-      padding: 26px;
-      display: grid;
-      gap: 16px;
-      align-content: start;
-    }
-    .stat {
-      border: 1px solid rgba(239, 192, 106, 0.12);
-      border-radius: 18px;
-      padding: 16px;
-      background: var(--panel-soft);
-    }
-    .stat strong { display: block; font-size: 1.25rem; margin-bottom: 4px; }
-    section { padding: 22px 0; }
-    .section-head { margin-bottom: 16px; }
-    .section-head h2 { margin: 0 0 6px; font-size: clamp(1.8rem, 3vw, 2.8rem); }
-    .section-head p { margin: 0; color: var(--muted); max-width: 72ch; }
-    .panel { padding: 26px; }
-    .three-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      padding: 18px;
+      display:grid;
+      grid-template-rows: 1.15fr auto;
       gap: 18px;
     }
-    .arc-card { padding: 22px; }
-    .arc-card .arc-kicker {
-      color: var(--gold-bright);
+    .image-panel {
+      min-height: 300px;
+      background:
+        linear-gradient(180deg, rgba(8,6,5,0.16), rgba(8,6,5,0.44)),
+        url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80') center/cover;
+      position: relative;
+    }
+    .image-panel .overlay-text {
+      position:absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 18px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(16, 12, 10, 0.52);
+      border: 1px solid rgba(239,197,120,0.12);
+      color: var(--text);
+    }
+    .stats { display:grid; gap:14px; }
+    .stat {
+      padding: 16px;
+      border: 1px solid rgba(239,197,120,0.12);
+      border-radius: 18px;
+      background: var(--panel-soft);
+    }
+    .stat strong { display:block; font-size:1.18rem; margin-bottom:4px; }
+    section { padding: 20px 0; }
+    .section-head { margin-bottom: 16px; }
+    .section-head h2 { margin: 0 0 8px; font-size: clamp(1.9rem, 3vw, 3rem); }
+    .section-head p { margin:0; color:var(--muted); max-width:72ch; }
+    .soft-panel, .quote-band, .cta-band { padding: 28px; }
+    .three-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
+    .arc-card { padding:24px; position:relative; }
+    .arc-card::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background: linear-gradient(180deg, rgba(239,197,120,0.02), transparent 40%);
+      pointer-events:none;
+    }
+    .arc-kicker {
+      color: var(--gold2);
       text-transform: uppercase;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.14em;
       font-size: 12px;
       margin-bottom: 10px;
     }
-    .arc-card h3 { margin: 0 0 10px; font-size: 1.25rem; }
-    .arc-card p { margin: 0; color: var(--muted); }
-    .how-grid,
-    .day-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
+    .arc-card h3 { margin:0 0 10px; font-size:1.28rem; }
+    .arc-card p { margin:0; color:var(--muted); }
+    .how-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
+    .step-card {
+      padding: 18px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      box-shadow: 0 14px 38px rgba(0,0,0,0.24);
     }
-    .day-card { padding: 18px; }
-    .step-no {
-      color: var(--gold-bright);
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
+    .step-no { color: var(--gold2); font-weight:700; margin-bottom:8px; }
     .quote-band {
-      padding: 34px;
-      text-align: center;
+      text-align:center;
+      background:
+        linear-gradient(180deg, rgba(23,17,14,0.92), rgba(16,12,10,0.94)),
+        url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&q=80') center/cover;
+      background-blend-mode: overlay;
     }
     .quote-band blockquote {
       margin: 0;
-      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      color: var(--gold2);
+      font-size: clamp(1.4rem, 3vw, 2.25rem);
       line-height: 1.35;
-      color: var(--gold-bright);
       font-style: italic;
     }
     .quote-band cite {
-      display: block;
+      display:block;
       margin-top: 14px;
       color: var(--muted);
       font-style: normal;
     }
     .cta-band {
-      padding: 30px;
-      display: grid;
+      display:grid;
       grid-template-columns: 1fr auto;
-      gap: 20px;
-      align-items: center;
+      gap:20px;
+      align-items:center;
     }
-    .muted-list { color: var(--muted); }
+    .muted-list { color:var(--muted); }
     .muted-list li + li { margin-top: 8px; }
     .quest-strip {
-      display: grid;
-      grid-template-columns: repeat(21, minmax(0, 1fr));
-      gap: 8px;
-      margin-top: 16px;
+      display:grid;
+      grid-template-columns: repeat(21,minmax(0,1fr));
+      gap:8px;
+      margin-top: 18px;
     }
     .quest-node {
       height: 10px;
       border-radius: 999px;
       background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(239,192,106,0.08);
+      border: 1px solid rgba(239,197,120,0.08);
     }
-    .quest-node.active,
-    .quest-node.done { background: linear-gradient(180deg, #efc06a, #d8a14a); }
-    footer {
-      padding: 36px 0 48px;
-      color: var(--muted);
-      font-size: 14px;
-    }
+    .quest-node.done,.quest-node.active { background: linear-gradient(180deg, #efc578, #dca453); }
+    footer { padding: 36px 0 48px; color: var(--muted); font-size: 14px; }
     @media (max-width: 980px) {
-      .hero-grid,
-      .three-grid,
-      .how-grid,
-      .day-grid,
-      .cta-band {
-        grid-template-columns: 1fr;
-      }
-      .quest-strip { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+      .hero-grid, .three-grid, .how-grid, .cta-band { grid-template-columns: 1fr; }
+      .hero-copy { min-height: 460px; }
+      .quest-strip { grid-template-columns: repeat(7,minmax(0,1fr)); }
     }
   </style>
 </head>
@@ -225,37 +266,43 @@
     <section class="hero">
       <div class="hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow">The Masculine Heart</p>
-          <h1>Archetypal<br />Masculine<br />Heart Quest</h1>
-          <p>A 21-day guided journey into the heart, archetype, masculinity, intention, and lived vitality.</p>
-          <p>This is not just a video series. It is a structured quest — one day at a time — to help you reconnect with the deeper intelligence of the heart, the language of symbol and story, and a more mature, grounded masculinity.</p>
-          <div class="button-row">
-            <a class="btn btn-primary" href="#begin">Begin the Quest</a>
-            <a class="btn btn-secondary" href="#arcs">See the 21-day path</a>
-          </div>
-          <div class="quest-strip" aria-hidden="true">
-            <div class="quest-node done"></div><div class="quest-node done"></div><div class="quest-node done"></div><div class="quest-node active"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div>
+          <div class="hero-inner">
+            <p class="eyebrow">The Masculine Heart</p>
+            <h1>Enter the forest.<br />Follow the roots.<br />Find the heart.</h1>
+            <p class="lead">Archetypal Masculine Heart Quest is a 21-day guided journey into the heart, story, symbol, masculinity, intention, and lived vitality.</p>
+            <p>This is not just a video series. It is a descent into deeper terrain — one day at a time — to help you reconnect with the living intelligence of the heart and the hidden roots beneath habit, identity, and emotional patterning.</p>
+            <div class="button-row">
+              <a class="btn btn-primary" href="#begin">Begin the Quest</a>
+              <a class="btn btn-secondary" href="#arcs">See the 21-day path</a>
+            </div>
+            <div class="quest-strip" aria-hidden="true">
+              <div class="quest-node done"></div><div class="quest-node done"></div><div class="quest-node done"></div><div class="quest-node active"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div><div class="quest-node"></div>
+            </div>
           </div>
         </div>
         <aside class="hero-side">
-          <div class="stat"><strong>21 Days</strong><span>One day at a time, by design.</span></div>
-          <div class="stat"><strong>3 Arcs</strong><span>Heart. Story. Intention.</span></div>
-          <div class="stat"><strong>Daily Unlock</strong><span>The next lesson opens 24 hours after completion.</span></div>
-          <div class="stat"><strong>Phone Friendly</strong><span>Built to feel intimate, clean, and grounded on mobile.</span></div>
+          <div class="image-panel">
+            <div class="overlay-text">A modern initiation into deeper feeling, mature masculinity, and the hidden architecture of the heart.</div>
+          </div>
+          <div class="stats">
+            <div class="stat"><strong>21 Days</strong><span>One day at a time, by design.</span></div>
+            <div class="stat"><strong>3 Arcs</strong><span>Heart. Story. Intention.</span></div>
+            <div class="stat"><strong>Daily Unlock</strong><span>The next lesson opens 24 hours after completion.</span></div>
+          </div>
         </aside>
       </div>
     </section>
 
     <section id="about">
-      <div class="panel">
+      <div class="soft-panel">
         <div class="section-head">
-          <h2>A daily path into the heart.</h2>
+          <h2>A daily path into living depth.</h2>
           <p>The Archetypal Masculine Heart Quest brings together three streams of work into one guided progression: opening the heart, learning the language of story and symbol, and planting deeper intentions into the heart and subconscious.</p>
         </div>
         <ul class="muted-list">
-          <li>short video lessons</li>
-          <li>reflection prompts and integration questions</li>
-          <li>completion-based 24-hour unlock pacing</li>
+          <li>short video lessons with grounded pacing</li>
+          <li>reflection prompts that invite real feeling and insight</li>
+          <li>completion-based 24-hour unlock rhythm</li>
           <li>optional reminder support by email or text</li>
         </ul>
       </div>
@@ -264,7 +311,7 @@
     <section id="arcs">
       <div class="section-head">
         <h2>The quest unfolds in three arcs.</h2>
-        <p>Each arc deepens the work in a different way: emotional honesty, symbolic/archetypal understanding, and intentional planting for the path ahead.</p>
+        <p>Each arc invites a different descent: into emotional truth, into story and symbol, and into the intentional planting of what you want to become.</p>
       </div>
       <div class="three-grid">
         <article class="arc-card">
@@ -280,7 +327,7 @@
         <article class="arc-card">
           <div class="arc-kicker">Days 15–21</div>
           <h3>Intentions Worth Planting</h3>
-          <p>Planting qualities into the heart and subconscious so the quest continues in lived form.</p>
+          <p>Planting qualities into the heart and subconscious so the path continues in lived form.</p>
         </article>
       </div>
     </section>
@@ -291,22 +338,22 @@
         <p>This is not meant to be binge-watched. The pacing is part of the medicine.</p>
       </div>
       <div class="how-grid">
-        <div class="day-card"><div class="step-no">01</div><strong>Watch</strong><p>One focused lesson a day. Sometimes two videos when a new arc begins or closes.</p></div>
-        <div class="day-card"><div class="step-no">02</div><strong>Reflect</strong><p>Answer prompts that help translate the lesson into honesty, insight, and self-contact.</p></div>
-        <div class="day-card"><div class="step-no">03</div><strong>Integrate</strong><p>Take one practical action so the work enters daily life.</p></div>
-        <div class="day-card"><div class="step-no">04</div><strong>Unlock</strong><p>Mark the day complete and the next lesson unlocks 24 hours later.</p></div>
+        <div class="step-card"><div class="step-no">01</div><strong>Watch</strong><p>One focused lesson a day. Sometimes two videos when a new arc begins or closes.</p></div>
+        <div class="step-card"><div class="step-no">02</div><strong>Reflect</strong><p>Questions that help translate the lesson into honesty, insight, and self-contact.</p></div>
+        <div class="step-card"><div class="step-no">03</div><strong>Integrate</strong><p>One practical step so the work enters the body and daily life.</p></div>
+        <div class="step-card"><div class="step-no">04</div><strong>Unlock</strong><p>Mark the day complete and the next lesson opens 24 hours later.</p></div>
       </div>
     </section>
 
     <section>
       <div class="section-head">
-        <h2>For men ready for something deeper than self-improvement.</h2>
-        <p>This quest is for men who sense that strength without heart becomes brittle, and that growth without honesty becomes performance.</p>
+        <h2>For men ready for something deeper than performance.</h2>
+        <p>This quest is for men who sense that strength without heart becomes brittle, and that growth without honesty becomes theatre.</p>
       </div>
       <div class="three-grid">
-        <div class="day-card"><strong>Depth</strong><p>Deeper self-awareness and emotional honesty.</p></div>
-        <div class="day-card"><strong>Grounding</strong><p>More mature, rooted masculinity.</p></div>
-        <div class="day-card"><strong>Wholeness</strong><p>A steadier relationship with vitality, intention, and daily life.</p></div>
+        <div class="step-card"><strong>Depth</strong><p>Deeper self-awareness and emotional honesty.</p></div>
+        <div class="step-card"><strong>Grounding</strong><p>More mature, rooted masculinity.</p></div>
+        <div class="step-card"><strong>Wholeness</strong><p>A steadier relationship with vitality, intention, and daily life.</p></div>
       </div>
     </section>
 
@@ -321,7 +368,7 @@
       <div class="cta-band">
         <div>
           <h2 style="margin:0 0 8px;">Begin the 21-day journey.</h2>
-          <p style="margin:0;color:var(--muted);max-width:60ch;">If you are ready to approach the heart with honesty, depth, and grounded practice, this quest is here for you.</p>
+          <p style="margin:0;color:var(--muted);max-width:60ch;">If you are ready to enter the forest of the heart with honesty, grounded practice, and a deeper masculine path, this quest is here for you.</p>
         </div>
         <div class="button-row" style="margin-top:0;">
           <a class="btn btn-primary" href="#">Begin the Quest</a>
@@ -331,7 +378,7 @@
     </section>
 
     <footer>
-      Archetypal Masculine Heart Quest — landing page draft for portal direction.
+      Archetypal Masculine Heart Quest — atmospheric landing draft.
     </footer>
   </div>
 </body>
