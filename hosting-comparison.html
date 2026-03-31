@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hosting Comparison — Masculine Heart Quest</title>
+  <style>
+    body{font-family:Inter,Arial,sans-serif;margin:0;padding:32px;background:#f7f3ec;color:#1f1713;line-height:1.45}
+    .wrap{max-width:1100px;margin:0 auto}
+    h1{margin:0 0 10px;font-size:34px}
+    p{margin:0 0 18px;color:#5a4a40}
+    table{width:100%;border-collapse:collapse;background:white;border:1px solid #e5d8c7}
+    th,td{padding:14px 12px;border:1px solid #e5d8c7;vertical-align:top;text-align:left}
+    th{background:#f2e6d5}
+    .good{color:#245b33;font-weight:700}.warn{color:#87551d;font-weight:700}
+    .rec{margin-top:20px;padding:16px;border:1px solid #e5d8c7;background:#fffaf3}
+    @media print { body{background:white;padding:0} .rec{page-break-inside:avoid} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Simple Hosting Comparison</h1>
+    <p>For the Masculine Heart Quest prototype</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Factor</th>
+          <th>GitHub Pages + Google Sheets / Apps Script</th>
+          <th>Vercel + Supabase</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Monthly cost to start</td>
+          <td><span class="good">$0–$20</span><br />Usually cheapest</td>
+          <td><span class="good">$0–$30</span><br />Still low, but slightly more moving parts</td>
+        </tr>
+        <tr>
+          <td>Ease for Pauko right now</td>
+          <td><span class="good">Easier</span><br />Less setup, less friction</td>
+          <td><span class="warn">Harder</span><br />More setup and more decisions upfront</td>
+        </tr>
+        <tr>
+          <td>Speed to first working version</td>
+          <td><span class="good">Fastest</span></td>
+          <td>Slower</td>
+        </tr>
+        <tr>
+          <td>Can it work as a real prototype?</td>
+          <td><span class="good">Yes</span></td>
+          <td><span class="good">Yes</span></td>
+        </tr>
+        <tr>
+          <td>Saved progress / email access</td>
+          <td><span class="good">Yes</span><br />Good enough for prototype</td>
+          <td><span class="good">Yes</span><br />Better long-term system</td>
+        </tr>
+        <tr>
+          <td>Bug risk at current stage</td>
+          <td><span class="good">Lower for simple version</span></td>
+          <td>Higher upfront complexity</td>
+        </tr>
+        <tr>
+          <td>Private portal / scale later</td>
+          <td>Limited</td>
+          <td><span class="good">Much better</span></td>
+        </tr>
+        <tr>
+          <td>Best for multiple tools/courses later</td>
+          <td>Can get messy</td>
+          <td><span class="good">Best path</span></td>
+        </tr>
+        <tr>
+          <td>Future app path</td>
+          <td>Weak</td>
+          <td><span class="good">Strong</span></td>
+        </tr>
+        <tr>
+          <td>Best overall use right now</td>
+          <td><span class="good">Prototype fast, cheap, simple</span></td>
+          <td>Build bigger platform from the start</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="rec">
+      <strong>Recommendation</strong><br />
+      Start with <strong>GitHub Pages + Google Sheets / Apps Script</strong> for the first working prototype.<br />
+      Move to <strong>Vercel + Supabase</strong> later if the course proves itself and expands into a larger platform.
+    </div>
+  </div>
+</body>
+</html>
