@@ -5,21 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quest Dashboard — Archetypal Masculine Heart Quest</title>
   <style>
-    :root {
-      --bg:#0d0a08; --bg2:#16110e; --panel:rgba(20,15,12,.78); --panelSoft:rgba(31,23,18,.58);
-      --line:rgba(228,183,103,.18); --text:#f4eadc; --muted:rgba(244,234,220,.72); --gold:#dca453; --gold2:#efc578;
-    }
+    :root {--bg:#0d0a08;--bg2:#16110e;--panel:rgba(20,15,12,.78);--panelSoft:rgba(31,23,18,.58);--line:rgba(228,183,103,.18);--text:#f4eadc;--muted:rgba(244,234,220,.72);--gold:#dca453;--gold2:#efc578;}
     *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--text);background:linear-gradient(180deg,#0c0908,#17110f 60%,#0d0908);line-height:1.55}
     .shell{width:min(1180px,calc(100% - 32px));margin:0 auto}.top{padding:24px 0;display:flex;justify-content:space-between;align-items:center;gap:16px}.brand{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2)}
-    .nav{display:flex;gap:12px;flex-wrap:wrap}.nav a{color:var(--muted);text-decoration:none;font-size:14px}
-    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:22px}.card{border:1px solid var(--line);border-radius:28px;background:var(--panel);box-shadow:0 24px 60px rgba(0,0,0,.34);backdrop-filter:blur(8px)}
-    .hero{padding:24px 0 18px}.hero .card{padding:28px}.eyebrow{margin:0 0 10px;color:var(--gold2);font-size:12px;letter-spacing:.16em;text-transform:uppercase}.title{margin:0 0 10px;font-size:clamp(2rem,5vw,3.8rem);line-height:.96;letter-spacing:-.04em}
-    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 16px;border-radius:999px;text-decoration:none;font-weight:700;border:1px solid var(--line)}.btn-primary{background:linear-gradient(180deg,#efc578,#dca453);color:#2d1b10;border:0}.btn-secondary{background:rgba(255,255,255,.04);color:var(--text)}
-    .row{display:flex;gap:12px;flex-wrap:wrap}.muted{color:var(--muted)}
-    .stats{display:grid;gap:14px}.stat{padding:16px;border:1px solid rgba(239,197,120,.12);border-radius:18px;background:var(--panelSoft)}.stat strong{display:block;font-size:1.15rem}
-    section{padding:16px 0}.section-head{margin-bottom:14px}.section-head h2{margin:0 0 6px;font-size:clamp(1.5rem,3vw,2.4rem)}
-    .arc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.arc{padding:20px}.arc-kicker{color:var(--gold2);font-size:12px;text-transform:uppercase;letter-spacing:.13em;margin-bottom:8px}
-    .quest-map{padding:20px}.days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:12px}.day{padding:14px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.03);min-height:112px}.day small{display:block;color:var(--gold2);margin-bottom:6px}.day.done{background:rgba(131,95,34,.18)}.day.active{outline:2px solid var(--gold);background:rgba(220,164,83,.12)}.day.locked{opacity:.7}
+    .nav{display:flex;gap:12px;flex-wrap:wrap}.nav a{color:var(--muted);text-decoration:none;font-size:14px}.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:22px}.card{border:1px solid var(--line);border-radius:28px;background:var(--panel);box-shadow:0 24px 60px rgba(0,0,0,.34);backdrop-filter:blur(8px)}
+    .hero{padding:24px 0 18px}.hero .card{padding:28px}.eyebrow{margin:0 0 10px;color:var(--gold2);font-size:12px;letter-spacing:.16em;text-transform:uppercase}.title{margin:0 0 10px;font-size:clamp(2rem,5vw,3.8rem);line-height:.96;letter-spacing:-.04em}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 16px;border-radius:999px;text-decoration:none;font-weight:700;border:1px solid var(--line)}.btn-primary{background:linear-gradient(180deg,#efc578,#dca453);color:#2d1b10;border:0}.btn-secondary{background:rgba(255,255,255,.04);color:var(--text)}
+    .row{display:flex;gap:12px;flex-wrap:wrap}.muted{color:var(--muted)}.stats{display:grid;gap:14px}.stat{padding:16px;border:1px solid rgba(239,197,120,.12);border-radius:18px;background:var(--panelSoft)}.stat strong{display:block;font-size:1.15rem}
+    section{padding:16px 0}.section-head{margin-bottom:14px}.section-head h2{margin:0 0 6px;font-size:clamp(1.5rem,3vw,2.4rem)}.arc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.arc{padding:20px;position:relative;overflow:hidden}.arc::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,6,5,.30),rgba(8,6,5,.62));}.arc > *{position:relative;z-index:1}.arc-1{background:url('https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1200&q=80') center/cover}.arc-2{background:url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1200&q=80') center/cover}.arc-3{background:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80') center/cover}
+    .arc-kicker{color:var(--gold2);font-size:12px;text-transform:uppercase;letter-spacing:.13em;margin-bottom:8px}.quest-map{padding:20px}.days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:12px}.day{padding:14px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.03);min-height:112px}.day small{display:block;color:var(--gold2);margin-bottom:6px}.day.done{background:rgba(131,95,34,.18)}.day.active{outline:2px solid var(--gold);background:rgba(220,164,83,.12)}.day.locked{opacity:.7}
     @media (max-width:980px){.grid,.arc-grid{grid-template-columns:1fr}.days{grid-template-columns:repeat(2,minmax(0,1fr))}}
   </style>
 </head>
@@ -29,60 +22,21 @@
       <div class="brand">Archetypal Masculine Heart Quest</div>
       <nav class="nav"><a href="../index.html">Landing</a><a href="lesson-day-1.html">Today’s Lesson</a><a href="locked.html">Locked State</a><a href="complete.html">Completion</a></nav>
     </header>
-
     <section class="hero">
       <div class="grid">
-        <div class="card">
-          <p class="eyebrow">Quest Dashboard</p>
-          <h1 class="title">Day 1 of 21</h1>
-          <p class="muted">Welcome to the heart. Today begins the descent: the intro plus the first emotional truth-telling lesson.</p>
-          <div class="row"><a class="btn btn-primary" href="lesson-day-1.html">Continue today’s lesson</a><a class="btn btn-secondary" href="#map">View quest map</a></div>
-        </div>
-        <aside class="stats">
-          <div class="stat"><strong>Current Arc</strong><span class="muted">Unlock the Heart</span></div>
-          <div class="stat"><strong>Reminder Status</strong><span class="muted">Email reminders on · SMS off</span></div>
-          <div class="stat"><strong>Next Unlock</strong><span class="muted">Available after completion + 24 hours</span></div>
-        </aside>
+        <div class="card"><p class="eyebrow">Quest Dashboard</p><h1 class="title">Day 1 of 21</h1><p class="muted">The path begins in the heart. One lesson a day. A little honesty, a little depth, and something begins to move.</p><div class="row"><a class="btn btn-primary" href="lesson-day-1.html">Continue today’s lesson</a><a class="btn btn-secondary" href="#map">View quest map</a></div></div>
+        <aside class="stats"><div class="stat"><strong>Current Arc</strong><span class="muted">Unlock the Heart</span></div><div class="stat"><strong>Reminder Status</strong><span class="muted">Email reminders on · SMS off</span></div><div class="stat"><strong>Next Unlock</strong><span class="muted">After completion + 16 hours</span></div></aside>
       </div>
     </section>
-
     <section>
-      <div class="section-head"><h2>The 3 arcs</h2><p class="muted">A path through heart, story, and intention.</p></div>
+      <div class="section-head"><h2>The 3 arcs</h2><p class="muted">Three movements through the quest: feeling, story, and intentional planting.</p></div>
       <div class="arc-grid">
-        <article class="card arc"><div class="arc-kicker">Days 1–7</div><h3>Unlock the Heart</h3><p class="muted">Feeling, honesty, pain, sadness, anger, numbness, shame, regret, and the choice to feel.</p></article>
-        <article class="card arc"><div class="arc-kicker">Days 8–14</div><h3>Language of the Heart</h3><p class="muted">Iron John, story, archetype, shadow, identity, grounding, and mature masculinity.</p></article>
-        <article class="card arc"><div class="arc-kicker">Days 15–21</div><h3>Intentions Worth Planting</h3><p class="muted">Creative, kind, beautiful, loving, abundant, receptive, and expansive inner planting.</p></article>
+        <article class="card arc arc-1"><div class="arc-kicker">Days 1–7</div><h3>Unlock the Heart</h3><p class="muted">Pain, sadness, anger, numbness, shame, regret, and the choice to feel again.</p></article>
+        <article class="card arc arc-2"><div class="arc-kicker">Days 8–14</div><h3>Language of the Heart</h3><p class="muted">Iron John, symbol, imagination, shadow, and mature masculinity.</p></article>
+        <article class="card arc arc-3"><div class="arc-kicker">Days 15–21</div><h3>Intentions Worth Planting</h3><p class="muted">Deep qualities planted into the heart and subconscious to carry the quest forward.</p></article>
       </div>
     </section>
-
-    <section id="map">
-      <div class="card quest-map">
-        <div class="section-head"><h2>Quest map</h2><p class="muted">Draft state model for lesson progress.</p></div>
-        <div class="days">
-          <div class="day active"><small>Day 1</small><strong>Welcome to the Heart</strong></div>
-          <div class="day locked"><small>Day 2</small><strong>Sadness &amp; Scars</strong></div>
-          <div class="day locked"><small>Day 3</small><strong>Anger &amp; Defenses</strong></div>
-          <div class="day locked"><small>Day 4</small><strong>Numbing</strong></div>
-          <div class="day locked"><small>Day 5</small><strong>Shame</strong></div>
-          <div class="day locked"><small>Day 6</small><strong>Regret</strong></div>
-          <div class="day locked"><small>Day 7</small><strong>Choosing to Feel</strong></div>
-          <div class="day locked"><small>Day 8</small><strong>Entering the Story</strong></div>
-          <div class="day locked"><small>Day 9</small><strong>The Cage</strong></div>
-          <div class="day locked"><small>Day 10</small><strong>Inner Gold</strong></div>
-          <div class="day locked"><small>Day 11</small><strong>Breath &amp; State</strong></div>
-          <div class="day locked"><small>Day 12</small><strong>Inner Garden</strong></div>
-          <div class="day locked"><small>Day 13</small><strong>Masculine Heart</strong></div>
-          <div class="day locked"><small>Day 14</small><strong>Shadow &amp; Story</strong></div>
-          <div class="day locked"><small>Day 15</small><strong>Be Creative</strong></div>
-          <div class="day locked"><small>Day 16</small><strong>Be Kind</strong></div>
-          <div class="day locked"><small>Day 17</small><strong>Be Beauty</strong></div>
-          <div class="day locked"><small>Day 18</small><strong>Be Love</strong></div>
-          <div class="day locked"><small>Day 19</small><strong>Be Abundance</strong></div>
-          <div class="day locked"><small>Day 20</small><strong>Be Receptive</strong></div>
-          <div class="day locked"><small>Day 21</small><strong>Be Ever-Expansive</strong></div>
-        </div>
-      </div>
-    </section>
+    <section id="map"><div class="card quest-map"><div class="section-head"><h2>Quest map</h2><p class="muted">Progress should feel simple, visible, and satisfying.</p></div><div class="days"><div class="day active"><small>Day 1</small><strong>Welcome to the Heart</strong></div><div class="day locked"><small>Day 2</small><strong>Sadness &amp; Scars</strong></div><div class="day locked"><small>Day 3</small><strong>Anger &amp; Defenses</strong></div><div class="day locked"><small>Day 4</small><strong>Numbing</strong></div><div class="day locked"><small>Day 5</small><strong>Shame</strong></div><div class="day locked"><small>Day 6</small><strong>Regret</strong></div><div class="day locked"><small>Day 7</small><strong>Choosing to Feel</strong></div><div class="day locked"><small>Day 8</small><strong>Entering the Story</strong></div><div class="day locked"><small>Day 9</small><strong>The Cage</strong></div><div class="day locked"><small>Day 10</small><strong>Inner Gold</strong></div><div class="day locked"><small>Day 11</small><strong>Breath &amp; State</strong></div><div class="day locked"><small>Day 12</small><strong>Inner Garden</strong></div><div class="day locked"><small>Day 13</small><strong>Masculine Heart</strong></div><div class="day locked"><small>Day 14</small><strong>Shadow &amp; Story</strong></div><div class="day locked"><small>Day 15</small><strong>Be Creative</strong></div><div class="day locked"><small>Day 16</small><strong>Be Kind</strong></div><div class="day locked"><small>Day 17</small><strong>Be Beauty</strong></div><div class="day locked"><small>Day 18</small><strong>Be Love</strong></div><div class="day locked"><small>Day 19</small><strong>Be Abundance</strong></div><div class="day locked"><small>Day 20</small><strong>Be Receptive</strong></div><div class="day locked"><small>Day 21</small><strong>Be Ever-Expansive</strong></div></div></div></section>
   </div>
 </body>
 </html>
