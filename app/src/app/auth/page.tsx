@@ -1,23 +1,25 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
+
+function getRedirectTarget() {
+  if (typeof window === 'undefined') return 'https://masculineheart.vercel.app/portal'
+  return window.location.hostname === 'localhost'
+    ? 'http://localhost:3000/portal'
+    : 'https://masculineheart.vercel.app/portal'
+}
 
 export default function AuthPage() {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(false)
+  const redirectTo = useMemo(() => getRedirectTarget(), [])
 
   async function sendMagicLink(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setStatus('')
-
-    const redirectTo = typeof window !== 'undefined'
-      ? (window.location.hostname === 'localhost'
-          ? 'http://localhost:3000/portal'
-          : 'https://masculineheart.vercel.app/portal')
-      : undefined
 
     const { error } = await supabase.auth.signInWithOtp({
       email,
@@ -30,7 +32,7 @@ export default function AuthPage() {
       setStatus(error.message)
     } else {
       window.localStorage.setItem('mhq_email', email)
-      setStatus('Magic link sent. Check your email to enter the quest.')
+      setStatus(`Magic link sent. Redirect target: ${redirectTo}`)
     }
 
     setLoading(false)
@@ -41,7 +43,11 @@ export default function AuthPage() {
       <div className="mx-auto w-full max-w-xl rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(20,15,12,0.82)] p-8 shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
         <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#efc578]">Access</p>
         <h1 className="mb-3 text-4xl font-semibold tracking-[-0.04em]">Enter the Quest</h1>
-        <p className="mb-6 text-[rgba(244,234,220,0.72)]">Use your email to receive a magic link. Once authenticated, the portal can load your progress and quest state.</p>
+        <p className="mb-4 text-[rgba(244,234,220,0.72)]">Use your email to receive a magic link. Once authenticated, the portal can load your progress and quest state.</p>
+        <div className="mb-6 rounded-[18px] border border-[rgba(239,197,120,0.12)] bg-[rgba(31,23,18,0.56)] p-4 text-sm text-[rgba(244,234,220,0.72)]">
+          <strong className="text-[#f4eadc]">Current redirect target</strong><br />
+          {redirectTo}
+        </div>
         <form onSubmit={sendMagicLink} className="space-y-4">
           <input
             type="email"
