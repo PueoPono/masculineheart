@@ -103,6 +103,9 @@
       pointer-events: none;
     }
     .threshold-copy, .threshold-mark { position: relative; z-index: 1; }
+    .threshold-copy {
+      padding-left: 32px;
+    }
     .threshold-copy h1 {
       margin: 0;
       font-size: clamp(3.2rem, 7vw, 6.2rem);
@@ -117,6 +120,7 @@
       max-width: 30ch;
       color: rgba(244,234,220,0.72);
       font-size: 1.08rem;
+      white-space: pre-line;
     }
     .threshold-mark {
       display: flex;
@@ -248,7 +252,7 @@
     .arc-card > * { position: relative; z-index: 1; }
     .arc-card.arc-1 { background-image: url('https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1200&q=80'); }
     .arc-card.arc-2 { background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1200&q=80'); }
-    .arc-card.arc-3 { background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80'); }
+    .arc-card.arc-3 { background-image: url('https://images.unsplash.com/photo-1465379944081-7f47de8d74ac?auto=format&fit=crop&w=1200&q=80'); }
     .arc-kicker {
       color: var(--gold2);
       text-transform: uppercase;
@@ -314,6 +318,7 @@
       .hero-copy, .hero-threshold { min-height: auto; }
       .quest-strip { grid-template-columns: repeat(7,minmax(0,1fr)); }
       .hero-threshold { width: min(100%, calc(100% - 16px)); padding: 28px 24px 34px; }
+      .threshold-copy { padding-left: 0; }
       .threshold-copy h1 { max-width: none; }
       .threshold-mark { order: 2; margin-top: 8px; }
       .threshold-mark img { width: min(100%, 280px); max-height: 280px; }
@@ -337,7 +342,8 @@
     <div class="hero-threshold">
       <div class="threshold-copy">
         <h1>The Masculine<br />Heart Quest</h1>
-        <p>A deeper threshold into the forest of the heart, with more space before the path begins.</p>
+        <p>Man know thyself; then thou shalt know the Universe and God
+-Pythagoras</p>
       </div>
       <div class="threshold-mark">
         <img src="https://pueopono.github.io/masculineheart/app/public/branding/mh-heart-arrow-white.png" alt="Masculine Heart symbol" />
