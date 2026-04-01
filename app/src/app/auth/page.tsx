@@ -13,10 +13,16 @@ export default function AuthPage() {
     setLoading(true)
     setStatus('')
 
+    const redirectTo = typeof window !== 'undefined'
+      ? (window.location.hostname === 'localhost'
+          ? 'http://localhost:3000/portal'
+          : 'https://masculineheart.vercel.app/portal')
+      : undefined
+
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/portal` : undefined,
+        emailRedirectTo: redirectTo,
       },
     })
 
