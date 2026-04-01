@@ -3,32 +3,62 @@
 import { useEffect, useState } from 'react'
 import { supabase, UNLOCK_DELAY_HOURS } from '@/lib/supabase'
 
+type LoadState = 'loading' | 'login_required' | 'no_progress' | 'ready' | 'error'
+
 export default function LockedPage() {
-  const [whenText, setWhenText] = useState('Loading…')
+  const [whenText, setWhenText] = useState('')
+  const [loadState, setLoadState] = useState<LoadState>('loading')
+  const [detail, setDetail] = useState('Loading…')
 
   useEffect(() => {
     let active = true
     async function load() {
-      const authRes = await supabase.auth.getUser()
-      const user = authRes.data.user
-      if (!user) {
-        if (active) setWhenText('Login required.')
-        return
+      try {
+        const authRes = await supabase.auth.getUser()
+        const user = authRes.data.user
+        if (!user) {
+          if (active) {
+            setLoadState('login_required')
+            setDetail('Login required.')
+          }
+          return
+        }
+
+        const progressRes = await supabase
+          .from('lesson_progress')
+          .select('unlock_at')
+          .eq('user_id', user.id)
+          .eq('lesson_id', 'day-1')
+          .maybeSingle()
+
+        if (progressRes.error) {
+          if (active) {
+            setLoadState('error')
+            setDetail('Could not load locked state yet.')
+          }
+          return
+        }
+
+        if (!progressRes.data?.unlock_at) {
+          if (active) {
+            setLoadState('no_progress')
+            setDetail('No unlock timestamp found yet.')
+          }
+          return
+        }
+
+        if (active) {
+          setWhenText(new Date(progressRes.data.unlock_at).toLocaleString())
+          setLoadState('ready')
+          setDetail('')
+        }
+      } catch (err) {
+        console.error(err)
+        if (active) {
+          setLoadState('error')
+          setDetail('Unexpected error while loading locked state.')
+        }
       }
-
-      const progressRes = await supabase
-        .from('lesson_progress')
-        .select('unlock_at')
-        .eq('user_id', user.id)
-        .eq('lesson_id', 'day-1')
-        .maybeSingle()
-
-      if (progressRes.error || !progressRes.data?.unlock_at) {
-        if (active) setWhenText('Unlock time not found yet.')
-        return
-      }
-
-      if (active) setWhenText(new Date(progressRes.data.unlock_at).toLocaleString())
     }
     load()
     return () => { active = false }
@@ -42,7 +72,7 @@ export default function LockedPage() {
         <p className="mx-auto max-w-2xl text-[rgba(244,234,220,0.72)]">Good work. The pacing is intentional. Let today settle before the next gate opens.</p>
         <div className="mx-auto mt-6 max-w-xl rounded-[20px] border border-[rgba(239,197,120,0.12)] bg-[rgba(31,23,18,0.56)] p-5">
           <strong className="mb-1 block text-lg">Next unlock: {UNLOCK_DELAY_HOURS} hours</strong>
-          <p className="text-[rgba(244,234,220,0.72)]">{whenText}</p>
+          <p className="text-[rgba(244,234,220,0.72)]">{loadState === 'ready' ? whenText : detail}</p>
         </div>
       </div>
     </main>

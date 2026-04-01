@@ -3,26 +3,37 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 
+type DebugData = {
+  user: string | null
+  profile: Record<string, unknown> | null
+  progress: Record<string, unknown>[] | null
+}
+
 export default function DebugCurrentStatePage() {
-  const [data, setData] = useState<unknown>(null)
+  const [data, setData] = useState<DebugData | null>(null)
   const [status, setStatus] = useState('Loading…')
 
   useEffect(() => {
     let active = true
     async function load() {
-      const authRes = await supabase.auth.getUser()
-      const user = authRes.data.user
-      if (!user) {
-        if (active) setStatus('Login required.')
-        return
-      }
+      try {
+        const authRes = await supabase.auth.getUser()
+        const user = authRes.data.user
+        if (!user) {
+          if (active) setStatus('Login required.')
+          return
+        }
 
-      const profileRes = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle()
-      const progressRes = await supabase.from('lesson_progress').select('*').eq('user_id', user.id).order('updated_at', { ascending: false })
+        const profileRes = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle()
+        const progressRes = await supabase.from('lesson_progress').select('*').eq('user_id', user.id).order('updated_at', { ascending: false })
 
-      if (active) {
-        setData({ user: user.email, profile: profileRes.data, progress: progressRes.data })
-        setStatus('')
+        if (active) {
+          setData({ user: user.email ?? null, profile: profileRes.data ?? null, progress: (progressRes.data as Record<string, unknown>[] | null) ?? null })
+          setStatus('')
+        }
+      } catch (err) {
+        console.error(err)
+        if (active) setStatus('Unexpected error while loading debug state.')
       }
     }
     load()

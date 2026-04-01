@@ -3,36 +3,62 @@
 import { useEffect, useState } from 'react'
 import { supabase, UNLOCK_DELAY_HOURS } from '@/lib/supabase'
 
+type LoadState = 'loading' | 'login_required' | 'no_progress' | 'ready' | 'error'
+
 export default function CompletePage() {
   const [whenText, setWhenText] = useState('')
-  const [status, setStatus] = useState('Loading…')
+  const [loadState, setLoadState] = useState<LoadState>('loading')
+  const [detail, setDetail] = useState('Loading…')
 
   useEffect(() => {
     let active = true
     async function load() {
-      const authRes = await supabase.auth.getUser()
-      const user = authRes.data.user
-      if (!user) {
-        if (active) setStatus('Login required.')
-        return
-      }
+      try {
+        const authRes = await supabase.auth.getUser()
+        const user = authRes.data.user
+        if (!user) {
+          if (active) {
+            setLoadState('login_required')
+            setDetail('Login required.')
+          }
+          return
+        }
 
-      const progressRes = await supabase
-        .from('lesson_progress')
-        .select('unlock_at, completed_at')
-        .eq('user_id', user.id)
-        .eq('lesson_id', 'day-1')
-        .maybeSingle()
+        const progressRes = await supabase
+          .from('lesson_progress')
+          .select('unlock_at, completed_at')
+          .eq('user_id', user.id)
+          .eq('lesson_id', 'day-1')
+          .maybeSingle()
 
-      if (progressRes.error || !progressRes.data) {
-        if (active) setStatus('Could not load completion state yet.')
-        return
-      }
+        if (progressRes.error) {
+          if (active) {
+            setLoadState('error')
+            setDetail('Could not load completion state yet.')
+          }
+          return
+        }
 
-      const unlockAt = progressRes.data.unlock_at ? new Date(progressRes.data.unlock_at) : null
-      if (unlockAt && active) {
-        setWhenText(unlockAt.toLocaleString())
-        setStatus('')
+        if (!progressRes.data?.unlock_at) {
+          if (active) {
+            setLoadState('no_progress')
+            setDetail('No saved completion/unlock row found yet.')
+          }
+          return
+        }
+
+        const unlockAt = new Date(progressRes.data.unlock_at)
+        if (active) {
+          setWhenText(unlockAt.toLocaleString())
+          setLoadState('ready')
+          setDetail('')
+        }
+      } catch (err) {
+        console.error(err)
+        if (active) {
+          setLoadState('error')
+          setDetail('Unexpected error while loading completion state.')
+        }
       }
     }
     load()
@@ -53,7 +79,7 @@ export default function CompletePage() {
         </div>
         <div className="mx-auto max-w-xl rounded-[20px] border border-[rgba(239,197,120,0.12)] bg-[rgba(31,23,18,0.56)] p-5">
           <strong className="mb-1 block text-lg">Next lesson unlocks in {UNLOCK_DELAY_HOURS} hours</strong>
-          <div className="text-[rgba(244,234,220,0.72)]">{whenText || status}</div>
+          <div className="text-[rgba(244,234,220,0.72)]">{loadState === 'ready' ? whenText : detail}</div>
         </div>
       </div>
     </main>
