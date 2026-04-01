@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { HeartCornerMark } from '@/components/heart-mark'
 import { supabase } from '@/lib/supabase'
 
 function getRedirectTarget() {
@@ -39,11 +40,14 @@ export default function AuthPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#0c0908,#17110f_60%,#0d0908)] px-4 py-12 text-[#f4eadc]">
-      <div className="mx-auto w-full max-w-xl rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(20,15,12,0.82)] p-8 shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
-        <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#efc578]">Access</p>
-        <h1 className="mb-3 text-4xl font-semibold tracking-[-0.04em]">Enter the Quest</h1>
-        <p className="mb-6 text-[rgba(244,234,220,0.72)]">Use your email to receive a magic link. Once authenticated, the portal will load your progress and quest state.</p>
+    <main className="min-h-screen px-4 py-12 text-[#f4eadc]">
+      <div className="relative mx-auto w-full max-w-xl overflow-hidden rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[linear-gradient(135deg,rgba(18,27,21,0.96),rgba(20,15,12,0.84)_45%,rgba(12,10,9,0.98))] p-8 shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
+        <HeartCornerMark />
+        <div className="pr-16 md:pr-24">
+          <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#efc578]">Access</p>
+          <h1 className="mb-3 text-4xl font-semibold tracking-[-0.04em] text-[#e6bd74]">Enter the Quest</h1>
+          <p className="mb-6 text-[rgba(244,234,220,0.72)]">Use your email to receive a magic link. Once authenticated, the portal will load your progress and quest state.</p>
+        </div>
         <form onSubmit={sendMagicLink} className="space-y-4">
           <input
             type="email"

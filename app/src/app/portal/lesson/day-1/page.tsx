@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import { HeartCornerMark } from '@/components/heart-mark'
 import { supabase, unlockAtFromNow, UNLOCK_DELAY_HOURS } from '@/lib/supabase'
 import { dayOnePrompts } from '@/lib/prototype-data'
 
@@ -93,7 +94,9 @@ export default function DayOneLessonPage() {
     }
 
     load()
-    return () => { active = false }
+    return () => {
+      active = false
+    }
   }, [])
 
   async function saveJournal() {
@@ -111,9 +114,7 @@ export default function DayOneLessonPage() {
       journal_text: journal || null,
     }
 
-    const { error } = await supabase
-      .from('lesson_progress')
-      .upsert(payload, { onConflict: 'user_id,lesson_id' })
+    const { error } = await supabase.from('lesson_progress').upsert(payload, { onConflict: 'user_id,lesson_id' })
 
     if (error) {
       console.error(error)
@@ -142,9 +143,7 @@ export default function DayOneLessonPage() {
       journal_text: journal || null,
     }
 
-    const { error } = await supabase
-      .from('lesson_progress')
-      .upsert(payload, { onConflict: 'user_id,lesson_id' })
+    const { error } = await supabase.from('lesson_progress').upsert(payload, { onConflict: 'user_id,lesson_id' })
 
     if (error) {
       console.error(error)
@@ -163,16 +162,20 @@ export default function DayOneLessonPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[linear-gradient(180deg,#0c0908,#17110f_60%,#0d0908)] px-4 py-10 text-[#f4eadc]">
-        <div className="mx-auto w-full max-w-3xl rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(20,15,12,0.82)] p-8 shadow-[0_24px_60px_rgba(0,0,0,0.34)]">Loading lesson…</div>
+      <main className="min-h-screen px-4 py-10 text-[#f4eadc]">
+        <div className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[linear-gradient(180deg,rgba(19,24,20,0.94),rgba(20,15,12,0.84))] p-8 shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
+          <HeartCornerMark />
+          Loading lesson…
+        </div>
       </main>
     )
   }
 
   if (!authState.userId) {
     return (
-      <main className="min-h-screen bg-[linear-gradient(180deg,#0c0908,#17110f_60%,#0d0908)] px-4 py-12 text-[#f4eadc]">
-        <div className="mx-auto w-full max-w-2xl rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(20,15,12,0.82)] p-8 text-center shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
+      <main className="min-h-screen px-4 py-12 text-[#f4eadc]">
+        <div className="relative mx-auto w-full max-w-2xl overflow-hidden rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[linear-gradient(180deg,rgba(19,24,20,0.94),rgba(20,15,12,0.84))] p-8 text-center shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
+          <HeartCornerMark />
           <h1 className="mb-3 text-4xl font-semibold tracking-[-0.04em]">Login required</h1>
           <p className="mb-6 text-[rgba(244,234,220,0.72)]">{status}</p>
           <a href="/auth" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10]">Go to login</a>
@@ -183,8 +186,9 @@ export default function DayOneLessonPage() {
 
   if (!authState.enrolled) {
     return (
-      <main className="min-h-screen bg-[linear-gradient(180deg,#0c0908,#17110f_60%,#0d0908)] px-4 py-12 text-[#f4eadc]">
-        <div className="mx-auto w-full max-w-2xl rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(20,15,12,0.82)] p-8 text-center shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
+      <main className="min-h-screen px-4 py-12 text-[#f4eadc]">
+        <div className="relative mx-auto w-full max-w-2xl overflow-hidden rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[linear-gradient(180deg,rgba(19,24,20,0.94),rgba(20,15,12,0.84))] p-8 text-center shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
+          <HeartCornerMark />
           <h1 className="mb-3 text-4xl font-semibold tracking-[-0.04em]">Access not active yet</h1>
           <p className="mb-2 text-[rgba(244,234,220,0.72)]">{authState.email}</p>
           <p className="text-[rgba(244,234,220,0.72)]">Your account is recognized, but course access is not enrolled yet.</p>
@@ -194,14 +198,17 @@ export default function DayOneLessonPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#0c0908,#17110f_60%,#0d0908)] px-4 py-10 text-[#f4eadc]">
-      <div className="mx-auto w-full max-w-4xl rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(20,15,12,0.82)] p-7 shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
-        <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#efc578]">Day 1 · Unlock the Heart</p>
-        <h1 className="mb-3 text-4xl font-semibold tracking-[-0.04em]">Welcome to the Heart</h1>
-        <p className="mb-2 text-[rgba(244,234,220,0.72)]">{authState.email}</p>
-        <p className="mb-6 text-[rgba(244,234,220,0.72)]">The quest begins. First watch the intro video, then day 1 video. Last honestly spend time with the reflection questions that follow.</p>
+    <main className="min-h-screen px-4 py-10 text-[#f4eadc]">
+      <div className="relative mx-auto w-full max-w-4xl overflow-hidden rounded-[30px] border border-[rgba(228,183,103,0.18)] bg-[linear-gradient(135deg,rgba(18,27,21,0.96),rgba(20,15,12,0.84)_45%,rgba(12,10,9,0.98))] p-7 shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
+        <HeartCornerMark />
+        <div className="pr-16 md:pr-24">
+          <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#efc578]">Day 1 · Unlock the Heart</p>
+          <h1 className="mb-3 text-4xl font-semibold tracking-[-0.04em] text-[#e6bd74]">Welcome to the Heart</h1>
+          <p className="mb-2 text-[rgba(244,234,220,0.72)]">{authState.email}</p>
+          <p className="mb-6 max-w-2xl text-[rgba(244,234,220,0.72)]">The quest begins. First watch the intro video, then day 1 video. Last honestly spend time with the reflection questions that follow.</p>
+        </div>
 
-        <div className="mb-6 flex h-80 items-end rounded-[22px] border border-[rgba(228,183,103,0.18)] bg-cover bg-center p-4" style={{ backgroundImage: "linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02)), url('https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1200&q=80')" }}>
+        <div className="mb-6 flex h-80 items-end rounded-[24px] border border-[rgba(228,183,103,0.18)] bg-[linear-gradient(180deg,rgba(11,18,13,0.16),rgba(10,9,8,0.4)),url('https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1200&q=80')] bg-cover bg-center p-4">
           <span className="rounded-[14px] border border-[rgba(239,197,120,0.14)] bg-[rgba(16,12,10,0.55)] px-3 py-2">Video area · Intro + Day 1 lesson</span>
         </div>
 
@@ -215,14 +222,18 @@ export default function DayOneLessonPage() {
           </button>
 
           {showTask && (
-            <div className="w-full rounded-[20px] border border-[rgba(239,197,120,0.12)] bg-[rgba(31,23,18,0.56)] p-5">
+            <div className="w-full rounded-[20px] border border-[rgba(239,197,120,0.12)] bg-[linear-gradient(180deg,rgba(31,43,34,0.44),rgba(31,23,18,0.56))] p-5">
               <h2 className="mb-3 text-2xl font-semibold">Reflect on these questions</h2>
               <ol className="mb-4 list-decimal space-y-3 pl-5 text-[rgba(244,234,220,0.72)]">
                 {dayOnePrompts.map((prompt) => (
                   <li key={prompt}>{prompt}</li>
                 ))}
               </ol>
-              <p className="text-[rgba(244,234,220,0.72)]"><strong className="text-[#f4eadc]">Best practice</strong><br />Get a pen and piece of paper. Write what comes. The act of writing these questions down, even if you write nothing but the question, will start a process within.</p>
+              <p className="text-[rgba(244,234,220,0.72)]">
+                <strong className="text-[#f4eadc]">Best practice</strong>
+                <br />
+                Get a pen and piece of paper. Write what comes. The act of writing these questions down, even if you write nothing but the question, will start a process within.
+              </p>
             </div>
           )}
 
@@ -231,7 +242,7 @@ export default function DayOneLessonPage() {
           </button>
 
           {showJournal && (
-            <div className="w-full rounded-[20px] border border-[rgba(239,197,120,0.12)] bg-[rgba(31,23,18,0.56)] p-5">
+            <div className="w-full rounded-[20px] border border-[rgba(239,197,120,0.12)] bg-[linear-gradient(180deg,rgba(31,43,34,0.44),rgba(31,23,18,0.56))] p-5">
               <p className="mb-3 text-[rgba(244,234,220,0.72)]">For your convenience, you can also write some answers here, and your journaling will be emailed to you at the end.</p>
               <textarea value={journal} onChange={(e) => setJournal(e.target.value)} className="min-h-44 w-full rounded-[18px] border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.03)] p-4 text-[#f4eadc] outline-none" placeholder="Write what comes..." />
               <div className="mt-3">
