@@ -24,7 +24,7 @@ export default async function Icon() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: 'radial-gradient(circle at 30% 25%, rgba(42,74,58,0.95), rgba(14,11,10,1) 68%)',
+          background: 'radial-gradient(circle at 30% 22%, rgba(57,92,72,0.98), rgba(17,15,13,1) 70%)',
           borderRadius: 56,
           position: 'relative',
           overflow: 'hidden',
@@ -33,13 +33,36 @@ export default async function Icon() {
         <div
           style={{
             position: 'absolute',
-            inset: 14,
-            borderRadius: 44,
-            border: '2px solid rgba(239,197,120,0.28)',
-            boxShadow: 'inset 0 0 30px rgba(239,197,120,0.12)',
+            inset: 10,
+            borderRadius: 46,
+            border: '1px solid rgba(239,197,120,0.34)',
+            boxShadow: 'inset 0 0 36px rgba(239,197,120,0.10), 0 0 0 2px rgba(0,0,0,0.16)',
           }}
         />
-        <img src={imageSrc} alt="Masculine Heart symbol" width="172" height="172" style={{ objectFit: 'contain' }} />
+        <div
+          style={{
+            position: 'absolute',
+            width: 156,
+            height: 156,
+            borderRadius: 9999,
+            background: 'radial-gradient(circle, rgba(239,197,120,0.16), rgba(239,197,120,0.03) 55%, transparent 74%)',
+            filter: 'blur(10px)',
+          }}
+        />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 182,
+            height: 182,
+            borderRadius: 40,
+            background: 'linear-gradient(180deg, rgba(26,34,29,0.82), rgba(10,10,9,0.12))',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
+          }}
+        >
+          <img src={imageSrc} alt="Masculine Heart symbol" width="144" height="144" style={{ objectFit: 'contain' }} />
+        </div>
       </div>
     ),
     size,
