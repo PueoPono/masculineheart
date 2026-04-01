@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Archetypal Masculine Heart Quest</title>
-  <meta name="description" content="A 21-day guided quest into the heart, archetype, masculinity, intention, and lived vitality." />
+  <title>The Masculine Heart Quest</title>
+  <meta name="description" content="A 21-day guided quest into the heart, masculinity, intention, and lived vitality." />
   <style>
     :root {
       --bg: #0d0a08;
@@ -78,13 +78,62 @@
       gap: 24px;
       align-items: stretch;
     }
-    .card, .hero-copy, .hero-side, .image-panel, .arc-card, .quote-band, .cta-band, .soft-panel {
+    .card, .hero-copy, .hero-side, .image-panel, .arc-card, .quote-band, .cta-band, .soft-panel, .hero-threshold {
       border: 1px solid var(--line);
       border-radius: 30px;
       background: var(--panel);
       box-shadow: 0 28px 80px var(--shadow);
       backdrop-filter: blur(8px);
       overflow: hidden;
+    }
+    .hero-threshold {
+      padding: 42px 36px;
+      min-height: 560px;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+      align-items: center;
+      background:
+        radial-gradient(circle at 22% 18%, rgba(88,124,97,0.16), transparent 28%),
+        radial-gradient(circle at 74% 28%, rgba(239,197,120,0.10), transparent 22%),
+        linear-gradient(135deg, rgba(15,22,18,0.95), rgba(17,13,11,0.88) 44%, rgba(11,9,8,0.98));
+      position: relative;
+    }
+    .hero-threshold::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 42px 42px;
+      opacity: 0.34;
+      pointer-events: none;
+    }
+    .threshold-copy, .threshold-mark { position: relative; z-index: 1; }
+    .threshold-copy h1 {
+      margin: 0;
+      font-size: clamp(3.2rem, 7vw, 6.6rem);
+      line-height: 0.88;
+      letter-spacing: -0.065em;
+      color: #e6bd74;
+      text-shadow: 0 8px 34px rgba(0,0,0,0.4);
+    }
+    .threshold-copy p {
+      margin: 18px 0 0;
+      max-width: 30ch;
+      color: rgba(244,234,220,0.72);
+      font-size: 1.05rem;
+    }
+    .threshold-mark {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100%;
+    }
+    .threshold-mark img {
+      width: min(100%, 360px);
+      max-height: 420px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 34px rgba(239,197,120,0.12));
     }
     .hero-copy {
       padding: 36px;
@@ -148,7 +197,7 @@
       min-height: 300px;
       background:
         linear-gradient(180deg, rgba(8,6,5,0.16), rgba(8,6,5,0.44)),
-        url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80') center/cover;
+        url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80') center/cover;
       position: relative;
     }
     .image-panel .overlay-text {
@@ -205,8 +254,8 @@
     .quote-band {
       text-align:center;
       background:
-        linear-gradient(180deg, rgba(23,17,14,0.92), rgba(16,12,10,0.94)),
-        url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&q=80') center/cover;
+        linear-gradient(180deg, rgba(15,23,16,0.74), rgba(13,18,14,0.86)),
+        url('https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1600&q=80') center/cover;
       background-blend-mode: overlay;
     }
     .quote-band blockquote {
@@ -245,9 +294,10 @@
     .quest-node.done,.quest-node.active { background: linear-gradient(180deg, #efc578, #dca453); }
     footer { padding: 36px 0 48px; color: var(--muted); font-size: 14px; }
     @media (max-width: 980px) {
-      .hero-grid, .three-grid, .how-grid, .cta-band { grid-template-columns: 1fr; }
-      .hero-copy { min-height: 460px; }
+      .hero-grid, .three-grid, .how-grid, .cta-band, .hero-threshold { grid-template-columns: 1fr; }
+      .hero-copy, .hero-threshold { min-height: 460px; }
       .quest-strip { grid-template-columns: repeat(7,minmax(0,1fr)); }
+      .threshold-mark img { width: min(100%, 260px); max-height: 300px; }
     }
   </style>
 </head>
@@ -265,6 +315,16 @@
 
     <section class="hero">
       <div class="hero-grid">
+        <div class="hero-threshold">
+          <div class="threshold-copy">
+            <div class="eyebrow">The Masculine Heart</div>
+            <h1>The Masculine<br />Heart Quest</h1>
+            <p>A deeper threshold into the forest of the heart, with more space before the path begins.</p>
+          </div>
+          <div class="threshold-mark">
+            <img src="https://pueopono.github.io/masculineheart/app/public/branding/mh-heart-arrow-white.png" alt="Masculine Heart symbol" />
+          </div>
+        </div>
         <div class="hero-copy">
           <div class="hero-inner">
             <p class="eyebrow">The Masculine Heart</p>
@@ -282,12 +342,12 @@
         </div>
         <aside class="hero-side">
           <div class="image-panel">
-            <div class="overlay-text">A modern initiation into deeper feeling, mature masculinity, and the hidden architecture of the heart.</div>
+            <div class="overlay-text">A modern initiation into greater presence, mature masculinity, and the architecture of the heart.</div>
           </div>
           <div class="stats">
             <div class="stat"><strong>21 Days</strong><span>One day at a time, by design.</span></div>
             <div class="stat"><strong>3 Arcs</strong><span>Heart. Story. Intention.</span></div>
-            <div class="stat"><strong>Daily Unlock</strong><span>The next lesson opens 24 hours after completion.</span></div>
+            <div class="stat"><strong>Daily Unlock</strong><span>Integration is innate- lesson unlock after completion</span></div>
           </div>
         </aside>
       </div>
@@ -296,13 +356,14 @@
     <section id="about">
       <div class="soft-panel">
         <div class="section-head">
-          <h2>A daily path into living depth.</h2>
-          <p>The Archetypal Masculine Heart Quest brings together three streams of work into one guided progression: opening the heart, learning the language of story and symbol, and planting deeper intentions into the heart and subconscious.</p>
+          <h2>Live more deeply, more present, and aware.</h2>
+          <p>The Masculine Heart Quest brings together three streams of work into one guided progression: opening the heart, learning the language of story and symbol, and planting deeper intentions into the heart and subconscious.</p>
         </div>
         <ul class="muted-list">
           <li>short video lessons with grounded pacing</li>
-          <li>reflection prompts that invite real feeling and insight</li>
+          <li>reflection prompts to invite the heart to wake up and feel</li>
           <li>completion-based 24-hour unlock rhythm</li>
+          <li>at your pace</li>
           <li>optional reminder support by email or text</li>
         </ul>
       </div>
@@ -378,7 +439,7 @@
     </section>
 
     <footer>
-      Archetypal Masculine Heart Quest — atmospheric landing draft.
+      The Masculine Heart Quest — atmospheric landing draft.
     </footer>
   </div>
 </body>
