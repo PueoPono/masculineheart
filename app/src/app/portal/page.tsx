@@ -31,6 +31,13 @@ function isUnlocked(dayNumber: number, progress: Record<string, ProgressRow>) {
   return new Date(previous.unlock_at).getTime() <= Date.now()
 }
 
+function getStateForLesson(lesson: LessonRow, progress: Record<string, ProgressRow>) {
+  const row = progress[lesson.id]
+  if (row?.status === 'complete') return 'done'
+  if (isUnlocked(lesson.day_number, progress)) return 'active'
+  return 'locked'
+}
+
 export default function PortalPage() {
   const [email, setEmail] = useState('')
   const [lessons, setLessons] = useState<LessonRow[]>([])
@@ -128,6 +135,10 @@ export default function PortalPage() {
   }, [])
 
   const completionCount = useMemo(() => Object.values(progress).filter((p) => p.status === 'complete').length, [progress])
+  const nextAvailable = useMemo(() => {
+    const next = lessons.find((lesson) => getStateForLesson(lesson, progress) === 'active')
+    return next || null
+  }, [lessons, progress])
 
   if (!loading && !authReady) {
     return (
@@ -170,6 +181,17 @@ export default function PortalPage() {
           </div>
         </header>
 
+        {nextAvailable ? (
+          <div className="mb-6 rounded-[22px] border border-[rgba(228,183,103,0.18)] bg-[rgba(20,15,12,0.82)] p-5 shadow-[0_24px_60px_rgba(0,0,0,0.24)]">
+            <div className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Next available</div>
+            <div className="mt-1 text-2xl font-semibold">Day {nextAvailable.day_number} · {nextAvailable.title}</div>
+            <div className="mt-2 text-[rgba(244,234,220,0.72)]">Continue the quest where it is currently open.</div>
+            <div className="mt-4">
+              <a href={nextAvailable.id === 'day-1' ? '/portal/lesson/day-1' : '/portal/locked'} className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10]">Open current lesson</a>
+            </div>
+          </div>
+        ) : null}
+
         {status ? (
           <div className="mb-6 rounded-[22px] border border-[rgba(228,183,103,0.18)] bg-[rgba(20,15,12,0.82)] p-5 text-[rgba(244,234,220,0.78)]">{status}</div>
         ) : null}
@@ -177,13 +199,12 @@ export default function PortalPage() {
         <section className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(20,15,12,0.82)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
           <div className="mb-5">
             <h2 className="text-3xl font-semibold tracking-[-0.03em]">Quest map</h2>
-            <p className="text-[rgba(244,234,220,0.72)]">Live lessons + progress state. Locked lessons will open as unlock times are reached.</p>
+            <p className="text-[rgba(244,234,220,0.72)]">Live lessons + progress state. Locked lessons open as unlock times are reached.</p>
           </div>
           <div className="grid gap-3 md:grid-cols-4 xl:grid-cols-7">
             {lessons.map((lesson) => {
               const p = progress[lesson.id]
-              const unlocked = isUnlocked(lesson.day_number, progress)
-              const state = p?.status === 'complete' ? 'done' : unlocked ? 'active' : 'locked'
+              const state = getStateForLesson(lesson, progress)
               const href = state === 'locked' ? '/portal/locked' : lesson.id === 'day-1' ? '/portal/lesson/day-1' : '/portal/locked'
               return (
                 <a key={lesson.id} href={href} className={`min-h-28 rounded-[18px] border p-4 no-underline ${state === 'done' ? 'border-[rgba(228,183,103,0.18)] bg-[rgba(131,95,34,0.18)] text-[#f4eadc]' : state === 'active' ? 'border-[#dca453] bg-[rgba(220,164,83,0.12)] text-[#f4eadc]' : 'border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.03)] text-[#f4eadc] opacity-80'}`}>
