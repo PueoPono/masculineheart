@@ -69,35 +69,29 @@
     }
     .nav { display:flex; gap:14px; flex-wrap:wrap; }
     .nav a { color: var(--muted); text-decoration:none; font-size:14px; }
-    .hero {
-      padding: 36px 0 28px;
-    }
-    .hero-grid {
-      display:grid;
-      grid-template-columns: 1.12fr 0.88fr;
-      gap: 24px;
-      align-items: stretch;
-    }
-    .card, .hero-copy, .hero-side, .image-panel, .arc-card, .quote-band, .cta-band, .soft-panel, .hero-threshold {
-      border: 1px solid var(--line);
-      border-radius: 30px;
-      background: var(--panel);
-      box-shadow: 0 28px 80px var(--shadow);
-      backdrop-filter: blur(8px);
-      overflow: hidden;
+    .hero-threshold-wrap {
+      width: 100%;
+      padding: 10px 0 12px;
     }
     .hero-threshold {
-      padding: 42px 36px;
-      min-height: 560px;
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 18px;
-      align-items: center;
+      width: min(1440px, calc(100% - 32px));
+      margin: 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 36px;
       background:
         radial-gradient(circle at 22% 18%, rgba(88,124,97,0.16), transparent 28%),
         radial-gradient(circle at 74% 28%, rgba(239,197,120,0.10), transparent 22%),
         linear-gradient(135deg, rgba(15,22,18,0.95), rgba(17,13,11,0.88) 44%, rgba(11,9,8,0.98));
+      box-shadow: 0 28px 80px var(--shadow);
+      backdrop-filter: blur(8px);
+      overflow: hidden;
       position: relative;
+      min-height: 78vh;
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 18px;
+      align-items: center;
+      padding: 42px 42px 48px;
     }
     .hero-threshold::after {
       content: "";
@@ -111,17 +105,18 @@
     .threshold-copy, .threshold-mark { position: relative; z-index: 1; }
     .threshold-copy h1 {
       margin: 0;
-      font-size: clamp(3.2rem, 7vw, 6.6rem);
-      line-height: 0.88;
-      letter-spacing: -0.065em;
+      font-size: clamp(3.6rem, 8vw, 7.6rem);
+      line-height: 0.86;
+      letter-spacing: -0.07em;
       color: #e6bd74;
       text-shadow: 0 8px 34px rgba(0,0,0,0.4);
+      max-width: 8ch;
     }
     .threshold-copy p {
       margin: 18px 0 0;
       max-width: 30ch;
       color: rgba(244,234,220,0.72);
-      font-size: 1.05rem;
+      font-size: 1.08rem;
     }
     .threshold-mark {
       display: flex;
@@ -130,10 +125,29 @@
       min-height: 100%;
     }
     .threshold-mark img {
-      width: min(100%, 360px);
-      max-height: 420px;
+      width: min(100%, 760px);
+      max-height: 78vh;
       object-fit: contain;
-      filter: drop-shadow(0 0 34px rgba(239,197,120,0.12));
+      filter: drop-shadow(0 0 42px rgba(239,197,120,0.14));
+      transform: scale(1.95);
+      transform-origin: center;
+    }
+    .hero {
+      padding: 18px 0 28px;
+    }
+    .hero-grid {
+      display:grid;
+      grid-template-columns: 1.12fr 0.88fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+    .card, .hero-copy, .hero-side, .image-panel, .arc-card, .quote-band, .cta-band, .soft-panel {
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background: var(--panel);
+      box-shadow: 0 28px 80px var(--shadow);
+      backdrop-filter: blur(8px);
+      overflow: hidden;
     }
     .hero-copy {
       padding: 36px;
@@ -225,14 +239,18 @@
     .section-head p { margin:0; color:var(--muted); max-width:72ch; }
     .soft-panel, .quote-band, .cta-band { padding: 28px; }
     .three-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
-    .arc-card { padding:24px; position:relative; }
+    .arc-card { padding:24px; position:relative; background-size:cover; background-position:center; }
     .arc-card::before {
       content:"";
       position:absolute;
       inset:0;
-      background: linear-gradient(180deg, rgba(239,197,120,0.02), transparent 40%);
+      background: linear-gradient(180deg, rgba(8,6,5,.30), rgba(8,6,5,.62));
       pointer-events:none;
     }
+    .arc-card > * { position: relative; z-index: 1; }
+    .arc-card.arc-1 { background-image: url('https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1200&q=80'); }
+    .arc-card.arc-2 { background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1200&q=80'); }
+    .arc-card.arc-3 { background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80'); }
     .arc-kicker {
       color: var(--gold2);
       text-transform: uppercase;
@@ -297,7 +315,8 @@
       .hero-grid, .three-grid, .how-grid, .cta-band, .hero-threshold { grid-template-columns: 1fr; }
       .hero-copy, .hero-threshold { min-height: 460px; }
       .quest-strip { grid-template-columns: repeat(7,minmax(0,1fr)); }
-      .threshold-mark img { width: min(100%, 260px); max-height: 300px; }
+      .threshold-mark img { width: min(100%, 420px); max-height: 380px; transform: scale(1.45); }
+      .hero-threshold { width: min(100%, calc(100% - 16px)); padding: 28px 24px 34px; min-height: auto; }
     }
   </style>
 </head>
@@ -312,19 +331,23 @@
         <a href="#begin">Begin</a>
       </nav>
     </header>
+  </div>
 
+  <section class="hero-threshold-wrap">
+    <div class="hero-threshold">
+      <div class="threshold-copy">
+        <h1>The Masculine<br />Heart Quest</h1>
+        <p>A deeper threshold into the forest of the heart, with more space before the path begins.</p>
+      </div>
+      <div class="threshold-mark">
+        <img src="https://pueopono.github.io/masculineheart/app/public/branding/mh-heart-arrow-white.png" alt="Masculine Heart symbol" />
+      </div>
+    </div>
+  </section>
+
+  <div class="shell">
     <section class="hero">
       <div class="hero-grid">
-        <div class="hero-threshold">
-          <div class="threshold-copy">
-            <div class="eyebrow">The Masculine Heart</div>
-            <h1>The Masculine<br />Heart Quest</h1>
-            <p>A deeper threshold into the forest of the heart, with more space before the path begins.</p>
-          </div>
-          <div class="threshold-mark">
-            <img src="https://pueopono.github.io/masculineheart/app/public/branding/mh-heart-arrow-white.png" alt="Masculine Heart symbol" />
-          </div>
-        </div>
         <div class="hero-copy">
           <div class="hero-inner">
             <p class="eyebrow">The Masculine Heart</p>
@@ -375,17 +398,17 @@
         <p>Each arc invites a different descent: into emotional truth, into story and symbol, and into the intentional planting of what you want to become.</p>
       </div>
       <div class="three-grid">
-        <article class="arc-card">
+        <article class="arc-card arc-1">
           <div class="arc-kicker">Days 1–7</div>
           <h3>Unlock the Heart</h3>
           <p>A return to feeling, honesty, and the emotional truths that shape life beneath the surface.</p>
         </article>
-        <article class="arc-card">
+        <article class="arc-card arc-2">
           <div class="arc-kicker">Days 8–14</div>
           <h3>Language of the Heart</h3>
           <p>A journey through Iron John, symbol, story, identity, shadow, and the deeper architecture of masculinity.</p>
         </article>
-        <article class="arc-card">
+        <article class="arc-card arc-3">
           <div class="arc-kicker">Days 15–21</div>
           <h3>Intentions Worth Planting</h3>
           <p>Planting qualities into the heart and subconscious so the path continues in lived form.</p>
@@ -421,7 +444,7 @@
     <section>
       <div class="quote-band">
         <blockquote>Broken hearts don’t work. So what do we do? We fix them.</blockquote>
-        <cite>— Dr. Paul, PhD</cite>
+        <cite>— Dr. Paul</cite>
       </div>
     </section>
 
@@ -429,7 +452,7 @@
       <div class="cta-band">
         <div>
           <h2 style="margin:0 0 8px;">Begin the 21-day journey.</h2>
-          <p style="margin:0;color:var(--muted);max-width:60ch;">If you are ready to enter the forest of the heart with honesty, grounded practice, and a deeper masculine path, this quest is here for you.</p>
+          <p style="margin:0;color:var(--muted);max-width:60ch;">Are you ready to understand the depths of your heart a little more? The quest is waiting for you...</p>
         </div>
         <div class="button-row" style="margin-top:0;">
           <a class="btn btn-primary" href="#">Begin the Quest</a>
