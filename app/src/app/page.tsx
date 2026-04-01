@@ -11,7 +11,7 @@ const overviewCards = [
   },
   {
     title: 'Brand continuity',
-    text: 'The heart-with-arrow mark now carries through the landing, portal, lesson, completion, and locked states.',
+    text: 'The hand-drawn heart-with-arrow mark now carries through the landing, portal, lesson, completion, and locked states.',
   },
 ]
 
@@ -59,7 +59,7 @@ export default function Home() {
             <div className="order-1 flex justify-center lg:order-2 lg:justify-end">
               <div className="relative flex min-h-[360px] w-full max-w-[460px] items-center justify-center rounded-[32px] border border-[rgba(239,197,120,0.12)] bg-[linear-gradient(180deg,rgba(29,42,33,0.42),rgba(17,12,10,0.2))] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_22px_60px_rgba(0,0,0,0.34)] backdrop-blur-sm md:min-h-[420px]">
                 <div className="absolute inset-[10%] rounded-full bg-[radial-gradient(circle,rgba(239,197,120,0.12),transparent_60%)] blur-2xl" />
-                <HeartMark className="relative h-[280px] w-[280px] md:h-[340px] md:w-[340px]" />
+                <HeartMark className="relative h-[280px] w-[280px] object-contain md:h-[340px] md:w-[340px]" priority />
               </div>
             </div>
           </div>
