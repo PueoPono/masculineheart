@@ -25,62 +25,70 @@ export default function DayOneLessonPage() {
   useEffect(() => {
     let active = true
     async function load() {
-      const authRes = await supabase.auth.getUser()
-      const user = authRes.data.user
-      if (!user) {
+      try {
+        const authRes = await supabase.auth.getUser()
+        const user = authRes.data.user
+        if (!user) {
+          if (active) {
+            setStatus('You need to log in first.')
+            setLoading(false)
+          }
+          return
+        }
+
+        const profileRes = await supabase
+          .from('profiles')
+          .select('id, email, enrolled')
+          .eq('id', user.id)
+          .maybeSingle()
+
+        if (profileRes.error || !profileRes.data) {
+          if (active) {
+            setStatus('Could not load your profile yet.')
+            setLoading(false)
+          }
+          return
+        }
+
+        const profile = profileRes.data as { id: string; email: string; enrolled: boolean }
         if (active) {
-          setStatus('You need to log in first.')
+          setAuthState({ userId: profile.id, email: profile.email, enrolled: !!profile.enrolled })
+          window.localStorage.setItem('mhq_email', profile.email || '')
+        }
+
+        if (!profile.enrolled) {
+          if (active) {
+            setStatus('Your account exists, but access is not enrolled yet.')
+            setLoading(false)
+          }
+          return
+        }
+
+        const progressRes = await supabase
+          .from('lesson_progress')
+          .select('status, journal_text')
+          .eq('user_id', profile.id)
+          .eq('lesson_id', 'day-1')
+          .maybeSingle()
+
+        if (!progressRes.error && progressRes.data?.journal_text && active) {
+          setJournal(progressRes.data.journal_text)
+        }
+
+        if (!progressRes.error && progressRes.data?.status === 'complete' && active) {
+          setComplete(true)
+        }
+
+        if (active) {
+          setStatus('')
           setLoading(false)
         }
-        return
-      }
-
-      const profileRes = await supabase
-        .from('profiles')
-        .select('id, email, enrolled')
-        .eq('id', user.id)
-        .single()
-
-      if (profileRes.error || !profileRes.data) {
+      } catch (err) {
+        console.error(err)
         if (active) {
-          setStatus('Could not load your profile yet.')
+          setStatus('Lesson loading hit an error.')
           setLoading(false)
         }
-        return
-      }
-
-      const profile = profileRes.data as { id: string; email: string; enrolled: boolean }
-      if (active) {
-        setAuthState({ userId: profile.id, email: profile.email, enrolled: !!profile.enrolled })
-        window.localStorage.setItem('mhq_email', profile.email || '')
-      }
-
-      if (!profile.enrolled) {
-        if (active) {
-          setStatus('Your account exists, but access is not enrolled yet.')
-          setLoading(false)
-        }
-        return
-      }
-
-      const progressRes = await supabase
-        .from('lesson_progress')
-        .select('status, journal_text')
-        .eq('user_id', profile.id)
-        .eq('lesson_id', 'day-1')
-        .maybeSingle()
-
-      if (!progressRes.error && progressRes.data?.journal_text && active) {
-        setJournal(progressRes.data.journal_text)
-      }
-
-      if (!progressRes.error && progressRes.data?.status === 'complete' && active) {
-        setComplete(true)
-      }
-
-      if (active) {
-        setStatus('')
-        setLoading(false)
       }
     }
 
