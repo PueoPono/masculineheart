@@ -1,18 +1,43 @@
 'use client'
 
-import { UNLOCK_DELAY_HOURS } from '@/lib/supabase'
-
-function getStoredUnlockText() {
-  if (typeof window === 'undefined') return ''
-  const stored = window.localStorage.getItem('mhq_day1_unlock_at')
-  if (!stored) return ''
-  const d = new Date(stored)
-  if (Number.isNaN(d.getTime())) return ''
-  return d.toLocaleString()
-}
+import { useEffect, useState } from 'react'
+import { supabase, UNLOCK_DELAY_HOURS } from '@/lib/supabase'
 
 export default function CompletePage() {
-  const whenText = getStoredUnlockText()
+  const [whenText, setWhenText] = useState('')
+  const [status, setStatus] = useState('Loading…')
+
+  useEffect(() => {
+    let active = true
+    async function load() {
+      const authRes = await supabase.auth.getUser()
+      const user = authRes.data.user
+      if (!user) {
+        if (active) setStatus('Login required.')
+        return
+      }
+
+      const progressRes = await supabase
+        .from('lesson_progress')
+        .select('unlock_at, completed_at')
+        .eq('user_id', user.id)
+        .eq('lesson_id', 'day-1')
+        .maybeSingle()
+
+      if (progressRes.error || !progressRes.data) {
+        if (active) setStatus('Could not load completion state yet.')
+        return
+      }
+
+      const unlockAt = progressRes.data.unlock_at ? new Date(progressRes.data.unlock_at) : null
+      if (unlockAt && active) {
+        setWhenText(unlockAt.toLocaleString())
+        setStatus('')
+      }
+    }
+    load()
+    return () => { active = false }
+  }, [])
 
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#0c0908,#17110f_60%,#0d0908)] px-4 py-12 text-[#f4eadc]">
@@ -28,7 +53,7 @@ export default function CompletePage() {
         </div>
         <div className="mx-auto max-w-xl rounded-[20px] border border-[rgba(239,197,120,0.12)] bg-[rgba(31,23,18,0.56)] p-5">
           <strong className="mb-1 block text-lg">Next lesson unlocks in {UNLOCK_DELAY_HOURS} hours</strong>
-          <div className="text-[rgba(244,234,220,0.72)]">{whenText || 'Unlock time will appear here after live save is wired.'}</div>
+          <div className="text-[rgba(244,234,220,0.72)]">{whenText || status}</div>
         </div>
       </div>
     </main>
