@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Masculine Heart Quest Visual Brief</title>
+  <style>
+    :root{--bg:#0f0a08;--panel:#1b120f;--line:rgba(242,215,160,0.16);--text:#f5f2ea;--muted:rgba(245,242,234,0.72);--gold:#f2d7a0;}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{width:min(980px,calc(100% - 32px));margin:0 auto;padding:28px 0 48px}.card{border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:18px;margin-bottom:16px}
+    h1,h2{margin:0 0 10px} p{color:var(--muted);line-height:1.5} pre{white-space:pre-wrap;word-break:break-word;background:#fff;color:#111;padding:14px;border-radius:10px;overflow:auto}
+    .item{border-top:1px solid rgba(255,255,255,.08);padding-top:12px;margin-top:12px}.meta{font-size:13px;color:var(--gold)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Masculine Heart Quest Visual Brief</h1>
+      <p>This page renders a read-only shareable brief generated from the visual editor.</p>
+      <div class="meta" id="meta"></div>
+    </div>
+    <div class="card">
+      <h2>Instructions</h2>
+      <div id="instructions"></div>
+    </div>
+    <div class="card">
+      <h2>Raw JSON</h2>
+      <pre id="raw"></pre>
+    </div>
+  </div>
+  <script>
+    function decodeData(){
+      const params = new URLSearchParams(window.location.search);
+      const data = params.get('data');
+      if(!data) return null;
+      try { return JSON.parse(decodeURIComponent(escape(atob(data)))); }
+      catch { return null; }
+    }
+    const payload = decodeData();
+    document.getElementById('raw').textContent = payload ? JSON.stringify(payload, null, 2) : 'No brief data found in URL.';
+    if(payload?.meta){
+      document.getElementById('meta').textContent = `${payload.meta.purpose} · ${payload.meta.siteUrl}`;
+    }
+    const wrap = document.getElementById('instructions');
+    if(payload?.instructions?.length){
+      payload.instructions.forEach((item, idx)=>{
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `<strong>${idx + 1}. ${item.page}</strong><p>${item.instruction}</p><div class="meta">${item.elementType} · ${item.elementPath} · ${item.priority}</div>`;
+        wrap.appendChild(div);
+      });
+    } else {
+      wrap.innerHTML = '<p>No instructions in this brief yet.</p>';
+    }
+  </script>
+</body>
+</html>

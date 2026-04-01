@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Masculine Heart Quest Visual Editor</title>
+  <style>
+    :root {--bg:#0f0a08;--panel:#1b120f;--line:rgba(242,215,160,0.16);--text:#f5f2ea;--muted:rgba(245,242,234,0.72);--gold:#f2d7a0;--accent:#dd9f3f;--forest:#253226;}
+    *{box-sizing:border-box;}
+    body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);}
+    .app{min-height:100vh;display:grid;grid-template-columns:1fr 430px;}
+    .stage{position:relative;background:#0d0908;padding:14px;}
+    .frame-wrap{position:relative;height:calc(100vh - 28px);border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#111;}
+    iframe{width:100%;height:100%;border:0;background:white;}
+    .sidebar{background:linear-gradient(180deg,var(--panel),#140d0b);border-left:1px solid var(--line);padding:16px;overflow:auto;}
+    h1{margin:0 0 8px;font-size:18px;}
+    h2{margin:0 0 10px;font-size:15px;}
+    p{color:var(--muted);line-height:1.45;}
+    .toolbar,.button-row{display:flex;gap:8px;flex-wrap:wrap;}
+    .toolbar{margin-bottom:14px;}
+    .field{margin-bottom:12px;}
+    .field label{display:block;font-size:13px;margin-bottom:4px;color:var(--gold);}
+    .field input,.field textarea,.field select{width:100%;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,0.04);color:var(--text);padding:10px 12px;font:inherit;}
+    .field textarea{min-height:84px;resize:vertical;}
+    button,select{border:1px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;background:rgba(255,255,255,0.05);color:var(--text);}
+    button.primary{border:0;background:linear-gradient(180deg,#f2d59e 0%,#dd9f3f 55%,#c96d2e 100%);color:#2b190f;font-weight:700;cursor:pointer;}
+    button.danger{background:rgba(140,50,36,0.22);border:1px solid rgba(255,180,160,0.18);}
+    .status{margin-top:10px;font-size:13px;color:var(--muted);}
+    .card{border:1px solid var(--line);border-radius:16px;padding:14px;background:rgba(255,255,255,0.03);margin-bottom:14px;}
+    .instruction-list{display:grid;gap:10px;}
+    .instruction-item{border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:12px;background:rgba(255,255,255,0.04);}
+    .small{font-size:12px;color:var(--muted);}
+    .note{font-size:12px;color:var(--muted);margin-top:8px;}
+    pre{white-space:pre-wrap;word-break:break-word;font:12px/1.5 ui-monospace,monospace;background:white;padding:12px;border-radius:6px;border:1px solid #eee;color:#111;max-height:38vh;overflow:auto;}
+    .highlight-box{position:absolute;display:none;border:3px solid var(--accent);border-radius:12px;box-shadow:0 0 0 2000px rgba(0,0,0,0.08) inset,0 0 0 1px rgba(255,255,255,0.22);pointer-events:none;z-index:20;}
+    @media (max-width:900px){.app{grid-template-columns:1fr;}.frame-wrap{height:52vh;}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <main class="stage">
+      <div class="toolbar">
+        <select id="pageSelect">
+          <option value="../index.html">Landing page</option>
+          <option value="../portal/index.html">Portal</option>
+          <option value="../portal/lesson-day-1.html">Lesson day 1</option>
+          <option value="../portal/locked.html">Locked state</option>
+          <option value="../portal/complete.html">Completion</option>
+        </select>
+        <button id="loadPageBtn">Load page</button>
+      </div>
+      <div class="frame-wrap" id="frameWrap">
+        <iframe id="siteFrame" src="../index.html"></iframe>
+        <div class="highlight-box" id="highlightBox"></div>
+      </div>
+    </main>
+
+    <aside class="sidebar">
+      <h1>Masculine Heart Quest Visual Editor</h1>
+      <p>Click any visible element in the landing page or course preview, then write an instruction. Export gives you JSON you can paste back to me for implementation.</p>
+      <div class="status" id="status">Load a page, then click an element inside the website preview.</div>
+
+      <div class="card">
+        <h2>Selected element</h2>
+        <div class="field"><label>Page</label><input id="selectedPage" readonly /></div>
+        <div class="field"><label>Element type</label><input id="selectedType" readonly /></div>
+        <div class="field"><label>Element path</label><textarea id="selectedPath" readonly></textarea></div>
+        <div class="field"><label>Current text / summary</label><textarea id="selectedSummary" readonly></textarea></div>
+      </div>
+
+      <div class="card">
+        <h2>Add instruction</h2>
+        <div class="field"><label>Instruction type</label><select id="instructionType"><option>text</option><option>image</option><option>style</option><option>spacing</option><option>reorder</option><option>cta</option><option>remove</option><option>add</option><option>note</option></select></div>
+        <div class="field"><label>Instruction</label><textarea id="instructionText" placeholder="Example: Make this title larger, more golden, and give the heart more breathing room on mobile."></textarea></div>
+        <div class="field"><label>Priority</label><select id="instructionPriority"><option>now</option><option>later</option><option>idea</option></select></div>
+        <div class="button-row"><button class="primary" id="addInstructionBtn">Add instruction</button><button id="updateOutputBtn">Update output</button><button class="danger" id="clearInstructionsBtn">Clear all</button></div>
+        <div class="note">Starts clean in this browser unless you choose to save/export.</div>
+      </div>
+
+      <div class="card">
+        <h2>Instructions</h2>
+        <div class="instruction-list" id="instructionList"></div>
+      </div>
+
+      <div class="card">
+        <h2>Export</h2>
+        <div class="button-row"><button class="primary" id="copyBriefBtn">Copy JSON</button><button id="shareLinkBtn">Copy share link</button><button id="saveBriefBtn">Save brief</button></div>
+        <div class="note">The share link opens a read-only brief page you can keep or send.</div>
+        <pre id="exportPreview"></pre>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'masculineheart-visual-editor-1';
+    const frame = document.getElementById('siteFrame');
+    const pageSelect = document.getElementById('pageSelect');
+    const highlightBox = document.getElementById('highlightBox');
+    const state = { selected: null, instructions: [] };
+
+    function setStatus(text){ document.getElementById('status').textContent = text; }
+    function persist(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state.instructions)); }
+    function clearSavedInstructions(){ localStorage.removeItem(STORAGE_KEY); }
+
+    function loadPage(){
+      highlightBox.style.display = 'none';
+      frame.src = pageSelect.value;
+      setStatus('Loading page… then click any element in the preview.');
+    }
+
+    document.getElementById('loadPageBtn').onclick = loadPage;
+    pageSelect.onchange = loadPage;
+
+    frame.addEventListener('load', ()=>{
+      try{
+        const doc = frame.contentDocument;
+        if(!doc) return;
+        doc.addEventListener('click', onFrameClick, true);
+        setStatus('Page loaded. Click any element to attach an instruction.');
+      }catch{
+        setStatus('Could not attach click capture for this page.');
+      }
+    });
+
+    function onFrameClick(e){
+      e.preventDefault();
+      e.stopPropagation();
+      const el = e.target;
+      const rect = el.getBoundingClientRect();
+      highlightBox.style.display = 'block';
+      highlightBox.style.left = rect.left + 'px';
+      highlightBox.style.top = rect.top + 'px';
+      highlightBox.style.width = rect.width + 'px';
+      highlightBox.style.height = rect.height + 'px';
+
+      const selected = {
+        page: pageSelect.options[pageSelect.selectedIndex].text,
+        url: pageSelect.value,
+        type: getElementType(el),
+        path: getDomPath(el),
+        summary: summarizeElement(el)
+      };
+      state.selected = selected;
+      document.getElementById('selectedPage').value = selected.page;
+      document.getElementById('selectedType').value = selected.type;
+      document.getElementById('selectedPath').value = selected.path;
+      document.getElementById('selectedSummary').value = selected.summary;
+      setStatus('Element selected. Add your instruction in the panel.');
+    }
+
+    function getElementType(el){
+      const tag = el.tagName.toLowerCase();
+      if(tag === 'img') return 'image';
+      if(tag === 'button') return 'button';
+      if(tag === 'a') return 'link/button';
+      if(/^h[1-6]$/.test(tag)) return 'heading';
+      if(['p','li','blockquote','cite','span','strong'].includes(tag)) return 'text';
+      return tag;
+    }
+
+    function summarizeElement(el){
+      const text = (el.innerText || el.alt || el.getAttribute('aria-label') || '').trim().replace(/\s+/g,' ');
+      if(text) return text.slice(0,300);
+      if(el.tagName.toLowerCase() === 'img') return 'image: ' + (el.getAttribute('src') || '(no src)');
+      return `<${el.tagName.toLowerCase()}>`;
+    }
+
+    function getDomPath(el){
+      const parts = [];
+      while(el && el.nodeType === 1 && parts.length < 6){
+        let part = el.tagName.toLowerCase();
+        if(el.id) part += '#' + el.id;
+        else if(el.className && typeof el.className === 'string'){
+          const cls = el.className.trim().split(/\s+/).slice(0,2).join('.');
+          if(cls) part += '.' + cls;
+        }
+        parts.unshift(part);
+        el = el.parentElement;
+      }
+      return parts.join(' > ');
+    }
+
+    function addInstruction(){
+      if(!state.selected) return setStatus('Select an element first.');
+      const text = document.getElementById('instructionText').value.trim();
+      if(!text) return setStatus('Write an instruction first.');
+      state.instructions.push({
+        page: state.selected.page,
+        url: state.selected.url,
+        elementType: state.selected.type,
+        elementPath: state.selected.path,
+        currentSummary: state.selected.summary,
+        instructionType: document.getElementById('instructionType').value,
+        priority: document.getElementById('instructionPriority').value,
+        instruction: text
+      });
+      document.getElementById('instructionText').value = '';
+      persist();
+      renderInstructions();
+      renderExport();
+      setStatus('Instruction added.');
+    }
+
+    function renderInstructions(){
+      const wrap = document.getElementById('instructionList');
+      wrap.innerHTML = '';
+      state.instructions.forEach((item, idx)=>{
+        const div = document.createElement('div');
+        div.className = 'instruction-item';
+        div.innerHTML = `<div><strong>${idx+1}. ${escapeHtml(item.page)}</strong> · ${escapeHtml(item.elementType)}</div><div class="small">${escapeHtml(item.elementPath)}</div><div class="small">Current: ${escapeHtml(item.currentSummary)}</div><div style="margin-top:6px;">${escapeHtml(item.instruction)}</div><div class="small" style="margin-top:6px;">type=${escapeHtml(item.instructionType)} · priority=${escapeHtml(item.priority)}</div>`;
+        wrap.appendChild(div);
+      });
+    }
+
+    function buildExport(){
+      return {
+        meta: {
+          tool:'editor-visual-1',
+          purpose:'Visual implementation brief for Masculine Heart Quest',
+          siteUrl:'https://pueopono.github.io/masculineheart/',
+          editorUrl:'https://pueopono.github.io/masculineheart/editor-visual-1/',
+          instruction:'Treat these notes as requested website implementation edits tied to specific visible elements.'
+        },
+        instructions: state.instructions
+      };
+    }
+
+    function renderExport(){
+      document.getElementById('exportPreview').textContent = JSON.stringify(buildExport(), null, 2);
+    }
+
+    function escapeHtml(s){
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function createShareLink(){
+      const jsonText = JSON.stringify(buildExport(), null, 2);
+      const b64 = btoa(unescape(encodeURIComponent(jsonText)));
+      return window.location.origin + window.location.pathname.replace('index.html', 'brief-view.html') + '?data=' + b64;
+    }
+
+    document.getElementById('addInstructionBtn').onclick = addInstruction;
+    document.getElementById('updateOutputBtn').onclick = ()=>{ renderExport(); setStatus('Export updated.'); };
+    document.getElementById('clearInstructionsBtn').onclick = ()=>{
+      state.instructions = [];
+      clearSavedInstructions();
+      renderInstructions();
+      renderExport();
+      setStatus('Instructions cleared.');
+    };
+    document.getElementById('copyBriefBtn').onclick = async ()=>{
+      const text = JSON.stringify(buildExport(), null, 2);
+      try{ await navigator.clipboard.writeText(text); setStatus('JSON copied.'); }
+      catch{ setStatus('Clipboard blocked. Copy from the export box manually.'); }
+    };
+    document.getElementById('shareLinkBtn').onclick = async ()=>{
+      const shareUrl = createShareLink();
+      try{ await navigator.clipboard.writeText(shareUrl); setStatus('Share link copied to clipboard.'); }
+      catch{ document.getElementById('exportPreview').textContent = shareUrl; setStatus('Clipboard blocked. Share link shown below.'); }
+    };
+    document.getElementById('saveBriefBtn').onclick = ()=>{
+      const text = JSON.stringify(buildExport(), null, 2);
+      const blob = new Blob([text], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'masculine-heart-visual-implementation-brief.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      setStatus('Brief prepared.');
+    };
+
+    clearSavedInstructions();
+    renderInstructions();
+    renderExport();
+  </script>
+</body>
+</html>
