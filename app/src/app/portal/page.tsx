@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 
 type LessonRow = {
@@ -24,6 +24,13 @@ type ProfileRow = {
   enrolled: boolean
 }
 
+function isUnlocked(dayNumber: number, progress: Record<string, ProgressRow>) {
+  if (dayNumber === 1) return true
+  const previous = progress[`day-${dayNumber - 1}`]
+  if (!previous?.unlock_at) return false
+  return new Date(previous.unlock_at).getTime() <= Date.now()
+}
+
 export default function PortalPage() {
   const [email, setEmail] = useState('')
   const [lessons, setLessons] = useState<LessonRow[]>([])
@@ -41,7 +48,7 @@ export default function PortalPage() {
 
       if (!user) {
         if (active) {
-          setStatus('You need to log in first.')
+          setStatus('Login required.')
           setLoading(false)
           setAuthReady(false)
         }
@@ -60,7 +67,7 @@ export default function PortalPage() {
         .eq('id', user.id)
         .single()
 
-      if (profileRes.error) {
+      if (profileRes.error || !profileRes.data) {
         console.error(profileRes.error)
         if (active) {
           setStatus('Could not load your profile yet.')
@@ -120,6 +127,8 @@ export default function PortalPage() {
     return () => { active = false }
   }, [])
 
+  const completionCount = useMemo(() => Object.values(progress).filter((p) => p.status === 'complete').length, [progress])
+
   if (!loading && !authReady) {
     return (
       <main className="min-h-screen bg-[linear-gradient(180deg,#0c0908,#17110f_60%,#0d0908)] px-4 py-12 text-[#f4eadc]">
@@ -138,7 +147,10 @@ export default function PortalPage() {
         <div className="mx-auto w-full max-w-2xl rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(20,15,12,0.82)] p-8 text-center shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
           <h1 className="mb-3 text-4xl font-semibold tracking-[-0.04em]">Access not active yet</h1>
           <p className="mb-2 text-[rgba(244,234,220,0.72)]">{email}</p>
-          <p className="text-[rgba(244,234,220,0.72)]">Your account is recognized, but enrollment has not been activated yet.</p>
+          <p className="mb-6 text-[rgba(244,234,220,0.72)]">Your account is recognized, but enrollment has not been activated yet.</p>
+          <div className="rounded-[18px] border border-[rgba(239,197,120,0.12)] bg-[rgba(31,23,18,0.56)] p-4 text-[rgba(244,234,220,0.72)]">
+            If this should already be active, contact support and we’ll enable your access.
+          </div>
         </div>
       </main>
     )
@@ -153,7 +165,9 @@ export default function PortalPage() {
             <h1 className="text-5xl font-semibold tracking-[-0.04em]">Portal</h1>
             <p className="mt-2 text-[rgba(244,234,220,0.72)]">{email}</p>
           </div>
-          <a href="/portal/lesson/day-1" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10]">Continue today’s lesson</a>
+          <div className="rounded-[18px] border border-[rgba(239,197,120,0.12)] bg-[rgba(31,23,18,0.56)] px-4 py-3 text-sm text-[rgba(244,234,220,0.78)]">
+            <strong className="text-[#f4eadc]">Progress</strong><br />{completionCount} / 21 days complete
+          </div>
         </header>
 
         {status ? (
@@ -163,18 +177,20 @@ export default function PortalPage() {
         <section className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(20,15,12,0.82)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
           <div className="mb-5">
             <h2 className="text-3xl font-semibold tracking-[-0.03em]">Quest map</h2>
-            <p className="text-[rgba(244,234,220,0.72)]">Live lessons + user-specific progress.</p>
+            <p className="text-[rgba(244,234,220,0.72)]">Live lessons + progress state. Locked lessons will open as unlock times are reached.</p>
           </div>
           <div className="grid gap-3 md:grid-cols-4 xl:grid-cols-7">
-            {lessons.map((lesson, idx) => {
+            {lessons.map((lesson) => {
               const p = progress[lesson.id]
-              const state = p?.status === 'complete' ? 'done' : idx === 0 ? 'active' : 'locked'
+              const unlocked = isUnlocked(lesson.day_number, progress)
+              const state = p?.status === 'complete' ? 'done' : unlocked ? 'active' : 'locked'
+              const href = state === 'locked' ? '/portal/locked' : lesson.id === 'day-1' ? '/portal/lesson/day-1' : '/portal/locked'
               return (
-                <div key={lesson.id} className={`min-h-28 rounded-[18px] border p-4 ${state === 'done' ? 'border-[rgba(228,183,103,0.18)] bg-[rgba(131,95,34,0.18)]' : state === 'active' ? 'border-[#dca453] bg-[rgba(220,164,83,0.12)]' : 'border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.03)] opacity-80'}`}>
+                <a key={lesson.id} href={href} className={`min-h-28 rounded-[18px] border p-4 no-underline ${state === 'done' ? 'border-[rgba(228,183,103,0.18)] bg-[rgba(131,95,34,0.18)] text-[#f4eadc]' : state === 'active' ? 'border-[#dca453] bg-[rgba(220,164,83,0.12)] text-[#f4eadc]' : 'border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.03)] text-[#f4eadc] opacity-80'}`}>
                   <small className="mb-1 block text-[#efc578]">Day {lesson.day_number}</small>
                   <strong>{lesson.title}</strong>
-                  {p?.status === 'complete' ? <div className="mt-2 text-sm text-[rgba(244,234,220,0.72)]">Complete ✓</div> : null}
-                </div>
+                  {p?.status === 'complete' ? <div className="mt-2 text-sm text-[rgba(244,234,220,0.72)]">Complete ✓</div> : state === 'locked' ? <div className="mt-2 text-sm text-[rgba(244,234,220,0.72)]">Locked</div> : <div className="mt-2 text-sm text-[rgba(244,234,220,0.72)]">Available</div>}
+                </a>
               )
             })}
           </div>
