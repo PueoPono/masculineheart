@@ -196,7 +196,7 @@ export default function PortalPage() {
               <div className="mt-1 text-2xl font-semibold">Day {nextAvailable.day_number} · {nextAvailable.title}</div>
               <div className="mt-2 text-[rgba(244,234,220,0.72)]">Continue the quest where it is currently open.</div>
               <div className="mt-4">
-                <a href={nextAvailable.id === 'day-1' ? '/portal/lesson/day-1' : '/portal/locked'} className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10]">Open current lesson</a>
+                <a href={`/portal/lesson/${nextAvailable.slug}`} className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10]">Open current lesson</a>
               </div>
             </div>
           ) : null}
@@ -214,7 +214,7 @@ export default function PortalPage() {
               {lessons.map((lesson) => {
                 const p = progress[lesson.id]
                 const state = getStateForLesson(lesson, progress)
-                const href = state === 'locked' ? '/portal/locked' : lesson.id === 'day-1' ? '/portal/lesson/day-1' : '/portal/locked'
+                const href = state === 'locked' ? '/portal/locked' : `/portal/lesson/${lesson.slug}`
                 return (
                   <a
                     key={lesson.id}

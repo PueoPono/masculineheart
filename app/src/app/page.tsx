@@ -1,4 +1,6 @@
+import Link from 'next/link'
 import { HeartMark } from '@/components/heart-mark'
+import { PurchaseButton } from '@/components/purchase-button'
 
 const overviewCards = [
   {
@@ -26,7 +28,7 @@ export default function Home() {
           </div>
           <nav className="flex flex-wrap gap-3 text-sm text-[rgba(244,234,220,0.72)]">
             <a href="/portal" className="hover:text-white">Portal</a>
-            <a href="/portal/lesson/day-1" className="hover:text-white">Day 1</a>
+            <Link href="/portal/lesson/day-1" className="hover:text-white">Day 1</Link>
             <a href="/portal/complete" className="hover:text-white">Complete</a>
           </nav>
         </header>
@@ -50,9 +52,13 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="mt-10 flex flex-wrap gap-3">
-                <a href="/portal" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-6 font-bold text-[#2d1b10] shadow-[0_18px_30px_rgba(160,112,46,0.25)]">Open the portal</a>
-                <a href="/portal/lesson/day-1" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-6 font-bold text-[#f4eadc]">View day 1</a>
+              <div className="mt-10 max-w-2xl rounded-[24px] border border-[rgba(228,183,103,0.16)] bg-[rgba(11,9,8,0.38)] p-5 shadow-[0_18px_44px_rgba(0,0,0,0.24)]">
+                <p className="mb-3 text-xs uppercase tracking-[0.16em] text-[#efc578]">Begin the 21-day quest</p>
+                <PurchaseButton label="Purchase course access" />
+              </div>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <a href="/portal" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-6 font-bold text-[#f4eadc]">Already purchased? Open the portal</a>
+                <Link href="/portal/lesson/day-1" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-6 font-bold text-[#f4eadc]">Preview day 1</Link>
               </div>
             </div>
 

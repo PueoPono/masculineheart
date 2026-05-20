@@ -6,9 +6,7 @@ import { supabase } from '@/lib/supabase'
 
 function getRedirectTarget() {
   if (typeof window === 'undefined') return 'https://masculineheart.vercel.app/portal'
-  return window.location.hostname === 'localhost'
-    ? 'http://localhost:3000/portal'
-    : 'https://masculineheart.vercel.app/portal'
+  return `${window.location.origin}/portal`
 }
 
 export default function AuthPage() {

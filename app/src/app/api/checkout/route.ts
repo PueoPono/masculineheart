@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server'
 import { getBaseUrl, getStripePriceId, stripeConfig } from '@/lib/stripe-config'
 
-export async function POST() {
+function isValidEmail(value: unknown) {
+  return typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+}
+
+export async function POST(request: Request) {
   const priceId = getStripePriceId()
 
   if (!process.env.STRIPE_SECRET_KEY || !priceId) {
@@ -15,6 +19,9 @@ export async function POST() {
     )
   }
 
+  const body = await request.json().catch(() => ({}))
+  const email = isValidEmail(body?.email) ? String(body.email).trim().toLowerCase() : undefined
+
   const Stripe = (await import('stripe')).default
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
   const baseUrl = getBaseUrl()
@@ -24,8 +31,11 @@ export async function POST() {
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${baseUrl}${stripeConfig.successPath}?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${baseUrl}${stripeConfig.cancelPath}`,
+    customer_email: email,
+    allow_promotion_codes: true,
     metadata: {
       product: stripeConfig.productName,
+      buyer_email: email || '',
     },
   })
 

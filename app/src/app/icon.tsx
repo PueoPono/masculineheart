@@ -27,7 +27,7 @@ export default async function Icon() {
           background: 'transparent',
         }}
       >
-        <img src={imageSrc} alt="Masculine Heart symbol" width="228" height="228" style={{ objectFit: 'contain' }} />
+        <img src={imageSrc} alt="Masculine Heart symbol" width={228} height={228} style={{ objectFit: 'contain' }} />
       </div>
     ),
     size,
