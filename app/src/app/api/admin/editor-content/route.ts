@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic'
 const TABLE = 'admin_editor_fields'
 
 function configuredAdminUsername() {
-  return process.env.ADMIN_USERNAME || process.env.ADMIN_EMAIL || (process.env.ADMIN_EMAILS || '').split(',').map((email) => email.trim()).filter(Boolean)[0] || ''
+  return (process.env.ADMIN_USERNAME || process.env.ADMIN_EMAIL || (process.env.ADMIN_EMAILS || '').split(',').map((email) => email.trim()).filter(Boolean)[0] || '').trim().toLowerCase()
 }
 
 function expectedSession(username: string) {

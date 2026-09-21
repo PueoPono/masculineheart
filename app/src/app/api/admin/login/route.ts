@@ -10,7 +10,7 @@ function safeEqual(a: string, b: string) {
 }
 
 function configuredAdminUsername() {
-  return process.env.ADMIN_USERNAME || process.env.ADMIN_EMAIL || (process.env.ADMIN_EMAILS || '').split(',').map((email) => email.trim()).filter(Boolean)[0] || ''
+  return (process.env.ADMIN_USERNAME || process.env.ADMIN_EMAIL || (process.env.ADMIN_EMAILS || '').split(',').map((email) => email.trim()).filter(Boolean)[0] || '').trim().toLowerCase()
 }
 
 function signSession(username: string) {

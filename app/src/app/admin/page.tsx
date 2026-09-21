@@ -5,7 +5,7 @@ import { courseLessons } from '@/lib/course-content'
 import { AdminEditorClient } from './admin-editor-client'
 
 function configuredAdminUsername() {
-  return process.env.ADMIN_USERNAME || process.env.ADMIN_EMAIL || (process.env.ADMIN_EMAILS || '').split(',').map((email) => email.trim()).filter(Boolean)[0] || ''
+  return (process.env.ADMIN_USERNAME || process.env.ADMIN_EMAIL || (process.env.ADMIN_EMAILS || '').split(',').map((email) => email.trim()).filter(Boolean)[0] || '').trim().toLowerCase()
 }
 
 function expectedSession(username: string) {
@@ -20,7 +20,7 @@ export default async function AdminPage() {
   const [sessionUser, signature] = session.split('.')
 
   if (!username || !signature || sessionUser !== username || signature !== expectedSession(username)) {
-    redirect('/admin-login')
+    redirect('/auth?next=/admin')
   }
 
   return (
