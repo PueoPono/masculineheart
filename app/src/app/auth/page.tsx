@@ -63,14 +63,36 @@ function AuthContent() {
     setLoading(true)
     setStatus('')
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const identity = email.trim()
+
+    if ((nextPath === '/admin' || nextPath.startsWith('/admin/')) && !identity.includes('@')) {
+      const form = new FormData()
+      form.set('username', identity)
+      form.set('password', password)
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        body: form,
+        redirect: 'manual',
+      })
+
+      if (response.type === 'opaqueredirect' || response.status === 0 || response.status === 303 || response.ok) {
+        window.location.assign(nextPath)
+        return
+      }
+
+      setStatus('Admin username or password was not accepted.')
+      setLoading(false)
+      return
+    }
+
+    const { error } = await supabase.auth.signInWithPassword({ email: identity, password })
     if (error) {
       setStatus(error.message)
       setLoading(false)
       return
     }
 
-    window.localStorage.setItem('mhq_email', email)
+    window.localStorage.setItem('mhq_email', identity)
     if (nextPath === '/admin' || nextPath.startsWith('/admin/')) {
       const ok = await establishAdminSessionIfNeeded(nextPath)
       if (!ok) {
@@ -87,8 +109,9 @@ function AuthContent() {
     setLoading(true)
     setStatus('')
 
+    const identity = email.trim()
     const { error } = await supabase.auth.signInWithOtp({
-      email,
+      email: identity,
       options: {
         emailRedirectTo: redirectTo,
       },
@@ -97,7 +120,7 @@ function AuthContent() {
     if (error) {
       setStatus(error.message)
     } else {
-      window.localStorage.setItem('mhq_email', email)
+      window.localStorage.setItem('mhq_email', identity)
       setStatus('Magic link sent. Check your email and return through the link.')
     }
 
@@ -121,11 +144,11 @@ function AuthContent() {
 
         <form onSubmit={mode === 'password' ? signInWithPassword : sendMagicLink} className="space-y-4">
           <input
-            type="email"
+            type={mode === 'password' ? 'text' : 'email'}
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
+            placeholder={mode === 'password' && (nextPath === '/admin' || nextPath.startsWith('/admin/')) ? 'Email or admin username' : 'you@example.com'}
             className="w-full rounded-[18px] border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.03)] px-4 py-3 text-[#f4eadc] outline-none"
           />
           {mode === 'password' ? (
