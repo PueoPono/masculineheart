@@ -2,6 +2,7 @@ import { createHash } from 'crypto'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { courseLessons } from '@/lib/course-content'
+import { AdminEditorClient } from './admin-editor-client'
 
 function expectedSession(username: string) {
   const secret = process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD || ''
@@ -20,7 +21,7 @@ export default async function AdminPage() {
 
   return (
     <main className="min-h-screen px-4 py-10 text-[#f4eadc]">
-      <div className="mx-auto max-w-6xl rounded-[30px] border border-[rgba(228,183,103,0.18)] bg-[linear-gradient(135deg,rgba(18,27,21,0.96),rgba(20,15,12,0.84)_45%,rgba(12,10,9,0.98))] p-7 shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
+      <div className="mx-auto max-w-[1500px] rounded-[30px] border border-[rgba(228,183,103,0.18)] bg-[linear-gradient(135deg,rgba(18,27,21,0.96),rgba(20,15,12,0.84)_45%,rgba(12,10,9,0.98))] p-7 shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#efc578]">Admin</p>
@@ -45,6 +46,7 @@ export default async function AdminPage() {
             ))}
           </div>
         </section>
+        <AdminEditorClient />
       </div>
     </main>
   )
