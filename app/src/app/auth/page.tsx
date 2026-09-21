@@ -66,22 +66,18 @@ function AuthContent() {
     const identity = email.trim()
 
     if ((nextPath === '/admin' || nextPath.startsWith('/admin/')) && !identity.includes('@')) {
-      const form = new FormData()
-      form.set('username', identity)
-      form.set('password', password)
-      const response = await fetch('/api/admin/login', {
-        method: 'POST',
-        body: form,
-        redirect: 'manual',
-      })
-
-      if (response.type === 'opaqueredirect' || response.status === 0 || response.status === 303 || response.ok) {
-        window.location.assign(nextPath)
-        return
+      const form = document.createElement('form')
+      form.method = 'POST'
+      form.action = '/api/admin/login'
+      form.style.display = 'none'
+      for (const [name, value] of [['username', identity], ['password', password]]) {
+        const input = document.createElement('input')
+        input.name = name
+        input.value = value
+        form.appendChild(input)
       }
-
-      setStatus('Admin username or password was not accepted.')
-      setLoading(false)
+      document.body.appendChild(form)
+      form.submit()
       return
     }
 
