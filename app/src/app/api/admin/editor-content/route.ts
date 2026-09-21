@@ -8,13 +8,17 @@ export const dynamic = 'force-dynamic'
 
 const TABLE = 'admin_editor_fields'
 
+function configuredAdminUsername() {
+  return process.env.ADMIN_USERNAME || process.env.ADMIN_EMAIL || (process.env.ADMIN_EMAILS || '').split(',').map((email) => email.trim()).filter(Boolean)[0] || ''
+}
+
 function expectedSession(username: string) {
   const secret = process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD || ''
   return createHash('sha256').update(`${username}:${secret}`).digest('hex')
 }
 
 async function requireAdmin() {
-  const username = process.env.ADMIN_USERNAME
+  const username = configuredAdminUsername()
   const cookieStore = await cookies()
   const session = cookieStore.get('mhq_admin')?.value || ''
   const [sessionUser, signature] = session.split('.')

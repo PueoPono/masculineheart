@@ -9,14 +9,18 @@ function safeEqual(a: string, b: string) {
   return left.length === right.length && timingSafeEqual(left, right)
 }
 
+function configuredAdminUsername() {
+  return process.env.ADMIN_USERNAME || process.env.ADMIN_EMAIL || (process.env.ADMIN_EMAILS || '').split(',').map((email) => email.trim()).filter(Boolean)[0] || ''
+}
+
 function signSession(username: string) {
   const secret = process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD || ''
   return createHash('sha256').update(`${username}:${secret}`).digest('hex')
 }
 
 export async function POST(request: Request) {
-  const configuredUsername = process.env.ADMIN_USERNAME
-  const configuredPassword = process.env.ADMIN_PASSWORD
+  const configuredUsername = configuredAdminUsername()
+  const configuredPassword = process.env.ADMIN_PASSWORD || process.env.ADMIN_SESSION_SECRET
   const configuredSecret = process.env.ADMIN_SESSION_SECRET || configuredPassword
 
   if (!configuredUsername || !configuredPassword || !configuredSecret) {
