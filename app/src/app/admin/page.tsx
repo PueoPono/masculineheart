@@ -17,7 +17,9 @@ export default async function AdminPage() {
   const username = configuredAdminUsername()
   const cookieStore = await cookies()
   const session = cookieStore.get('mhq_admin')?.value || ''
-  const [sessionUser, signature] = session.split('.')
+  const separatorIndex = session.lastIndexOf('.')
+  const sessionUser = separatorIndex > -1 ? session.slice(0, separatorIndex) : ''
+  const signature = separatorIndex > -1 ? session.slice(separatorIndex + 1) : ''
 
   if (!username || !signature || sessionUser !== username || signature !== expectedSession(username)) {
     redirect('/auth?next=/admin')
