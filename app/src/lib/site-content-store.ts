@@ -240,16 +240,18 @@ export function useEditableSiteContent() {
     })
   }
 
-  async function save() {
+  async function save(next?: { overrides?: SiteContentOverrides; referenceNotes?: ReferenceNotes }) {
+    const documentOverrides = next?.overrides || overrides
+    const documentReferenceNotes = next?.referenceNotes || referenceNotes
     setSaving(true)
     setSaveError(null)
-    writeSiteContentOverrides(overrides)
-    writeReferenceNotes(referenceNotes)
+    writeSiteContentOverrides(documentOverrides)
+    writeReferenceNotes(documentReferenceNotes)
     try {
       const response = await fetch('/api/admin/site-content', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ overrides, referenceNotes }),
+        body: JSON.stringify({ overrides: documentOverrides, referenceNotes: documentReferenceNotes }),
       })
       const json = await response.json().catch(() => ({}))
       if (!response.ok) {
@@ -258,8 +260,8 @@ export function useEditableSiteContent() {
       const nextDocument = sanitizeSiteContentDocument(json)
       setUpdatedAt(nextDocument.updatedAt || new Date().toISOString())
       setUpdatedBy(nextDocument.updatedBy || null)
-      writeSiteContentOverrides(overrides)
-      writeReferenceNotes(referenceNotes)
+      writeSiteContentOverrides(documentOverrides)
+      writeReferenceNotes(documentReferenceNotes)
       return { ok: true }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'save_failed'

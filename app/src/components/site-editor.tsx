@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { HeartCornerMark } from '@/components/heart-mark'
 import { SiteEditorPreview, type SiteEditorInteractionMode, type SiteEditorPreviewSelectionWithRect } from '@/components/site-editor-preview'
 import { courseTracks } from '@/lib/site-content'
-import { useEditableSiteContent } from '@/lib/site-content-store'
+import { useEditableSiteContent, type ReferenceNotes } from '@/lib/site-content-store'
 
 type SectionKey = 'landing' | 'portal' | 'locked' | 'complete' | `lesson:${string}`
 
@@ -94,6 +94,8 @@ export function SiteEditor({ adminEmail }: Props) {
   const activeLesson = selected.startsWith('lesson:') ? content.lessons.find((lesson) => lesson.slug === selected.replace('lesson:', '')) : null
   const sectionNoteValue = referenceNotes[selected] || ''
   const selectedReferenceNote = selectedReference ? referenceNotes[selectedReference.itemKey] || '' : ''
+  const queuedRequests = Object.entries(referenceNotes).filter(([, value]) => value.trim())
+  const queuedRequestCount = queuedRequests.length
 
   function clearSelectionState() {
     setSelectedReference(null)
@@ -108,9 +110,9 @@ export function SiteEditor({ adminEmail }: Props) {
     setInteractionMode('preview')
   }
 
-  async function saveAll() {
+  async function saveAll(nextReferenceNotes?: ReferenceNotes) {
     try {
-      await save()
+      await save(nextReferenceNotes ? { referenceNotes: nextReferenceNotes } : undefined)
       setStatus('Saved to Supabase. In-page text edits and reference notes are now persisted.')
     } catch {
       setStatus('Could not save to Supabase yet. Local edits remain in this browser until the save succeeds.')
@@ -334,13 +336,48 @@ export function SiteEditor({ adminEmail }: Props) {
     }
   }
 
-  function addReferenceNote() {
+  async function addReferenceNote() {
     if (!selectedReference) return
+    const nextReferenceNotes = {
+      ...referenceNotes,
+      [selectedReference.itemKey]: referenceDraft,
+    }
+    setReferenceNotes(nextReferenceNotes)
+    try {
+      await save({ referenceNotes: nextReferenceNotes })
+      setStatus(`Saved request for ${selectedReference.itemLabel} to Supabase.`)
+      clearSelectionState()
+    } catch {
+      setStatus(`Saved request locally for ${selectedReference.itemLabel}, but Supabase auto-save failed. Use Save to Supabase to retry.`)
+    }
+  }
+
+  async function deleteReferenceNote(itemKey: string) {
+    const nextReferenceNotes = Object.fromEntries(Object.entries(referenceNotes).filter(([key]) => key !== itemKey))
+    setReferenceNotes(nextReferenceNotes)
+    try {
+      await save({ referenceNotes: nextReferenceNotes })
+      setStatus(`Deleted queued request ${itemKey} from Supabase.`)
+    } catch {
+      setStatus(`Deleted ${itemKey} locally, but Supabase auto-save failed. Use Save to Supabase to retry.`)
+    }
+  }
+
+  async function saveSelectedTextAndClose() {
+    try {
+      await save()
+      setStatus(`Saved text edit for ${selectedTextEdit?.itemLabel || 'selected item'} to Supabase.`)
+      clearSelectionState()
+    } catch {
+      setStatus('Text edit is saved locally, but Supabase auto-save failed. Use Save to Supabase to retry.')
+    }
+  }
+
+  function updateSectionReferenceNote(value: string) {
     setReferenceNotes((current) => ({
       ...current,
-      [selectedReference.itemKey]: referenceDraft,
+      [selected]: value,
     }))
-    setStatus(`Saved reference note for ${selectedReference.itemLabel}. Click Save to persist it to Supabase.`)
   }
 
   function updateSelectedTextEditValue(value: string) {
@@ -418,6 +455,11 @@ export function SiteEditor({ adminEmail }: Props) {
           </div>
         </div>
 
+        <div className="mb-4 rounded-[18px] border border-[rgba(159,184,255,0.24)] bg-[rgba(159,184,255,0.08)] p-4 text-sm text-[#d8e6ff]">
+          <strong className="text-white">Request queue: {queuedRequestCount}</strong>
+          <span className="ml-2 text-[rgba(216,230,255,0.78)]">queued request{queuedRequestCount === 1 ? '' : 's'} saved for agent review. Implemented requests are cleared from this queue.</span>
+        </div>
+
         <div className="overflow-x-auto bg-[#050505]">
           <div className="mb-2 flex items-center justify-between gap-3 text-xs text-[rgba(244,234,220,0.58)]">
             <span>{previewFrameLabel}</span>
@@ -447,8 +489,8 @@ export function SiteEditor({ adminEmail }: Props) {
               <textarea value={referenceDraft} onChange={(event) => setReferenceDraft(event.target.value)} rows={5} className="min-h-[104px] rounded-[14px] border border-white/10 bg-[rgba(255,255,255,0.03)] px-3 py-2 text-white outline-none" />
             </label>
             <div className="mt-3 flex justify-end gap-2">
-              <button type="button" onClick={clearSelectionState} className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/72">Done</button>
-              <button type="button" onClick={addReferenceNote} disabled={!referenceDraft.trim()} className="rounded-full border border-[rgba(159,184,255,0.28)] bg-[rgba(159,184,255,0.12)] px-3 py-1 text-xs text-[#d8e6ff] disabled:opacity-50">Save note</button>
+              <button type="button" onClick={clearSelectionState} className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/72">Close without saving</button>
+              <button type="button" onClick={addReferenceNote} disabled={!referenceDraft.trim() || saving} className="rounded-full border border-[rgba(159,184,255,0.28)] bg-[rgba(159,184,255,0.12)] px-3 py-1 text-xs text-[#d8e6ff] disabled:opacity-50">{saving ? 'Saving…' : 'Save request to Supabase'}</button>
             </div>
           </div>
         ) : null}
@@ -466,7 +508,8 @@ export function SiteEditor({ adminEmail }: Props) {
               )}
             </label>
             <div className="mt-3 flex justify-end gap-2">
-              <button type="button" onClick={clearSelectionState} className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/72">Done</button>
+              <button type="button" onClick={clearSelectionState} className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/72">Close without saving to Supabase</button>
+              <button type="button" onClick={saveSelectedTextAndClose} disabled={saving} className="rounded-full border border-[rgba(159,184,255,0.28)] bg-[rgba(159,184,255,0.12)] px-3 py-1 text-xs text-[#d8e6ff] disabled:opacity-50">{saving ? 'Saving…' : 'Save text to Supabase & close'}</button>
             </div>
           </div>
         ) : null}
@@ -480,7 +523,7 @@ export function SiteEditor({ adminEmail }: Props) {
           </div>
           <div className="grid w-full gap-2 text-sm sm:flex sm:w-auto sm:flex-wrap">
             {previewViewport === 'desktop' ? <button type="button" onClick={() => setControlsCollapsed((current) => !current)} className="rounded-full border border-[rgba(228,183,103,0.18)] px-4 py-2 text-[#f4eadc]">{controlsCollapsed ? 'Show controls' : 'Collapse controls'}</button> : null}
-            <button onClick={saveAll} disabled={saving} className="rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-4 py-2 font-semibold text-[#2d1b10] disabled:opacity-60">{saving ? 'Saving…' : 'Save to Supabase'}</button>
+            <button onClick={() => saveAll()} disabled={saving} className="rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-4 py-2 font-semibold text-[#2d1b10] disabled:opacity-60">{saving ? 'Saving…' : 'Save all to Supabase'}</button>
             <button onClick={copyAgentBrief} className="rounded-full border border-[rgba(228,183,103,0.18)] px-4 py-2 text-[#f4eadc]">Copy agent brief</button>
             <button onClick={exportJson} className="rounded-full border border-[rgba(228,183,103,0.18)] px-4 py-2 text-[#f4eadc]">Export JSON</button>
             <button onClick={() => { if (activeLesson) resetSection('lesson', activeLesson.id); else resetSection(selected as 'landing' | 'portal' | 'locked' | 'complete'); clearSelectionState(); setStatus('Reset the selected section to defaults. Save to apply it.') }} className="rounded-full border border-[rgba(228,183,103,0.18)] px-4 py-2 text-[#f4eadc]">Reset section</button>
@@ -539,7 +582,25 @@ export function SiteEditor({ adminEmail }: Props) {
           <div className="rounded-[22px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-5">
             <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Section reference editor</p>
             <p className="mt-2 text-sm text-[rgba(244,234,220,0.72)]">This remains for broad page-level notes. For object-level notes, use Reference mode in the page view.</p>
-            <textarea value={sectionNoteValue} onChange={(event) => setReferenceNotes((current) => ({ ...current, [selected]: event.target.value }))} rows={8} className="mt-4 min-h-40 w-full rounded-[18px] border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-4 py-3 text-sm text-[#f4eadc] outline-none" placeholder="Example: tighten the lesson intro, move the practice block higher, add a VSL beneath the video, etc." />
+            <textarea value={sectionNoteValue} onChange={(event) => updateSectionReferenceNote(event.target.value)} rows={8} className="mt-4 min-h-40 w-full rounded-[18px] border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-4 py-3 text-sm text-[#f4eadc] outline-none" placeholder="Example: tighten the lesson intro, move the practice block higher, add a VSL beneath the video, etc." />
+          </div>
+
+          <div className="rounded-[22px] border border-[rgba(159,184,255,0.18)] bg-[rgba(159,184,255,0.06)] p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-xs uppercase tracking-[0.16em] text-[#d8e6ff]">Queued requests</p>
+                <p className="mt-2 text-sm text-[rgba(244,234,220,0.72)]">{queuedRequestCount} request{queuedRequestCount === 1 ? '' : 's'} currently saved in Supabase for agent review. Each request can be expanded or deleted.</p>
+              </div>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {queuedRequestCount ? queuedRequests.map(([itemKey, note]) => (
+                <details key={itemKey} className="rounded-[16px] border border-white/10 bg-[rgba(0,0,0,0.18)] p-3">
+                  <summary className="cursor-pointer text-sm font-medium text-white">{itemKey}</summary>
+                  <p className="mt-3 whitespace-pre-wrap text-sm text-[rgba(244,234,220,0.78)]">{note}</p>
+                  <button type="button" onClick={() => deleteReferenceNote(itemKey)} disabled={saving} className="mt-3 rounded-full border border-[rgba(255,154,120,0.28)] bg-[rgba(255,154,120,0.08)] px-3 py-1 text-xs text-[#ffd2c4] disabled:opacity-50">Delete this queued request</button>
+                </details>
+              )) : <p className="rounded-[16px] border border-white/10 bg-[rgba(0,0,0,0.14)] p-3 text-sm text-[rgba(244,234,220,0.64)]">No queued requests.</p>}
+            </div>
           </div>
 
           {saveError ? <div className="rounded-[18px] border border-[rgba(183,86,63,0.32)] bg-[rgba(74,24,17,0.35)] p-4 text-sm text-[rgba(255,219,210,0.88)]">Save error: {saveError}</div> : null}
