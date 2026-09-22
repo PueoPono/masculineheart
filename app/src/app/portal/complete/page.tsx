@@ -22,6 +22,8 @@ export default function CompletePage() {
         const params = new URLSearchParams(window.location.search)
         const fromSlug = params.get('from')
         const fromLesson = fromSlug ? content.lessons.find((lesson) => lesson.slug === fromSlug) : null
+        const nextSlug = params.get('next')
+        const reflectionState = params.get('reflections')
 
         const authRes = await supabase.auth.getUser()
         const user = authRes.data.user
@@ -58,8 +60,17 @@ export default function CompletePage() {
 
         if (!progressRes.data?.unlock_at) {
           if (active) {
-            setLoadState('no_progress')
-            setDetail('No saved completion/unlock row found yet.')
+            if (!nextSlug && progressRes.data?.completed_at) {
+              setLoadState('ready')
+              setWhenText(
+                reflectionState === 'queued'
+                  ? 'Course complete. Your saved reflection answers have been queued to email to you.'
+                  : 'Course complete. Return to the portal whenever you want to review.',
+              )
+            } else {
+              setLoadState('no_progress')
+              setDetail('No saved completion/unlock row found yet.')
+            }
           }
           return
         }

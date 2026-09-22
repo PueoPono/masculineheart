@@ -149,9 +149,10 @@ export function LessonClient({ slug }: { slug: string }) {
     setSavingComplete(true)
     setStatus('')
     try {
-      const authRes = await supabase.auth.getUser()
-      const user = authRes.data.user
-      if (!user) {
+      const sessionRes = await supabase.auth.getSession()
+      const token = sessionRes.data.session?.access_token
+      const user = sessionRes.data.session?.user
+      if (!user || !token) {
         setStatus(adminUnlocked ? 'Admin preview mode can view lessons, but does not save buyer completion.' : 'Login required to save completion.')
         return
       }
@@ -179,7 +180,20 @@ export function LessonClient({ slug }: { slug: string }) {
       if (nextLesson) {
         window.location.href = `/portal/complete?from=${lesson.slug}&next=${nextLesson.slug}`
       } else {
-        window.location.href = `/portal/complete?from=${lesson.slug}`
+        const reflectionEmailRes = await fetch('/api/course-reflections', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ fromLessonId: currentLesson.id }),
+        })
+        const reflectionEmailResult = await reflectionEmailRes.json().catch(() => null) as { ok?: boolean; emailQueued?: boolean; reflectionCount?: number; error?: string } | null
+        if (!reflectionEmailRes.ok || !reflectionEmailResult?.ok) {
+          setStatus('Course completion saved, but your reflection email could not be queued yet. Please try completing the final lesson again in a moment.')
+          return
+        }
+        window.location.href = `/portal/complete?from=${lesson.slug}&reflections=${reflectionEmailResult.emailQueued ? 'queued' : 'none'}`
       }
     } finally {
       setSavingComplete(false)
@@ -195,7 +209,7 @@ export function LessonClient({ slug }: { slug: string }) {
       const sessionRes = await supabase.auth.getSession()
       const token = sessionRes.data.session?.access_token
       if (!token) {
-        setStatus(adminUnlocked ? 'Admin preview mode can view reflection writing, but does not save buyer reflections.' : 'Login required to save and email your reflection.')
+        setStatus(adminUnlocked ? 'Admin preview mode can view reflection writing, but does not save buyer reflections.' : 'Login required to save your reflection.')
         return
       }
 
@@ -212,13 +226,13 @@ export function LessonClient({ slug }: { slug: string }) {
           reflection: reflectionDraft,
         }),
       })
-      const result = await saveRes.json().catch(() => null) as { ok?: boolean; emailQueued?: boolean; error?: string } | null
+      const result = await saveRes.json().catch(() => null) as { ok?: boolean; saved?: boolean; error?: string } | null
       if (!saveRes.ok || !result?.ok) {
         setStatus('Could not save your reflection yet.')
         return
       }
 
-      setStatus(result.emailQueued ? 'Reflection saved and queued to be emailed to you.' : 'Reflection saved to your account.')
+      setStatus('Reflection saved to your account. Your saved reflections will be emailed to you after you complete the full course.')
     } finally {
       setSavingReflection(false)
     }
@@ -294,7 +308,7 @@ export function LessonClient({ slug }: { slug: string }) {
         <section className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
           <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
             <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Heart Fitness Exercise</p>
-            <p className="mt-3 text-sm leading-7 text-[rgba(244,234,220,0.72)]">Open your note book and write what comes to mind. Or type here directly. Your typed reflections will be emailed to you.</p>
+            <p className="mt-3 text-sm leading-7 text-[rgba(244,234,220,0.72)]">Open your note book and write what comes to mind. Or type here directly. Your typed reflections will be saved as you go and emailed to you after you complete the full course.</p>
             <div className="mt-4 grid gap-3">
               {lesson.prompts.map((prompt, index) => (
                 <div key={prompt} className="rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] px-4 py-4">
@@ -305,7 +319,7 @@ export function LessonClient({ slug }: { slug: string }) {
             </div>
             <textarea value={reflectionDraft} onChange={(event) => setReflectionDraft(event.target.value)} rows={8} className="mt-5 min-h-40 w-full rounded-[18px] border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-4 py-3 text-[#f4eadc] outline-none" placeholder="Type your reflection here..." />
             <button onClick={saveReflection} disabled={savingReflection} className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10] disabled:opacity-60">
-              {savingReflection ? 'Saving…' : 'Save and email my reflection'}
+              {savingReflection ? 'Saving…' : 'Save reflection'}
             </button>
           </div>
 
