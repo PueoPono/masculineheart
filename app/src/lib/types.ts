@@ -5,6 +5,8 @@ export type Profile = {
   enrolled: boolean
   reminder_email_opt_in: boolean
   reminder_sms_opt_in: boolean
+  time_zone: string | null
+  time_zone_confirmed: boolean
 }
 
 export type Lesson = {

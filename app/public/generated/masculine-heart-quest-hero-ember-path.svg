@@ -1,0 +1,99 @@
+<svg width="1600" height="1200" viewBox="0 0 1600 1200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Masculine Heart Quest hero artwork</title>
+  <desc id="desc">A cinematic symbolic landscape in charcoal, forest, and ember gold tones with a glowing heart-like ember above a descending path and contemplative figure.</desc>
+  <defs>
+    <linearGradient id="bg" x1="800" y1="0" x2="800" y2="1200" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#161512"/>
+      <stop offset="0.45" stop-color="#1A1916"/>
+      <stop offset="0.75" stop-color="#171B18"/>
+      <stop offset="1" stop-color="#0C0D0C"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(808 390) rotate(90) scale(360 420)">
+      <stop offset="0" stop-color="#FFDA8A" stop-opacity="0.95"/>
+      <stop offset="0.2" stop-color="#F3BC62" stop-opacity="0.62"/>
+      <stop offset="0.5" stop-color="#B56A26" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#3A2618" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="halo" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(800 430) rotate(90) scale(560 760)">
+      <stop offset="0" stop-color="#D9A24E" stop-opacity="0.17"/>
+      <stop offset="0.55" stop-color="#664425" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#0D0E0D" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ridge" x1="800" y1="300" x2="800" y2="1120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#20201D"/>
+      <stop offset="1" stop-color="#080808"/>
+    </linearGradient>
+    <linearGradient id="pathGold" x1="790" y1="472" x2="825" y2="1110" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFD48A"/>
+      <stop offset="0.12" stop-color="#F0BE70"/>
+      <stop offset="0.3" stop-color="#A56A37"/>
+      <stop offset="0.7" stop-color="#5B3B25"/>
+      <stop offset="1" stop-color="#2A211E"/>
+    </linearGradient>
+    <linearGradient id="heartCore" x1="799" y1="292" x2="799" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFE2A4"/>
+      <stop offset="0.38" stop-color="#F5B95E"/>
+      <stop offset="1" stop-color="#B4662C"/>
+    </linearGradient>
+    <linearGradient id="heartEdge" x1="720" y1="335" x2="888" y2="446" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFF0C0" stop-opacity="0.9"/>
+      <stop offset="0.35" stop-color="#E0A14A" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#723D1D" stop-opacity="0.55"/>
+    </linearGradient>
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="22" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="mist" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.0018 0.004" numOctaves="2" seed="11" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0.02 0.05 0.08 0.12"/>
+      </feComponentTransfer>
+    </filter>
+    <filter id="grain" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="7" result="noise"/>
+      <feColorMatrix in="noise" type="matrix" values="1 0 0 0 0
+                                                      0 1 0 0 0
+                                                      0 0 1 0 0
+                                                      0 0 0 0.05 0"/>
+    </filter>
+    <clipPath id="frameClip">
+      <rect width="1600" height="1200" rx="28" fill="white"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#frameClip)">
+    <rect width="1600" height="1200" fill="url(#bg)"/>
+    <rect width="1600" height="1200" fill="url(#halo)"/>
+
+    <path d="M0 470C149 433 311 438 458 488C595 535 706 546 798 528C895 508 1015 441 1158 406C1299 372 1441 376 1600 444V0H0V470Z" fill="#131311" opacity="0.88"/>
+    <path d="M0 611C140 586 277 563 407 566C567 570 673 622 803 619C915 617 1038 569 1178 544C1339 516 1484 534 1600 582V277C1450 235 1316 248 1169 291C1028 332 917 409 795 430C683 450 571 432 438 391C300 349 148 339 0 363V611Z" fill="#1C1B18" opacity="0.7"/>
+
+    <path d="M0 917C160 845 349 814 531 830C679 844 738 900 803 900C890 900 955 827 1115 809C1298 789 1455 836 1600 897V1200H0V917Z" fill="url(#ridge)"/>
+    <path d="M0 1063C165 1001 344 983 496 998C637 1012 714 1069 793 1070C873 1072 952 1018 1100 1006C1264 993 1428 1029 1600 1099V1200H0V1063Z" fill="#0A0B0A" opacity="0.93"/>
+
+    <path d="M804 488C759 544 726 595 699 643C669 696 639 751 607 809C581 856 566 897 566 931C566 970 579 1002 611 1029C649 1061 707 1080 785 1087C786 1037 788 983 793 924C798 853 805 772 815 679C822 614 826 559 826 513L804 488Z" fill="#0D0E0D" opacity="0.58"/>
+    <path d="M812 480C851 536 880 587 903 636C928 688 954 743 982 803C1006 855 1020 898 1020 933C1020 971 1008 1001 978 1026C943 1056 888 1075 814 1083C812 1031 810 977 805 920C799 848 792 767 782 676C776 612 772 557 772 512L812 480Z" fill="#111210" opacity="0.54"/>
+
+    <path d="M797 489C773 547 751 611 734 682C713 767 701 849 696 925C694 958 696 982 704 999C711 1014 725 1022 745 1023C763 1023 781 1016 799 1002C818 987 835 965 851 934C877 883 900 818 919 741C937 667 951 589 960 507C917 522 879 530 845 531C825 532 809 518 797 489Z" fill="#261C18" opacity="0.76"/>
+    <path d="M804 482C790 530 776 587 764 653C744 767 733 868 731 955C730 986 735 1009 745 1023C756 1038 771 1044 792 1040C815 1036 836 1019 856 988C876 956 895 909 912 848C932 778 950 699 965 611C976 549 983 508 987 486C937 505 879 514 811 514C808 504 805 494 804 482Z" fill="url(#pathGold)" opacity="0.94"/>
+    <path d="M810 489C801 531 790 583 780 646C762 759 751 854 749 931C747 966 751 988 760 997C768 1006 779 1007 793 999C810 989 826 969 841 937C867 884 888 821 906 748C925 672 940 595 952 517C903 522 855 513 810 489Z" stroke="#FFDDA0" stroke-opacity="0.62" stroke-width="2"/>
+
+    <ellipse cx="803" cy="400" rx="195" ry="168" fill="url(#glow)" filter="url(#softGlow)"/>
+    <path d="M799 303C773 273 734 261 703 281C668 303 660 347 675 380C694 424 740 453 799 475C856 453 903 423 922 380C938 347 930 303 895 281C864 261 825 273 799 303Z" fill="url(#heartCore)" filter="url(#softGlow)"/>
+    <path d="M799 316C776 289 742 277 715 293C687 310 682 346 694 372C709 405 747 432 799 452C850 432 889 405 904 372C916 346 911 310 883 293C856 277 822 289 799 316Z" stroke="url(#heartEdge)" stroke-width="3" opacity="0.9"/>
+
+    <path d="M798 503C768 472 746 441 734 408C763 430 785 440 798 440C811 440 833 430 862 408C850 441 828 472 798 503Z" fill="#F4C36A" opacity="0.66"/>
+
+    <path d="M1248 745C1218 735 1181 740 1158 764C1135 788 1129 824 1136 856C1142 885 1159 918 1188 953C1214 928 1231 901 1239 874C1247 848 1246 817 1235 789C1232 782 1234 770 1241 759L1248 745Z" fill="#0B0C0B" opacity="0.82"/>
+    <path d="M1243 746C1221 739 1194 744 1177 761C1158 780 1154 810 1160 837C1167 868 1180 897 1201 924" stroke="#3B342A" stroke-width="3" stroke-linecap="round" opacity="0.72"/>
+
+    <ellipse cx="805" cy="1145" rx="640" ry="110" fill="#050505" opacity="0.45"/>
+    <rect width="1600" height="1200" fill="#D4B07A" opacity="0.06" filter="url(#grain)"/>
+    <rect width="1600" height="1200" fill="#C19A63" filter="url(#mist)" opacity="0.18"/>
+  </g>
+</svg>
