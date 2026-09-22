@@ -12,6 +12,7 @@ type LessonProgress = {
   status: string
   unlock_at: string | null
   completed_at: string | null
+  journal_text?: string | null
 }
 
 type ProfilePreferenceRow = UnlockProfilePreference
@@ -25,6 +26,8 @@ export function LessonClient({ slug }: { slug: string }) {
   const [status, setStatus] = useState('')
   const [savingVideo, setSavingVideo] = useState(false)
   const [savingComplete, setSavingComplete] = useState(false)
+  const [savingReflection, setSavingReflection] = useState(false)
+  const [reflectionDraft, setReflectionDraft] = useState('')
   const [unlockAt, setUnlockAt] = useState<string | null>(null)
   const [adminUnlocked, setAdminUnlocked] = useState(false)
   const [profilePreference, setProfilePreference] = useState<ProfilePreferenceRow | null>(null)
@@ -49,7 +52,7 @@ export function LessonClient({ slug }: { slug: string }) {
       const [progressRes, profileRes] = await Promise.all([
         supabase
           .from('lesson_progress')
-          .select('status, unlock_at, completed_at')
+          .select('status, unlock_at, completed_at, journal_text')
           .eq('user_id', user.id)
           .eq('lesson_id', lesson.id)
           .maybeSingle(),
@@ -64,6 +67,7 @@ export function LessonClient({ slug }: { slug: string }) {
         const row = progressRes.data as LessonProgress
         setVideoDone(row.status === 'video_complete' || row.status === 'complete')
         setUnlockAt(row.unlock_at)
+        setReflectionDraft(row.journal_text || '')
       }
 
       if (!profileRes.error && active) {
@@ -182,29 +186,63 @@ export function LessonClient({ slug }: { slug: string }) {
     }
   }
 
+  async function saveReflection() {
+    if (!lesson) return
+    const currentLesson = lesson
+    setSavingReflection(true)
+    setStatus('')
+    try {
+      const sessionRes = await supabase.auth.getSession()
+      const token = sessionRes.data.session?.access_token
+      if (!token) {
+        setStatus(adminUnlocked ? 'Admin preview mode can view reflection writing, but does not save buyer reflections.' : 'Login required to save and email your reflection.')
+        return
+      }
+
+      const saveRes = await fetch('/api/lesson-reflection', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          lessonId: currentLesson.id,
+          lessonLabel: currentLesson.stepLabel,
+          lessonTitle: currentLesson.title,
+          reflection: reflectionDraft,
+        }),
+      })
+      const result = await saveRes.json().catch(() => null) as { ok?: boolean; emailQueued?: boolean; error?: string } | null
+      if (!saveRes.ok || !result?.ok) {
+        setStatus('Could not save your reflection yet.')
+        return
+      }
+
+      setStatus(result.emailQueued ? 'Reflection saved and queued to be emailed to you.' : 'Reflection saved to your account.')
+    } finally {
+      setSavingReflection(false)
+    }
+  }
+
   return (
     <main className="min-h-screen px-4 py-10 text-[#f4eadc]">
       <AdminMenu portalHref="/portal" adminHref="/admin" extraLinks={lesson ? [{ href: `/portal/lesson/${lesson.slug}`, label: 'Refresh this lesson' }] : []} />
       <div className="mx-auto max-w-6xl">
         <section className="relative overflow-hidden rounded-[30px] border border-[rgba(228,183,103,0.18)] bg-[linear-gradient(135deg,rgba(18,27,21,0.96),rgba(20,15,12,0.84)_45%,rgba(12,10,9,0.98))] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.34)] md:p-8">
           <HeartCornerMark />
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
-            <div>
-              <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.arc}</p>
-              <h1 className="text-5xl font-semibold tracking-[-0.04em] text-[#e6bd74]">{lesson.stepLabel} · {lesson.title}</h1>
-              <p className="mt-4 max-w-3xl text-lg leading-8 text-[rgba(244,234,220,0.8)]">{lesson.theme}</p>
-            </div>
-            <div className="rounded-[24px] border border-[rgba(239,197,120,0.14)] bg-[rgba(20,15,12,0.56)] p-5">
-              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Lesson rhythm</p>
-              <p className="mt-3 text-sm leading-7 text-[rgba(244,234,220,0.72)]">{lesson.integrationBody}</p>
-              {unlockAt ? <p className="mt-3 text-sm text-[rgba(244,234,220,0.6)]">Next lesson target: {new Date(unlockAt).toLocaleString()}</p> : null}
-              {adminUnlocked ? <p className="mt-3 text-sm text-[#efc578]">Admin unlocked view active on lesson pages.</p> : null}
-            </div>
+          <div>
+            <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.arc}</p>
+            <h1 className="text-5xl font-semibold tracking-[-0.04em] text-[#e6bd74]">{lesson.stepLabel} · {lesson.title}</h1>
+            <p className="mt-4 max-w-3xl text-lg leading-8 text-[rgba(244,234,220,0.8)]">{lesson.theme}</p>
           </div>
         </section>
 
         <section className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)]">
           <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
+            <div className="mb-5 rounded-[22px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-5">
+              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Before you watch</p>
+              <p className="mt-2 text-[rgba(244,234,220,0.78)]">Watch the video, then complete the Heart Fitness Exercise below.</p>
+            </div>
             <div className="mb-4 flex items-center justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.videoLabel}</p>
@@ -225,7 +263,6 @@ export function LessonClient({ slug }: { slug: string }) {
                 </div>
               )}
             </div>
-            <p className="mt-4 text-[rgba(244,234,220,0.74)]">{lesson.videoSupport}</p>
             <div className="mt-6 flex flex-wrap gap-3">
               <button onClick={saveVideoComplete} disabled={savingVideo} className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10] disabled:opacity-60">
                 {savingVideo ? 'Saving…' : videoDone ? 'Video completion saved' : 'Mark video complete'}
@@ -239,7 +276,7 @@ export function LessonClient({ slug }: { slug: string }) {
 
           <div className="grid gap-6">
             <aside className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Supporting text</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Heart Fitness Exercise</p>
               <ul className="mt-4 space-y-3 text-[rgba(244,234,220,0.74)]">
                 {lesson.supportingPoints.map((point) => (
                   <li key={point} className="rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] px-4 py-3">{point}</li>
@@ -248,27 +285,28 @@ export function LessonClient({ slug }: { slug: string }) {
             </aside>
 
             <aside className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.integrationHeading}</p>
-              <p className="mt-3 text-[rgba(244,234,220,0.74)]">{lesson.integrationBody}</p>
-              <div className="mt-4 rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] p-4">
-                <strong className="block text-[#f4eadc]">Practice</strong>
-                <p className="mt-2 text-[rgba(244,234,220,0.74)]">{lesson.practice}</p>
-              </div>
+              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Practice</p>
+              <p className="mt-3 text-[rgba(244,234,220,0.74)]">{lesson.practice}</p>
             </aside>
           </div>
         </section>
 
         <section className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
           <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-            <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Reflection prompts</p>
+            <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Heart Fitness Exercise</p>
+            <p className="mt-3 text-sm leading-7 text-[rgba(244,234,220,0.72)]">Open your note book and write what comes to mind. Or type here directly. Your typed reflections will be emailed to you.</p>
             <div className="mt-4 grid gap-3">
               {lesson.prompts.map((prompt, index) => (
                 <div key={prompt} className="rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] px-4 py-4">
-                  <span className="text-xs uppercase tracking-[0.14em] text-[#efc578]">Prompt {index + 1}</span>
+                  <span className="text-xs uppercase tracking-[0.14em] text-[#efc578]">Heart Fitness Exercise {index + 1}</span>
                   <p className="mt-2 text-[rgba(244,234,220,0.8)]">{prompt}</p>
                 </div>
               ))}
             </div>
+            <textarea value={reflectionDraft} onChange={(event) => setReflectionDraft(event.target.value)} rows={8} className="mt-5 min-h-40 w-full rounded-[18px] border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-4 py-3 text-[#f4eadc] outline-none" placeholder="Type your reflection here..." />
+            <button onClick={saveReflection} disabled={savingReflection} className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10] disabled:opacity-60">
+              {savingReflection ? 'Saving…' : 'Save and email my reflection'}
+            </button>
           </div>
 
           <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
@@ -282,6 +320,21 @@ export function LessonClient({ slug }: { slug: string }) {
               {nextLesson ? <a href={`/portal/lesson/${nextLesson.slug}`} className="inline-flex min-h-11 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] px-4 text-[#f4eadc]">Next lesson</a> : null}
             </div>
           </div>
+        </section>
+
+        <section className="mt-6 rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
+          <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Lesson rhythm</p>
+          <p className="mt-3 text-[rgba(244,234,220,0.74)]">{lesson.integrationBody}</p>
+          {nextLesson ? (
+            <p className="mt-3 text-sm text-[rgba(244,234,220,0.68)]">
+              {shouldUnlockNextImmediately(lesson)
+                ? `${nextLesson.title} is currently available after you complete this lesson.`
+                : unlockAt
+                  ? `${nextLesson.title} will be available on ${new Date(unlockAt).toLocaleString()}.`
+                  : `${nextLesson.title} will be available tomorrow at your account unlock time after you complete this lesson.`}
+            </p>
+          ) : null}
+          {adminUnlocked ? <p className="mt-3 text-sm text-[#efc578]">Admin unlocked view active on lesson pages.</p> : null}
         </section>
       </div>
     </main>
