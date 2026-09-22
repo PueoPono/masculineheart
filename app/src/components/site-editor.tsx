@@ -423,7 +423,7 @@ export function SiteEditor({ adminEmail }: Props) {
             <span>{previewFrameLabel}</span>
             <span>{interactionMode === 'preview' ? 'Preview only' : interactionMode === 'reference' ? 'Click any highlighted block to add a reference note' : 'Click any highlighted text block to edit'}</span>
           </div>
-          <div style={{ width: previewFrameWidth }} className="mx-auto max-w-none">
+          <div style={{ width: previewFrameWidth }} className="max-w-none">
             <SiteEditorPreview
               selected={selected}
               content={content}

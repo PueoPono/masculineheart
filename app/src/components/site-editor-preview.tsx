@@ -405,7 +405,7 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem 
   const prefix = `lesson:${lesson.slug}`
 
   return (
-    <main className="min-h-[1500px] rounded-[30px] bg-[linear-gradient(180deg,#090909,#10130f)] px-4 py-10 text-[#f4eadc]">
+    <main className="min-h-[1500px] bg-[linear-gradient(180deg,#090909,#10130f)] px-4 py-10 text-[#f4eadc]">
       <div className="mx-auto max-w-6xl">
         <section className="relative overflow-hidden rounded-[30px] border border-[rgba(228,183,103,0.18)] bg-[linear-gradient(135deg,rgba(18,27,21,0.96),rgba(20,15,12,0.84)_45%,rgba(12,10,9,0.98))] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.34)] md:p-8">
           <HeartCornerMark />
@@ -463,7 +463,7 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem 
             </PreviewTarget>
             <div className="mt-6 flex flex-wrap gap-3">
               <PreviewTarget target={{ itemKey: `${prefix}.markVideoCompleteLabel`, itemLabel: 'Mark video complete label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} fit="inline">
-                <div className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10]">{lesson.markVideoCompleteLabel}</div>
+                <div className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#f6d78e,#e0a948)] px-5 font-extrabold text-[#160d07] shadow-[0_10px_28px_rgba(0,0,0,0.34)] ring-1 ring-[rgba(255,255,255,0.18)]">{lesson.markVideoCompleteLabel}</div>
               </PreviewTarget>
               <PreviewTarget target={{ itemKey: `${prefix}.completeLessonLabel`, itemLabel: 'Complete lesson label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} fit="inline">
                 <div className="inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-5 font-semibold text-[#f4eadc]">{lesson.completeLessonLabel}</div>
