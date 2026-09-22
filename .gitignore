@@ -1,0 +1,4 @@
+.vercel/
+app/.vercel/
+app/.next/
+app/node_modules/
