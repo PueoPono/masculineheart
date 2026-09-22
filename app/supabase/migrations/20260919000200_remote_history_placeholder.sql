@@ -1,0 +1,2 @@
+-- Placeholder for migration 20260919000200 already applied on the remote Supabase project.
+-- Added locally so future non-destructive migrations can be pushed without repairing remote history.
