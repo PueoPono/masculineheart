@@ -522,7 +522,7 @@ export function SiteEditor({ adminEmail }: Props) {
     : undefined
 
   const previewFrameWidth = previewViewport === 'desktop' ? 1280 : 390
-  const previewFrameLabel = previewViewport === 'desktop' ? 'Desktop frame · 1280px' : 'Mobile frame · 390px'
+  const previewFrameLabel = previewViewport === 'desktop' ? 'Desktop frame · 1280px' : 'Mobile frame · real page width'
 
   return (
     <div className={`grid gap-6 ${previewViewport === 'desktop' ? 'xl:grid-cols-[280px_minmax(0,1fr)]' : 'xl:grid-cols-[260px_minmax(390px,430px)_minmax(320px,0.9fr)] 2xl:grid-cols-[300px_minmax(390px,440px)_minmax(420px,0.95fr)]'}`}>
@@ -558,8 +558,8 @@ export function SiteEditor({ adminEmail }: Props) {
         </div>
       </aside>
 
-      <section className="relative rounded-[24px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-3 sm:rounded-[28px] sm:p-4 md:p-5">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <section className="relative rounded-[24px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-0 sm:rounded-[28px] sm:p-4 md:p-5">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 px-3 pt-3 sm:px-0 sm:pt-0">
           <div>
             <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Live-size page preview</p>
             <h2 className="mt-1 text-2xl font-semibold">{selected.startsWith('lesson:') ? activeLesson?.title : selected}</h2>
@@ -574,7 +574,7 @@ export function SiteEditor({ adminEmail }: Props) {
           </div>
         </div>
 
-        <div className="mb-4 rounded-[18px] border border-[rgba(159,184,255,0.24)] bg-[rgba(159,184,255,0.08)] p-4 text-sm text-[#d8e6ff]">
+        <div className="mb-4 mx-3 rounded-[18px] border border-[rgba(159,184,255,0.24)] bg-[rgba(159,184,255,0.08)] p-4 text-sm text-[#d8e6ff] sm:mx-0">
           <strong className="text-white">Request queue: {queuedRequestCount}</strong>
           <span className="ml-2 text-[rgba(216,230,255,0.78)]">queued request{queuedRequestCount === 1 ? '' : 's'} saved for agent review. Implemented requests are cleared from this queue.</span>
         </div>
@@ -584,7 +584,7 @@ export function SiteEditor({ adminEmail }: Props) {
             <span>{previewFrameLabel}</span>
             <span>{interactionMode === 'preview' ? 'Preview only' : interactionMode === 'reference' ? 'Click any highlighted block to add a reference note' : 'Click any highlighted text block to edit'}</span>
           </div>
-          <div style={{ width: previewFrameWidth }} className="max-w-none">
+          <div style={{ width: previewFrameWidth, maxWidth: previewViewport === 'mobile' ? '100%' : undefined }} className="max-w-none">
             <SiteEditorPreview
               selected={selected}
               content={content}
