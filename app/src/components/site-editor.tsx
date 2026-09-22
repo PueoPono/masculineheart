@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { HeartCornerMark } from '@/components/heart-mark'
 import { SiteEditorPreview, type SiteEditorInteractionMode, type SiteEditorPreviewSelectionWithRect } from '@/components/site-editor-preview'
 import { courseTracks } from '@/lib/site-content'
-import { useEditableSiteContent, type ReferenceNotes } from '@/lib/site-content-store'
+import { useEditableSiteContent, type ReferenceNotes, type SiteContentOverrides } from '@/lib/site-content-store'
 
 type SectionKey = 'landing' | 'portal' | 'locked' | 'complete' | `lesson:${string}`
 
@@ -328,6 +328,97 @@ export function SiteEditor({ adminEmail }: Props) {
     return ''
   }
 
+  function buildContentOverridesWithText(itemKey: string, value: string): SiteContentOverrides | null {
+    const nextContent = JSON.parse(JSON.stringify(content)) as typeof content
+
+    if (itemKey.startsWith('landing.')) {
+      const field = itemKey.replace('landing.', '')
+      if (field.startsWith('overviewCards.')) {
+        const [, indexText, key] = field.split('.')
+        const index = Number(indexText)
+        if (Number.isNaN(index) || !nextContent.landing.overviewCards[index]) return null
+        nextContent.landing.overviewCards[index] = { ...nextContent.landing.overviewCards[index], [key]: value }
+        return nextContent as SiteContentOverrides
+      }
+      if (!(field in nextContent.landing)) return null
+      ;(nextContent.landing as Record<string, unknown>)[field] = value
+      return nextContent as SiteContentOverrides
+    }
+
+    if (itemKey.startsWith('portal.')) {
+      const field = itemKey.replace('portal.', '')
+      if (field.startsWith('trackNotes.')) {
+        const [, indexText] = field.split('.')
+        const index = Number(indexText)
+        if (Number.isNaN(index)) return null
+        nextContent.portal.trackNotes[index] = value
+        return nextContent as SiteContentOverrides
+      }
+      if (field.startsWith('trackLabels.')) {
+        const [, indexText] = field.split('.')
+        const index = Number(indexText)
+        if (Number.isNaN(index) || !nextContent.portal.trackLabels) return null
+        nextContent.portal.trackLabels[index] = value
+        return nextContent as SiteContentOverrides
+      }
+      if (field.startsWith('trackTitles.')) {
+        const [, indexText] = field.split('.')
+        const index = Number(indexText)
+        if (Number.isNaN(index) || !nextContent.portal.trackTitles) return null
+        nextContent.portal.trackTitles[index] = value
+        return nextContent as SiteContentOverrides
+      }
+      if (field.startsWith('trackDaysLabels.')) {
+        const [, indexText] = field.split('.')
+        const index = Number(indexText)
+        if (Number.isNaN(index) || !nextContent.portal.trackDaysLabels) return null
+        nextContent.portal.trackDaysLabels[index] = value
+        return nextContent as SiteContentOverrides
+      }
+      if (!(field in nextContent.portal)) return null
+      ;(nextContent.portal as Record<string, unknown>)[field] = value
+      return nextContent as SiteContentOverrides
+    }
+
+    if (itemKey.startsWith('locked.')) {
+      const field = itemKey.replace('locked.', '')
+      if (!(field in nextContent.locked)) return null
+      ;(nextContent.locked as Record<string, unknown>)[field] = value
+      return nextContent as SiteContentOverrides
+    }
+
+    if (itemKey.startsWith('complete.')) {
+      const field = itemKey.replace('complete.', '')
+      if (!(field in nextContent.complete)) return null
+      ;(nextContent.complete as Record<string, unknown>)[field] = value
+      return nextContent as SiteContentOverrides
+    }
+
+    if (itemKey.startsWith('lesson:')) {
+      const [lessonPrefix, field, indexText] = itemKey.split('.')
+      const slug = lessonPrefix.replace('lesson:', '')
+      const lesson = nextContent.lessons.find((entry) => entry.slug === slug)
+      if (!lesson) return null
+      if (field === 'supportingPoints') {
+        const index = Number(indexText)
+        if (Number.isNaN(index)) return null
+        lesson.supportingPoints[index] = value
+        return nextContent as SiteContentOverrides
+      }
+      if (field === 'prompts') {
+        const index = Number(indexText)
+        if (Number.isNaN(index)) return null
+        lesson.prompts[index] = value
+        return nextContent as SiteContentOverrides
+      }
+      if (!(field in lesson)) return null
+      ;(lesson as Record<string, unknown>)[field] = value
+      return nextContent as SiteContentOverrides
+    }
+
+    return null
+  }
+
   function selectPreviewTarget(selection: SiteEditorPreviewSelectionWithRect) {
     setPopoverRect(selection.rect)
     if (interactionMode === 'reference') {
@@ -377,14 +468,14 @@ export function SiteEditor({ adminEmail }: Props) {
 
   async function saveSelectedTextAndClose() {
     if (!selectedTextEdit) return
-    const ok = updateTextByItemKey(selectedTextEdit.itemKey, textEditDraft)
-    if (!ok) {
+    const nextOverrides = buildContentOverridesWithText(selectedTextEdit.itemKey, textEditDraft)
+    if (!nextOverrides) {
       setStatus(`Direct editing is not available for ${selectedTextEdit.itemLabel} yet.`)
       return
     }
-    await new Promise((resolve) => requestAnimationFrame(resolve))
+    updateTextByItemKey(selectedTextEdit.itemKey, textEditDraft)
     try {
-      await save()
+      await save({ overrides: nextOverrides })
       setStatus(`Saved text edit for ${selectedTextEdit.itemLabel} to Supabase.`)
       clearSelectionState()
     } catch {
