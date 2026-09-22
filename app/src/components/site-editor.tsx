@@ -366,7 +366,7 @@ export function SiteEditor({ adminEmail }: Props) {
     : undefined
 
   const previewFrameWidth = previewViewport === 'desktop' ? 1280 : 390
-  const previewFrameLabel = previewViewport === 'desktop' ? '1280px desktop frame' : '390px mobile frame'
+  const previewFrameLabel = previewViewport === 'desktop' ? 'Desktop frame · 1280px' : 'Mobile frame · 390px'
 
   return (
     <div className={`grid gap-6 ${previewViewport === 'desktop' ? 'xl:grid-cols-[280px_minmax(0,1fr)]' : 'xl:grid-cols-[260px_minmax(390px,430px)_minmax(320px,0.9fr)] 2xl:grid-cols-[300px_minmax(390px,440px)_minmax(420px,0.95fr)]'}`}>
@@ -402,12 +402,12 @@ export function SiteEditor({ adminEmail }: Props) {
         </div>
       </aside>
 
-      <section className="relative overflow-hidden rounded-[24px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-3 sm:rounded-[28px] sm:p-4 md:p-5">
+      <section className="relative rounded-[24px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-3 sm:rounded-[28px] sm:p-4 md:p-5">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Actual page view</p>
+            <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Live-size page preview</p>
             <h2 className="mt-1 text-2xl font-semibold">{selected.startsWith('lesson:') ? activeLesson?.title : selected}</h2>
-            <p className="mt-1 text-sm text-[rgba(244,234,220,0.68)]">Reference mode lets you submit object-level change requests. Text edit mode lets you click/tap live text blocks and edit them in context.</p>
+            <p className="mt-1 text-sm text-[rgba(244,234,220,0.68)]">This preview keeps the actual page width. Reference mode lets you submit object-level change requests; text edit mode lets you click/tap live text blocks and edit them in context.</p>
           </div>
           <div className="grid w-full gap-2 text-sm sm:flex sm:w-auto sm:flex-wrap">
             <button onClick={() => { setPreviewViewport('desktop'); clearSelectionState() }} className={`rounded-full border px-4 py-2 text-center ${previewViewport === 'desktop' ? 'border-[rgba(239,197,120,0.42)] bg-[rgba(239,197,120,0.16)] text-white' : 'border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.03)] text-[rgba(244,234,220,0.78)]'}`}>Desktop view</button>
@@ -418,8 +418,8 @@ export function SiteEditor({ adminEmail }: Props) {
           </div>
         </div>
 
-        <div className="overflow-x-auto rounded-[22px] border border-[rgba(228,183,103,0.12)] bg-[#050505] p-2">
-          <div className="mb-2 flex items-center justify-between gap-3 px-1 text-xs text-[rgba(244,234,220,0.58)]">
+        <div className="overflow-x-auto bg-[#050505]">
+          <div className="mb-2 flex items-center justify-between gap-3 text-xs text-[rgba(244,234,220,0.58)]">
             <span>{previewFrameLabel}</span>
             <span>{interactionMode === 'preview' ? 'Preview only' : interactionMode === 'reference' ? 'Click any highlighted block to add a reference note' : 'Click any highlighted text block to edit'}</span>
           </div>

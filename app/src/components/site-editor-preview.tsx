@@ -29,6 +29,7 @@ type PreviewTargetProps = {
   onSelectItem?: (selection: SiteEditorPreviewSelectionWithRect) => void
   children: React.ReactNode
   className?: string
+  fit?: 'block' | 'inline'
 }
 
 function toTargetClass(active: boolean, mode: SiteEditorInteractionMode) {
@@ -36,9 +37,10 @@ function toTargetClass(active: boolean, mode: SiteEditorInteractionMode) {
   return `rounded-[12px] transition ${active ? 'ring-2 ring-[#efc578] bg-[rgba(239,197,120,0.08)]' : 'hover:ring-1 hover:ring-[rgba(239,197,120,0.45)] hover:bg-[rgba(239,197,120,0.05)] cursor-pointer'}`
 }
 
-function PreviewTarget({ target, interactionMode, selectedItemKey, onSelectItem, children, className = '' }: PreviewTargetProps) {
+function PreviewTarget({ target, interactionMode, selectedItemKey, onSelectItem, children, className = '', fit = 'block' }: PreviewTargetProps) {
   const active = selectedItemKey === target.itemKey
   if (interactionMode === 'preview') return <div className={className}>{children}</div>
+  const fitClass = fit === 'inline' ? 'inline-flex text-left align-middle' : 'w-full text-left'
 
   return (
     <button
@@ -55,7 +57,7 @@ function PreviewTarget({ target, interactionMode, selectedItemKey, onSelectItem,
           },
         })
       }}
-      className={`w-full text-left ${toTargetClass(active, interactionMode)} ${className}`}
+      className={`${fitClass} ${toTargetClass(active, interactionMode)} ${className}`}
     >
       {children}
     </button>
@@ -460,10 +462,10 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem 
               <p className="text-[rgba(244,234,220,0.74)]">{lesson.videoSupport}</p>
             </PreviewTarget>
             <div className="mt-6 flex flex-wrap gap-3">
-              <PreviewTarget target={{ itemKey: `${prefix}.markVideoCompleteLabel`, itemLabel: 'Mark video complete label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+              <PreviewTarget target={{ itemKey: `${prefix}.markVideoCompleteLabel`, itemLabel: 'Mark video complete label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} fit="inline">
                 <div className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10]">{lesson.markVideoCompleteLabel}</div>
               </PreviewTarget>
-              <PreviewTarget target={{ itemKey: `${prefix}.completeLessonLabel`, itemLabel: 'Complete lesson label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+              <PreviewTarget target={{ itemKey: `${prefix}.completeLessonLabel`, itemLabel: 'Complete lesson label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} fit="inline">
                 <div className="inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-5 font-semibold text-[#f4eadc]">{lesson.completeLessonLabel}</div>
               </PreviewTarget>
             </div>
