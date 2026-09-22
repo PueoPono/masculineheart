@@ -44,6 +44,9 @@ function fieldInput(field: EditableField, value: string, onChange: (value: strin
 export function AdminEditorClient() {
   const [pages, setPages] = useState<EditablePage[]>([])
   const [selectedSlug, setSelectedSlug] = useState('home')
+  const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop')
+  const [controlsOpen, setControlsOpen] = useState(true)
+  const [previewRefresh, setPreviewRefresh] = useState(0)
   const [active, setActive] = useState<ActiveField | null>(null)
   const [draftText, setDraftText] = useState('')
   const [draftReference, setDraftReference] = useState('')
@@ -78,6 +81,8 @@ export function AdminEditorClient() {
 
   const selectedPage = useMemo(() => pages.find((page) => page.slug === selectedSlug) || pages[0] || null, [pages, selectedSlug])
   const origin = typeof window === 'undefined' ? '' : window.location.origin
+  const previewWidth = previewMode === 'desktop' ? 1280 : 390
+  const previewHeight = previewMode === 'desktop' ? 860 : 820
 
   function openField(page: EditablePage, field: EditableField, nextTab: 'text' | 'reference' = 'text') {
     setActive({ page, field })
@@ -129,6 +134,7 @@ export function AdminEditorClient() {
       const label = action === 'publish_requested' ? 'Publish request saved to Supabase.' : action === 'archive' ? 'Archive action saved to Supabase.' : 'Draft/reference saved to Supabase.'
       setLastSaved(new Date().toLocaleString())
       setStatus(label)
+      setPreviewRefresh((current) => current + 1)
       setActive(null)
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'Could not save to Supabase.')
@@ -143,30 +149,55 @@ export function AdminEditorClient() {
         <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#efc578]">Actual page view</p>
-            <h2 className="text-2xl font-semibold text-[#f4eadc]">Wide preview</h2>
+            <h2 className="text-2xl font-semibold text-[#f4eadc]">{previewMode === 'desktop' ? 'Desktop preview' : 'Mobile preview'}</h2>
             <p className="mt-1 max-w-3xl text-sm text-[rgba(244,234,220,0.68)]">
-              This preview now spans the full admin width. Editor controls sit below so the page is not compressed into a narrow column.
+              The page renders in a fixed {previewWidth}px viewport instead of being squeezed into an editor column. Scroll inside the frame to inspect the live page at its real responsive width.
             </p>
           </div>
-          <label className="min-w-[260px] text-sm text-[rgba(244,234,220,0.72)]">
-            Page
-            <select
-              value={selectedPage?.slug || selectedSlug}
-              onChange={(event) => setSelectedSlug(event.target.value)}
-              className="mt-2 w-full rounded-[16px] border border-[rgba(228,183,103,0.2)] bg-[#12110e] px-4 py-3 text-[#f4eadc] outline-none"
-            >
-              {pages.map((page) => <option key={page.slug} value={page.slug}>{page.label}</option>)}
-            </select>
-          </label>
+          <div className="flex flex-wrap items-end gap-3">
+            <label className="min-w-[260px] text-sm text-[rgba(244,234,220,0.72)]">
+              Page
+              <select
+                value={selectedPage?.slug || selectedSlug}
+                onChange={(event) => setSelectedSlug(event.target.value)}
+                className="mt-2 w-full rounded-[16px] border border-[rgba(228,183,103,0.2)] bg-[#12110e] px-4 py-3 text-[#f4eadc] outline-none"
+              >
+                {pages.map((page) => <option key={page.slug} value={page.slug}>{page.label}</option>)}
+              </select>
+            </label>
+            <div className="flex rounded-full border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.035)] p-1">
+              <button
+                type="button"
+                onClick={() => setPreviewMode('desktop')}
+                className={`rounded-full px-4 py-2 text-sm font-bold ${previewMode === 'desktop' ? 'bg-[linear-gradient(180deg,#efc578,#dca453)] text-[#2d1b10]' : 'text-[#f4eadc]'}`}
+              >
+                Desktop
+              </button>
+              <button
+                type="button"
+                onClick={() => setPreviewMode('mobile')}
+                className={`rounded-full px-4 py-2 text-sm font-bold ${previewMode === 'mobile' ? 'bg-[linear-gradient(180deg,#efc578,#dca453)] text-[#2d1b10]' : 'text-[#f4eadc]'}`}
+              >
+                Mobile
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="overflow-hidden rounded-[24px] border border-[rgba(228,183,103,0.18)] bg-[#090807] shadow-[0_24px_70px_rgba(0,0,0,0.32)]">
+        <div className="overflow-x-auto rounded-[24px] border border-[rgba(228,183,103,0.18)] bg-[#090807] p-4 shadow-[0_24px_70px_rgba(0,0,0,0.32)]">
           {selectedPage ? (
-            <iframe
-              key={selectedPage.path}
-              src={`${origin}${selectedPage.path}`}
-              className="h-[760px] w-full bg-[#090807]"
-              title={`${selectedPage.label} preview`}
-            />
+            <div className="mx-auto rounded-[22px] border border-[rgba(239,197,120,0.12)] bg-[#050504] shadow-[0_18px_55px_rgba(0,0,0,0.38)]" style={{ width: previewWidth }}>
+              <div className="flex items-center justify-between border-b border-[rgba(239,197,120,0.12)] px-4 py-2 text-xs uppercase tracking-[0.14em] text-[rgba(244,234,220,0.55)]">
+                <span>{previewMode} · {previewWidth}px</span>
+                <span>{selectedPage.label}</span>
+              </div>
+              <iframe
+                key={`${selectedPage.path}-${previewMode}-${previewRefresh}`}
+                src={`${origin}${selectedPage.path}${selectedPage.path.includes('?') ? '&' : '?'}adminPreview=1&v=${previewRefresh}`}
+                className="block bg-[#090807]"
+                style={{ width: previewWidth, height: previewHeight }}
+                title={`${selectedPage.label} ${previewMode} preview`}
+              />
+            </div>
           ) : (
             <div className="p-8 text-[rgba(244,234,220,0.72)]">{loading ? 'Loading preview…' : 'No pages found.'}</div>
           )}
@@ -182,12 +213,21 @@ export function AdminEditorClient() {
               Select any field below to open a popup. Save records the text, reference notes, publish requests, and archive actions in Supabase for agent review.
             </p>
           </div>
-          <div className="rounded-[18px] border border-[rgba(239,197,120,0.12)] bg-[rgba(31,23,18,0.56)] px-4 py-3 text-sm text-[rgba(244,234,220,0.72)]">
-            <strong className="text-[#f4eadc]">Status</strong><br />{status}{lastSaved ? <><br />Last save: {lastSaved}</> : null}
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setControlsOpen((open) => !open)}
+              className="inline-flex min-h-11 items-center rounded-full border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-4 font-bold text-[#f4eadc]"
+            >
+              {controlsOpen ? 'Collapse controls' : 'Show controls'}
+            </button>
+            <div className="rounded-[18px] border border-[rgba(239,197,120,0.12)] bg-[rgba(31,23,18,0.56)] px-4 py-3 text-sm text-[rgba(244,234,220,0.72)]">
+              <strong className="text-[#f4eadc]">Status</strong><br />{status}{lastSaved ? <><br />Last save: {lastSaved}</> : null}
+            </div>
           </div>
         </div>
 
-        {selectedPage ? (
+        {controlsOpen && selectedPage ? (
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-3">
               <a href={selectedPage.path} className="inline-flex min-h-11 items-center rounded-full border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-4 font-bold text-[#f4eadc] no-underline">Open actual page</a>
@@ -195,10 +235,9 @@ export function AdminEditorClient() {
             </div>
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {selectedPage.fields.map((field) => (
-                <button
+                <div
                   key={field.key}
-                  onClick={() => openField(selectedPage, field, 'text')}
-                  className="rounded-[18px] border border-[rgba(228,183,103,0.16)] bg-[rgba(255,255,255,0.03)] p-4 text-left transition hover:border-[#dca453] hover:bg-[rgba(239,197,120,0.06)]"
+                  className={`rounded-[18px] border bg-[rgba(255,255,255,0.03)] p-4 text-left transition ${active?.field.key === field.key && active?.page.slug === selectedPage.slug ? 'border-[#dca453] shadow-[0_0_0_1px_rgba(220,164,83,0.3)]' : 'border-[rgba(228,183,103,0.16)] hover:border-[#dca453]'}`}
                 >
                   <div className="mb-2 flex items-center justify-between gap-2">
                     <strong className="text-[#f4eadc]">{field.label}</strong>
@@ -206,7 +245,23 @@ export function AdminEditorClient() {
                   </div>
                   <p className="line-clamp-3 text-sm leading-6 text-[rgba(244,234,220,0.68)]">{field.textValue}</p>
                   {field.referenceValue ? <p className="mt-3 text-xs text-[#efc578]">Reference saved ✓</p> : null}
-                </button>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => openField(selectedPage, field, 'text')}
+                      className="rounded-full bg-[rgba(239,197,120,0.12)] px-3 py-2 text-sm font-bold text-[#f4eadc] hover:bg-[rgba(239,197,120,0.2)]"
+                    >
+                      Edit text
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => openField(selectedPage, field, 'reference')}
+                      className="rounded-full border border-[rgba(228,183,103,0.18)] px-3 py-2 text-sm font-bold text-[#efc578] hover:border-[#dca453]"
+                    >
+                      Reference block
+                    </button>
+                  </div>
+                </div>
               ))}
             </div>
           </div>

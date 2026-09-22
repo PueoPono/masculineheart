@@ -22,7 +22,7 @@ export default async function AdminPage() {
   const signature = separatorIndex > -1 ? session.slice(separatorIndex + 1) : ''
 
   if (!username || !signature || sessionUser !== username || signature !== expectedSession(username)) {
-    redirect('/auth?next=/admin')
+    redirect('/admin-login')
   }
 
   return (
