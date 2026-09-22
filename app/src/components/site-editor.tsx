@@ -80,6 +80,8 @@ export function SiteEditor({ adminEmail }: Props) {
   const [selectedTextEdit, setSelectedTextEdit] = useState<TextEditSelection | null>(null)
   const [referenceDraft, setReferenceDraft] = useState('')
   const [popoverRect, setPopoverRect] = useState<SiteEditorPreviewSelectionWithRect['rect'] | null>(null)
+  const [previewViewport, setPreviewViewport] = useState<'desktop' | 'mobile'>('desktop')
+  const [controlsCollapsed, setControlsCollapsed] = useState(false)
 
   const previewHref = useMemo(() => {
     if (selected === 'landing') return '/'
@@ -363,8 +365,11 @@ export function SiteEditor({ adminEmail }: Props) {
         }
     : undefined
 
+  const previewFrameWidth = previewViewport === 'desktop' ? 1280 : 390
+  const previewFrameLabel = previewViewport === 'desktop' ? '1280px desktop frame' : '390px mobile frame'
+
   return (
-    <div className="grid gap-6 xl:grid-cols-[260px_minmax(0,1fr)_minmax(320px,0.9fr)] 2xl:grid-cols-[300px_minmax(0,1fr)_minmax(420px,0.95fr)]">
+    <div className={`grid gap-6 ${previewViewport === 'desktop' ? 'xl:grid-cols-[280px_minmax(0,1fr)]' : 'xl:grid-cols-[260px_minmax(390px,430px)_minmax(320px,0.9fr)] 2xl:grid-cols-[300px_minmax(390px,440px)_minmax(420px,0.95fr)]'}`}>
       <aside className="rounded-[24px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-4 sm:rounded-[28px] sm:p-5">
         <div className="mb-4 flex items-start justify-between gap-3">
           <div>
@@ -405,21 +410,32 @@ export function SiteEditor({ adminEmail }: Props) {
             <p className="mt-1 text-sm text-[rgba(244,234,220,0.68)]">Reference mode lets you submit object-level change requests. Text edit mode lets you click/tap live text blocks and edit them in context.</p>
           </div>
           <div className="grid w-full gap-2 text-sm sm:flex sm:w-auto sm:flex-wrap">
+            <button onClick={() => { setPreviewViewport('desktop'); clearSelectionState() }} className={`rounded-full border px-4 py-2 text-center ${previewViewport === 'desktop' ? 'border-[rgba(239,197,120,0.42)] bg-[rgba(239,197,120,0.16)] text-white' : 'border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.03)] text-[rgba(244,234,220,0.78)]'}`}>Desktop view</button>
+            <button onClick={() => { setPreviewViewport('mobile'); clearSelectionState() }} className={`rounded-full border px-4 py-2 text-center ${previewViewport === 'mobile' ? 'border-[rgba(239,197,120,0.42)] bg-[rgba(239,197,120,0.16)] text-white' : 'border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.03)] text-[rgba(244,234,220,0.78)]'}`}>Mobile view</button>
             <button onClick={() => { setInteractionMode((current) => current === 'text-edit' ? 'preview' : 'text-edit'); clearSelectionState() }} className={`rounded-full border px-4 py-2 text-center ${toInteractionButtonClass(interactionMode === 'text-edit')}`}>Text edit mode</button>
             <button onClick={() => { setInteractionMode((current) => current === 'reference' ? 'preview' : 'reference'); clearSelectionState() }} className={`rounded-full border px-4 py-2 text-center ${toInteractionButtonClass(interactionMode === 'reference')}`}>Reference mode</button>
             <a href={previewHref} target="_blank" className="rounded-full border border-[rgba(228,183,103,0.18)] px-4 py-2 text-center text-[#f4eadc]">Open full page</a>
           </div>
         </div>
 
-        <SiteEditorPreview
-          selected={selected}
-          content={content}
-          courseTracks={courseTracks}
-          adminEmail={adminEmail}
-          interactionMode={interactionMode}
-          selectedItemKey={selectedReference?.itemKey || selectedTextEdit?.itemKey || null}
-          onSelectItem={selectPreviewTarget}
-        />
+        <div className="overflow-x-auto rounded-[22px] border border-[rgba(228,183,103,0.12)] bg-[#050505] p-2">
+          <div className="mb-2 flex items-center justify-between gap-3 px-1 text-xs text-[rgba(244,234,220,0.58)]">
+            <span>{previewFrameLabel}</span>
+            <span>{interactionMode === 'preview' ? 'Preview only' : interactionMode === 'reference' ? 'Click any highlighted block to add a reference note' : 'Click any highlighted text block to edit'}</span>
+          </div>
+          <div style={{ width: previewFrameWidth }} className="mx-auto max-w-none">
+            <SiteEditorPreview
+              selected={selected}
+              content={content}
+              courseTracks={courseTracks}
+              adminEmail={adminEmail}
+              interactionMode={interactionMode}
+              selectedItemKey={selectedReference?.itemKey || selectedTextEdit?.itemKey || null}
+              onSelectItem={selectPreviewTarget}
+              viewport={previewViewport}
+            />
+          </div>
+        </div>
 
         {interactionMode === 'reference' && selectedReference && (popoverStyle || isMobileViewport) ? (
           <div className="fixed inset-x-3 bottom-3 z-20 rounded-[18px] border border-[rgba(159,184,255,0.28)] bg-[rgba(9,13,20,0.96)] p-3 shadow-[0_18px_48px_rgba(0,0,0,0.34)] md:absolute md:inset-x-auto md:bottom-auto md:w-[280px]" style={popoverStyle}>
@@ -456,13 +472,14 @@ export function SiteEditor({ adminEmail }: Props) {
         ) : null}
       </section>
 
-      <aside className="rounded-[24px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-4 sm:rounded-[28px] sm:p-5">
+      <aside className={`rounded-[24px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-4 sm:rounded-[28px] sm:p-5 ${previewViewport === 'desktop' ? 'xl:col-start-2' : ''}`}>
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Editor controls</p>
             <p className="mt-2 text-sm text-[rgba(244,234,220,0.72)]">Manual field editing remains available alongside the in-page editor.</p>
           </div>
           <div className="grid w-full gap-2 text-sm sm:flex sm:w-auto sm:flex-wrap">
+            {previewViewport === 'desktop' ? <button type="button" onClick={() => setControlsCollapsed((current) => !current)} className="rounded-full border border-[rgba(228,183,103,0.18)] px-4 py-2 text-[#f4eadc]">{controlsCollapsed ? 'Show controls' : 'Collapse controls'}</button> : null}
             <button onClick={saveAll} disabled={saving} className="rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-4 py-2 font-semibold text-[#2d1b10] disabled:opacity-60">{saving ? 'Saving…' : 'Save to Supabase'}</button>
             <button onClick={copyAgentBrief} className="rounded-full border border-[rgba(228,183,103,0.18)] px-4 py-2 text-[#f4eadc]">Copy agent brief</button>
             <button onClick={exportJson} className="rounded-full border border-[rgba(228,183,103,0.18)] px-4 py-2 text-[#f4eadc]">Export JSON</button>
@@ -471,7 +488,7 @@ export function SiteEditor({ adminEmail }: Props) {
           </div>
         </div>
 
-        <div className="grid gap-6">
+        <div className={`${previewViewport === 'desktop' && controlsCollapsed ? 'hidden' : 'grid'} gap-6`}>
           {selected === 'landing' ? (
             <>
               <Field label="Hero eyebrow" value={content.landing.heroEyebrow} onChange={(value) => updateLandingField('heroEyebrow', value)} />

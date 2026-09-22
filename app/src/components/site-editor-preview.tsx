@@ -118,13 +118,15 @@ function LandingPreview({ content, interactionMode, selectedItemKey, onSelectIte
 
         <section className="overflow-hidden rounded-[34px] border border-[rgba(228,183,103,0.14)] bg-[rgba(11,11,10,0.72)] shadow-[0_24px_70px_rgba(0,0,0,0.28)]">
           <div className="relative aspect-[4/5] w-full md:aspect-[16/10]">
-            <Image
-              src="/generated/mhq-hero-journal-quest-gpt-image-2.png"
-              alt="A man writing in his journal as the desk and pages transform into a symbolic journey through forest, river, valley, and mountains"
-              fill
-              sizes="(max-width: 768px) 100vw, 1200px"
-              className="object-cover object-center"
-            />
+            <PreviewTarget target={{ itemKey: shellKey('landing', 'heroImage'), itemLabel: 'Landing hero image' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="absolute inset-0">
+              <Image
+                src="/generated/mhq-hero-journal-quest-gpt-image-2.png"
+                alt="A man writing in his journal as the desk and pages transform into a symbolic journey through forest, river, valley, and mountains"
+                fill
+                sizes="(max-width: 768px) 100vw, 1200px"
+                className="object-cover object-center"
+              />
+            </PreviewTarget>
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,7,6,0.08),rgba(7,7,6,0.18)_38%,rgba(7,7,6,0.6))]" />
             <div className="absolute inset-x-0 top-0 flex justify-center px-6 pt-8 md:px-10 md:pt-10">
               <div className="inline-flex flex-col items-start rounded-[18px] bg-[rgba(10,10,10,0.32)] px-4 py-3 backdrop-blur-[2px] md:px-5 md:py-4">
@@ -190,7 +192,9 @@ function LandingPreview({ content, interactionMode, selectedItemKey, onSelectIte
               {calendarDays.map((entry) => (
                 <div key={entry.day} className="rounded-[16px] border border-[rgba(228,183,103,0.08)] bg-[rgba(12,12,11,0.78)] p-1.5">
                   <div className="relative aspect-square overflow-hidden rounded-[12px]">
-                    <Image src={entry.image} alt={entry.alt} fill sizes="(max-width: 768px) 12vw, 110px" className="object-cover" />
+                    <PreviewTarget target={{ itemKey: shellKey('landing', `calendarImages.${entry.day}`), itemLabel: `Calendar day ${entry.day} image` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="absolute inset-0">
+                      <Image src={entry.image} alt={entry.alt} fill sizes="(max-width: 768px) 12vw, 110px" className="object-cover" />
+                    </PreviewTarget>
                     <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.02),rgba(0,0,0,0.22))]" />
                     <div className="absolute left-1.5 top-1.5 rounded-full bg-[rgba(8,8,8,0.62)] px-1.5 py-0.5 text-[10px] font-medium text-[#f4eadc] backdrop-blur-sm">{entry.day}</div>
                   </div>
@@ -448,9 +452,9 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem 
               </div>
             </div>
             <div className="overflow-hidden rounded-[22px] border border-[rgba(239,197,120,0.14)] bg-[linear-gradient(180deg,rgba(33,43,34,0.8),rgba(20,15,12,0.92))]">
-              <div className="aspect-video">
+              <PreviewTarget target={{ itemKey: `${prefix}.videoUrl`, itemLabel: 'Lesson video embed' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="aspect-video">
                 <iframe src={lesson.videoUrl} title={lesson.title} className="h-full w-full" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen />
-              </div>
+              </PreviewTarget>
             </div>
             <PreviewTarget target={{ itemKey: `${prefix}.videoSupport`, itemLabel: 'Video support' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-4">
               <p className="text-[rgba(244,234,220,0.74)]">{lesson.videoSupport}</p>
@@ -544,7 +548,8 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem 
   )
 }
 
-export function SiteEditorPreview({ selected, content, courseTracks, interactionMode = 'preview', selectedItemKey = null, onSelectItem, adminEmail }: { selected: SelectedSection; content: SiteContent; courseTracks: CourseTrack[]; interactionMode?: SiteEditorInteractionMode; selectedItemKey?: string | null; onSelectItem?: (selection: SiteEditorPreviewSelectionWithRect) => void; adminEmail?: string }) {
+export function SiteEditorPreview({ selected, content, courseTracks, interactionMode = 'preview', selectedItemKey = null, onSelectItem, adminEmail, viewport = 'desktop' }: { selected: SelectedSection; content: SiteContent; courseTracks: CourseTrack[]; interactionMode?: SiteEditorInteractionMode; selectedItemKey?: string | null; onSelectItem?: (selection: SiteEditorPreviewSelectionWithRect) => void; adminEmail?: string; viewport?: 'desktop' | 'mobile' }) {
+  void viewport
   if (selected === 'landing') return <LandingPreview content={content} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} adminEmail={adminEmail} />
   if (selected === 'portal') return <PortalPreview content={content} courseTracks={courseTracks} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} adminEmail={adminEmail} />
   if (selected === 'locked') return <StatusPreview content={content} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} section="locked" adminEmail={adminEmail} />
