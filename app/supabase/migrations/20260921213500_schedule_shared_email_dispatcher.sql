@@ -1,0 +1,3 @@
+-- Remote migration applied to schedule shared-email-dispatcher every 5 minutes via pg_cron + pg_net.
+-- The applied remote migration included runtime-only secrets (anon JWT and SHARED_EMAIL_CRON_SECRET), so this committed file intentionally omits them.
+-- To rotate/recreate the schedule, see the Obsidian project note for Shared Email Service.
