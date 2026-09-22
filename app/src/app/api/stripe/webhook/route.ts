@@ -232,6 +232,19 @@ async function enrollBuyer(email: string, stripeCustomerId?: string | null, pref
   )
   if (profile.error) throw profile.error
 
+  const firstLesson = await supabase.from('lessons').upsert(
+    {
+      id: 'heart-intro',
+      day_number: 0,
+      arc: 'Opening the Heart',
+      title: 'Intro: The Masculine Heart',
+      slug: 'heart-intro',
+      is_published: true,
+    },
+    { onConflict: 'id' },
+  )
+  if (firstLesson.error) throw firstLesson.error
+
   const firstProgress = await supabase.from('lesson_progress').upsert(
     {
       user_id: userId,
