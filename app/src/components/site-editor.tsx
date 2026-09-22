@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { HeartCornerMark } from '@/components/heart-mark'
 import { SiteEditorPreview, type SiteEditorInteractionMode, type SiteEditorPreviewSelectionWithRect } from '@/components/site-editor-preview'
 import { courseTracks } from '@/lib/site-content'
@@ -82,6 +82,8 @@ export function SiteEditor({ adminEmail }: Props) {
   const [popoverRect, setPopoverRect] = useState<SiteEditorPreviewSelectionWithRect['rect'] | null>(null)
   const [previewViewport, setPreviewViewport] = useState<'desktop' | 'mobile'>('desktop')
   const [controlsCollapsed, setControlsCollapsed] = useState(false)
+  const [autoSaveReason, setAutoSaveReason] = useState('')
+  const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const previewHref = useMemo(() => {
     if (selected === 'landing') return '/'
@@ -96,6 +98,23 @@ export function SiteEditor({ adminEmail }: Props) {
   const selectedReferenceNote = selectedReference ? referenceNotes[selectedReference.itemKey] || '' : ''
   const queuedRequests = Object.entries(referenceNotes).filter(([, value]) => value.trim())
   const queuedRequestCount = queuedRequests.length
+
+  useEffect(() => {
+    if (!autoSaveReason) return undefined
+    if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current)
+    autoSaveTimer.current = setTimeout(() => {
+      save()
+        .then(() => setStatus(`${autoSaveReason} Auto-saved to Supabase.`))
+        .catch(() => setStatus(`${autoSaveReason} Saved locally, but Supabase auto-save failed. Use “Save all to Supabase” to retry.`))
+    }, 800)
+    return () => {
+      if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current)
+    }
+  }, [autoSaveReason, content, referenceNotes])
+
+  function markForAutoSave(reason: string) {
+    setAutoSaveReason(`${reason} · ${new Date().toLocaleTimeString()}`)
+  }
 
   function clearSelectionState() {
     setSelectedReference(null)
@@ -352,6 +371,19 @@ export function SiteEditor({ adminEmail }: Props) {
     }
   }
 
+  function updateReferenceDraft(value: string) {
+    if (!selectedReference) return
+    setReferenceDraft(value)
+    const nextReferenceNotes = { ...referenceNotes }
+    if (value.trim()) {
+      nextReferenceNotes[selectedReference.itemKey] = value
+    } else {
+      delete nextReferenceNotes[selectedReference.itemKey]
+    }
+    setReferenceNotes(nextReferenceNotes)
+    markForAutoSave(`Request for ${selectedReference.itemLabel}`)
+  }
+
   async function deleteReferenceNote(itemKey: string) {
     const nextReferenceNotes = Object.fromEntries(Object.entries(referenceNotes).filter(([key]) => key !== itemKey))
     setReferenceNotes(nextReferenceNotes)
@@ -374,10 +406,14 @@ export function SiteEditor({ adminEmail }: Props) {
   }
 
   function updateSectionReferenceNote(value: string) {
-    setReferenceNotes((current) => ({
-      ...current,
-      [selected]: value,
-    }))
+    const nextReferenceNotes = { ...referenceNotes }
+    if (value.trim()) {
+      nextReferenceNotes[selected] = value
+    } else {
+      delete nextReferenceNotes[selected]
+    }
+    setReferenceNotes(nextReferenceNotes)
+    markForAutoSave(`Section request for ${selected}`)
   }
 
   function updateSelectedTextEditValue(value: string) {
@@ -385,6 +421,8 @@ export function SiteEditor({ adminEmail }: Props) {
     const ok = updateTextByItemKey(selectedTextEdit.itemKey, value)
     if (!ok) {
       setStatus(`Direct editing is not available for ${selectedTextEdit.itemLabel} yet.`)
+    } else {
+      markForAutoSave(`Text edit for ${selectedTextEdit.itemLabel}`)
     }
   }
 
@@ -485,12 +523,12 @@ export function SiteEditor({ adminEmail }: Props) {
             <div className="mt-1 text-sm font-medium text-white">{selectedReference.itemLabel}</div>
             {selectedReferenceNote ? <div className="mt-3 rounded-[12px] border border-white/8 bg-[rgba(255,255,255,0.03)] px-3 py-2 text-xs text-white/78">Current note: {selectedReferenceNote}</div> : null}
             <label className="mt-3 grid gap-1 text-sm text-white/78">
-              <span>Reference note</span>
-              <textarea value={referenceDraft} onChange={(event) => setReferenceDraft(event.target.value)} rows={5} className="min-h-[104px] rounded-[14px] border border-white/10 bg-[rgba(255,255,255,0.03)] px-3 py-2 text-white outline-none" />
+              <span>Request note · auto-saves to Supabase as you type</span>
+              <textarea value={referenceDraft} onChange={(event) => updateReferenceDraft(event.target.value)} rows={5} className="min-h-[104px] rounded-[14px] border border-white/10 bg-[rgba(255,255,255,0.03)] px-3 py-2 text-white outline-none" />
             </label>
             <div className="mt-3 flex justify-end gap-2">
-              <button type="button" onClick={clearSelectionState} className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/72">Close without saving</button>
-              <button type="button" onClick={addReferenceNote} disabled={!referenceDraft.trim() || saving} className="rounded-full border border-[rgba(159,184,255,0.28)] bg-[rgba(159,184,255,0.12)] px-3 py-1 text-xs text-[#d8e6ff] disabled:opacity-50">{saving ? 'Saving…' : 'Save request to Supabase'}</button>
+              <button type="button" onClick={clearSelectionState} className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/72">Close request popup — auto-saved</button>
+              <button type="button" onClick={addReferenceNote} disabled={!referenceDraft.trim() || saving} className="rounded-full border border-[rgba(159,184,255,0.28)] bg-[rgba(159,184,255,0.12)] px-3 py-1 text-xs text-[#d8e6ff] disabled:opacity-50">{saving ? 'Saving…' : 'Save now to Supabase'}</button>
             </div>
           </div>
         ) : null}
@@ -500,7 +538,7 @@ export function SiteEditor({ adminEmail }: Props) {
             <div className="text-[10px] uppercase tracking-[0.18em] text-[#d8e6ff]">{selectedTextEdit.itemKey}</div>
             <div className="mt-1 text-sm font-medium text-white">{selectedTextEdit.itemLabel}</div>
             <label className="mt-3 grid gap-1 text-sm text-white/78">
-              <span>Edit text</span>
+              <span>Edit text · auto-saves to Supabase as you type</span>
               {selectedTextEdit.input === 'textarea' ? (
                 <textarea value={getSelectedTextEditValue()} onChange={(event) => updateSelectedTextEditValue(event.target.value)} rows={6} className="min-h-[118px] rounded-[14px] border border-white/10 bg-[rgba(255,255,255,0.03)] px-3 py-2 text-white outline-none" />
               ) : (
@@ -508,7 +546,7 @@ export function SiteEditor({ adminEmail }: Props) {
               )}
             </label>
             <div className="mt-3 flex justify-end gap-2">
-              <button type="button" onClick={clearSelectionState} className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/72">Close without saving to Supabase</button>
+              <button type="button" onClick={clearSelectionState} className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/72">Close text popup — auto-saved</button>
               <button type="button" onClick={saveSelectedTextAndClose} disabled={saving} className="rounded-full border border-[rgba(159,184,255,0.28)] bg-[rgba(159,184,255,0.12)] px-3 py-1 text-xs text-[#d8e6ff] disabled:opacity-50">{saving ? 'Saving…' : 'Save text to Supabase & close'}</button>
             </div>
           </div>
