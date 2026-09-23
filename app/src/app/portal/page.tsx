@@ -23,6 +23,24 @@ type ProfileRow = {
 
 type CardState = 'done' | 'available' | 'integrating' | 'locked'
 
+const partOneBoxBackground =
+  "linear-gradient(135deg,rgba(7,12,20,0.72),rgba(12,10,9,0.6) 42%,rgba(12,10,9,0.86)),url('/images/part-one-heart-locks-fence.jpg')"
+
+const partOneLessonBackground =
+  "linear-gradient(135deg,rgba(7,12,20,0.7),rgba(12,10,9,0.56) 45%,rgba(12,10,9,0.9)),url('/images/part-one-heart-locks-fence.jpg')"
+
+const partOneBackgroundStyle = {
+  backgroundImage: partOneBoxBackground,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+}
+
+const partOneLessonBackgroundStyle = {
+  backgroundImage: partOneLessonBackground,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+}
+
 function getPreviousLesson(lesson: LessonContent, lessons: LessonContent[]) {
   const index = lessons.findIndex((candidate) => candidate.id === lesson.id)
   return index > 0 ? lessons[index - 1] : null
@@ -250,11 +268,17 @@ export default function PortalPage() {
 
           <div className="mt-6 grid gap-4 xl:grid-cols-3">
             {courseTracks.map((track, index) => (
-              <div key={track.id} className="rounded-[22px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-4 text-sm text-[rgba(244,234,220,0.76)]">
-                <div className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{track.label}</div>
-                <div className="mt-2 text-xl font-semibold text-[#f4eadc]">{track.title}</div>
-                <div className="mt-1 text-[rgba(244,234,220,0.6)]">{track.daysLabel}</div>
-                <p className="mt-3">{portal.trackNotes[index] || track.editorNote}</p>
+              <div
+                key={track.id}
+                className="relative overflow-hidden rounded-[22px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-4 text-sm text-[rgba(244,234,220,0.76)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+                style={track.id === 'course-1' ? partOneBackgroundStyle : undefined}
+              >
+                <div className="relative z-[1]">
+                  <div className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{track.label}</div>
+                  <div className="mt-2 text-xl font-semibold text-[#f4eadc]">{track.title}</div>
+                  <div className="mt-1 text-[rgba(244,234,220,0.6)]">{track.daysLabel}</div>
+                  <p className="mt-3">{portal.trackNotes[index] || track.editorNote}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -272,7 +296,11 @@ export default function PortalPage() {
 
           <div className="grid gap-4 xl:grid-cols-3">
             {courseTracks.map((track) => (
-              <div key={track.id} className="rounded-[24px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-4">
+              <div
+                key={track.id}
+                className="relative overflow-hidden rounded-[24px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-4"
+                style={track.id === 'course-1' ? partOneBackgroundStyle : undefined}
+              >
                 <div className="mb-1 text-xs uppercase tracking-[0.16em] text-[#efc578]">{track.label}</div>
                 <div className="mb-4 text-lg font-semibold text-[#f4eadc]">{track.title}</div>
                 <div className="grid gap-3">
@@ -308,13 +336,14 @@ export default function PortalPage() {
                       return (
                         <div
                           key={lesson.id}
-                          className={`group relative rounded-[18px] border p-4 transition-transform duration-150 hover:-translate-y-0.5 ${
+                          className={`group relative overflow-hidden rounded-[18px] border p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-transform duration-150 hover:-translate-y-0.5 ${
                             state === 'done'
                               ? 'border-[rgba(228,183,103,0.18)] bg-[rgba(131,95,34,0.18)]'
                               : state === 'available'
                                 ? 'border-[#dca453] bg-[rgba(51,82,63,0.28)]'
                                 : 'border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.03)] opacity-85'
                           }`}
+                          style={track.id === 'course-1' ? partOneLessonBackgroundStyle : undefined}
                         >
                           <a
                             href={href}

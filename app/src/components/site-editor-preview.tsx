@@ -8,6 +8,24 @@ export type SiteEditorInteractionMode = 'preview' | 'reference' | 'text-edit'
 
 type SelectedSection = 'landing' | 'portal' | 'locked' | 'complete' | `lesson:${string}`
 
+const partOneBoxBackground =
+  "linear-gradient(135deg,rgba(7,12,20,0.72),rgba(12,10,9,0.6) 42%,rgba(12,10,9,0.86)),url('/images/part-one-heart-locks-fence.jpg')"
+
+const partOneLessonBackground =
+  "linear-gradient(135deg,rgba(7,12,20,0.7),rgba(12,10,9,0.56) 45%,rgba(12,10,9,0.9)),url('/images/part-one-heart-locks-fence.jpg')"
+
+const partOneBackgroundStyle = {
+  backgroundImage: partOneBoxBackground,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+}
+
+const partOneLessonBackgroundStyle = {
+  backgroundImage: partOneLessonBackground,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+}
+
 export type SiteEditorPreviewSelection = {
   itemKey: string
   itemLabel: string
@@ -288,19 +306,25 @@ function PortalPreview({ content, interactionMode, selectedItemKey, onSelectItem
 
           <div className="mt-6 grid gap-4 xl:grid-cols-3">
             {courseTracks.map((track, index) => (
-              <div key={track.id} className="rounded-[22px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-4 text-sm text-[rgba(244,234,220,0.76)]">
-                <PreviewTarget target={{ itemKey: shellKey('portal', `trackLabels.${index}`), itemLabel: `${track.title} label` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                  <div className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{portal.trackLabels?.[index] || track.label}</div>
-                </PreviewTarget>
-                <PreviewTarget target={{ itemKey: shellKey('portal', `trackTitles.${index}`), itemLabel: `${track.title} title` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-2">
-                  <div className="text-xl font-semibold text-[#f4eadc]">{portal.trackTitles?.[index] || track.title}</div>
-                </PreviewTarget>
-                <PreviewTarget target={{ itemKey: shellKey('portal', `trackDaysLabels.${index}`), itemLabel: `${track.title} days label` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-1">
-                  <div className="text-[rgba(244,234,220,0.6)]">{portal.trackDaysLabels?.[index] || track.daysLabel}</div>
-                </PreviewTarget>
-                <PreviewTarget target={{ itemKey: shellKey('portal', `trackNotes.${index}`), itemLabel: `${track.title} note` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-3">
-                  <p>{portal.trackNotes[index] || track.editorNote}</p>
-                </PreviewTarget>
+              <div
+                key={track.id}
+                className="relative overflow-hidden rounded-[22px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-4 text-sm text-[rgba(244,234,220,0.76)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+                style={track.id === 'course-1' ? partOneBackgroundStyle : undefined}
+              >
+                <div className="relative z-[1]">
+                  <PreviewTarget target={{ itemKey: shellKey('portal', `trackLabels.${index}`), itemLabel: `${track.title} label` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+                    <div className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{portal.trackLabels?.[index] || track.label}</div>
+                  </PreviewTarget>
+                  <PreviewTarget target={{ itemKey: shellKey('portal', `trackTitles.${index}`), itemLabel: `${track.title} title` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-2">
+                    <div className="text-xl font-semibold text-[#f4eadc]">{portal.trackTitles?.[index] || track.title}</div>
+                  </PreviewTarget>
+                  <PreviewTarget target={{ itemKey: shellKey('portal', `trackDaysLabels.${index}`), itemLabel: `${track.title} days label` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-1">
+                    <div className="text-[rgba(244,234,220,0.6)]">{portal.trackDaysLabels?.[index] || track.daysLabel}</div>
+                  </PreviewTarget>
+                  <PreviewTarget target={{ itemKey: shellKey('portal', `trackNotes.${index}`), itemLabel: `${track.title} note` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-3">
+                    <p>{portal.trackNotes[index] || track.editorNote}</p>
+                  </PreviewTarget>
+                </div>
               </div>
             ))}
           </div>
@@ -320,7 +344,11 @@ function PortalPreview({ content, interactionMode, selectedItemKey, onSelectItem
 
           <div className="grid gap-4 xl:grid-cols-3">
             {courseTracks.map((track) => (
-              <div key={track.id} className="rounded-[24px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-4">
+              <div
+                key={track.id}
+                className="relative overflow-hidden rounded-[24px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-4"
+                style={track.id === 'course-1' ? partOneBackgroundStyle : undefined}
+              >
                 <PreviewTarget target={{ itemKey: shellKey('portal', `trackLabels.${courseTracks.findIndex((entry) => entry.id === track.id)}`), itemLabel: `${track.title} map label` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
                   <div className="mb-1 text-xs uppercase tracking-[0.16em] text-[#efc578]">{portal.trackLabels?.[courseTracks.findIndex((entry) => entry.id === track.id)] || track.label}</div>
                 </PreviewTarget>
@@ -332,7 +360,11 @@ function PortalPreview({ content, interactionMode, selectedItemKey, onSelectItem
                     .map((lessonId) => lessons.find((lesson) => lesson.id === lessonId))
                     .filter((lesson): lesson is LessonContent => !!lesson)
                     .map((lesson) => (
-                      <div key={lesson.id} className="group relative rounded-[18px] border border-[#dca453] bg-[rgba(51,82,63,0.28)] p-4">
+                      <div
+                        key={lesson.id}
+                        className="group relative overflow-hidden rounded-[18px] border border-[#dca453] bg-[rgba(51,82,63,0.28)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+                        style={track.id === 'course-1' ? partOneLessonBackgroundStyle : undefined}
+                      >
                         <div className="block rounded-[12px]">
                           <PreviewTarget target={{ itemKey: `lesson:${lesson.slug}.stepLabel`, itemLabel: `${lesson.title} step label` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
                             <small className="mb-1 block text-[#efc578]">{lesson.stepLabel}</small>
