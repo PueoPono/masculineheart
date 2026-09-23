@@ -347,7 +347,6 @@ function PortalPreview({ content, interactionMode, selectedItemKey, onSelectItem
               <div
                 key={track.id}
                 className="relative overflow-hidden rounded-[24px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-4"
-                style={track.id === 'course-1' ? partOneBackgroundStyle : undefined}
               >
                 <PreviewTarget target={{ itemKey: shellKey('portal', `trackLabels.${courseTracks.findIndex((entry) => entry.id === track.id)}`), itemLabel: `${track.title} map label` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
                   <div className="mb-1 text-xs uppercase tracking-[0.16em] text-[#efc578]">{portal.trackLabels?.[courseTracks.findIndex((entry) => entry.id === track.id)] || track.label}</div>
