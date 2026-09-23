@@ -406,8 +406,7 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem,
   const isMobile = viewport === 'mobile'
   const shellClass = isMobile ? 'min-h-[1500px] bg-[linear-gradient(180deg,#090909,#10130f)] px-3 py-6 text-[#f4eadc]' : 'min-h-[1500px] bg-[linear-gradient(180deg,#090909,#10130f)] px-4 py-10 text-[#f4eadc]'
   const titleClass = isMobile ? 'text-3xl font-semibold tracking-[-0.04em] text-[#e6bd74]' : 'text-5xl font-semibold tracking-[-0.04em] text-[#e6bd74]'
-  const firstGridClass = isMobile ? 'mt-6 grid gap-6' : 'mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)]'
-  const reflectionGridClass = isMobile ? 'mt-6 grid gap-6' : 'mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]'
+  const firstGridClass = 'mt-6 grid gap-6'
   const actionClass = isMobile ? 'mt-6 grid gap-3' : 'mt-6 flex flex-wrap gap-3'
 
   return (
@@ -434,6 +433,20 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem,
 
         <section className={firstGridClass}>
           <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
+            <div className="mb-5 rounded-[22px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-5">
+              <PreviewTarget target={{ itemKey: `${prefix}.supportingTextHeading`, itemLabel: 'Supporting text heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+                <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.supportingTextHeading || 'Todays Steps'}</p>
+              </PreviewTarget>
+              <ul className="mt-4 space-y-3 text-[rgba(244,234,220,0.74)]">
+                {lesson.supportingPoints.map((point, index) => (
+                  <li key={`${lesson.id}-support-${index}`} className="rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] px-4 py-3">
+                    <PreviewTarget target={{ itemKey: `${prefix}.supportingPoints.${index}`, itemLabel: `Supporting point ${index + 1}` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+                      <span>{point}</span>
+                    </PreviewTarget>
+                  </li>
+                ))}
+              </ul>
+            </div>
             <div className="mb-4 flex items-center justify-between gap-4">
               <div>
                 <PreviewTarget target={{ itemKey: `${prefix}.videoLabel`, itemLabel: 'Video label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
@@ -463,63 +476,44 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem,
               </PreviewTarget>
             </div>
           </div>
-
-          <div className="grid gap-6">
-            <aside className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-              <PreviewTarget target={{ itemKey: `${prefix}.supportingTextHeading`, itemLabel: 'Supporting text heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.supportingTextHeading || 'Before you watch'}</p>
-              </PreviewTarget>
-              <ul className="mt-4 space-y-3 text-[rgba(244,234,220,0.74)]">
-                {lesson.supportingPoints.map((point, index) => (
-                  <li key={`${lesson.id}-support-${index}`} className="rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] px-4 py-3">
-                    <PreviewTarget target={{ itemKey: `${prefix}.supportingPoints.${index}`, itemLabel: `Supporting point ${index + 1}` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                      <span>{point}</span>
-                    </PreviewTarget>
-                  </li>
-                ))}
-              </ul>
-            </aside>
-
-            <aside className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-              <PreviewTarget target={{ itemKey: `${prefix}.practiceHeading`, itemLabel: 'Practice heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.practiceHeading || 'Practice'}</p>
-              </PreviewTarget>
-              <PreviewTarget target={{ itemKey: `${prefix}.practice`, itemLabel: 'Practice' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-3">
-                <p className="text-[rgba(244,234,220,0.74)]">{lesson.practice}</p>
-              </PreviewTarget>
-            </aside>
-          </div>
         </section>
 
-        <section className={reflectionGridClass}>
+        <section className="mt-6 grid gap-6">
           <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
             <PreviewTarget target={{ itemKey: `${prefix}.reflectionPromptsHeading`, itemLabel: 'Reflection prompts heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.reflectionPromptsHeading || 'Reflection questions'}</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.reflectionPromptsHeading || 'Heart Fitness Exercise'}</p>
             </PreviewTarget>
-            <p className="mt-3 text-sm leading-7 text-[rgba(244,234,220,0.72)]">Open your note book and write what comes to mind. Or type here directly. Your typed reflections will be saved as you go and emailed to you after you complete the full course.</p>
-            <div className="mt-4 grid gap-3">
-              {lesson.prompts.map((prompt, index) => (
-                <div key={`${lesson.id}-prompt-${index}`} className="rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] px-4 py-4">
+            <div className="mt-4 rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] p-5 text-[rgba(244,234,220,0.8)]">
+              {lesson.practice ? (
+                <PreviewTarget target={{ itemKey: `${prefix}.practice`, itemLabel: 'Practice' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+                  <p>{lesson.practice}</p>
+                </PreviewTarget>
+              ) : null}
+              <p className={lesson.practice ? 'mt-3' : ''}>Open your note book and write what comes to mind. Or type here directly. Your typed reflections will be saved as you go and emailed to you after you complete the full course.</p>
+              {lesson.journalPrompt ? (
+                <PreviewTarget target={{ itemKey: `${prefix}.journalPrompt`, itemLabel: 'Journal prompt' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-3">
+                  <p>{lesson.journalPrompt}</p>
+                </PreviewTarget>
+              ) : null}
+              {lesson.prompts.length ? (
+                <div className="mt-4">
                   <PreviewTarget target={{ itemKey: `${prefix}.promptLabelPrefix`, itemLabel: 'Prompt label prefix' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                    <span className="text-xs uppercase tracking-[0.14em] text-[#efc578]">{lesson.promptLabelPrefix || 'Reflection question'} {index + 1}</span>
+                    <p className="text-xs uppercase tracking-[0.14em] text-[#efc578]">{lesson.promptLabelPrefix || 'Reflection'}</p>
                   </PreviewTarget>
-                  <PreviewTarget target={{ itemKey: `${prefix}.prompts.${index}`, itemLabel: `Prompt ${index + 1}` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-2">
-                    <p className="text-[rgba(244,234,220,0.8)]">{prompt}</p>
-                  </PreviewTarget>
+                  <ul className="mt-3 space-y-3">
+                    {lesson.prompts.map((prompt, index) => (
+                      <li key={`${lesson.id}-prompt-${index}`}>
+                        <PreviewTarget target={{ itemKey: `${prefix}.prompts.${index}`, itemLabel: `Prompt ${index + 1}` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+                          <span>{prompt}</span>
+                        </PreviewTarget>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              ))}
+              ) : null}
             </div>
             <div className="mt-5 min-h-40 w-full rounded-[18px] border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-4 py-3 text-[rgba(244,234,220,0.46)]">Type your reflection here...</div>
             <div className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10]">Save reflection</div>
-          </div>
-
-          <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-            <PreviewTarget target={{ itemKey: `${prefix}.journalPromptHeading`, itemLabel: 'Journal prompt heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.journalPromptHeading || 'Journal prompt'}</p>
-            </PreviewTarget>
-            <PreviewTarget target={{ itemKey: `${prefix}.journalPrompt`, itemLabel: 'Journal prompt' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-4 rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] p-5">
-              <div className="text-[rgba(244,234,220,0.8)]">{lesson.journalPrompt}</div>
-            </PreviewTarget>
           </div>
         </section>
 

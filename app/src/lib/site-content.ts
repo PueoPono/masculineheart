@@ -916,7 +916,12 @@ export const defaultSiteContent: SiteContent = {
     cardBody: 'Completion saved. Return to the portal to continue.',
     backToPortalLabel: 'Back to portal',
   },
-  lessons,
+  lessons: lessons.map((lesson) => ({
+    ...lesson,
+    supportingTextHeading: lesson.supportingTextHeading || 'Todays Steps',
+    reflectionPromptsHeading: lesson.reflectionPromptsHeading || 'Heart Fitness Exercise',
+    promptLabelPrefix: lesson.promptLabelPrefix || 'Reflection',
+  })),
 }
 
 export function getLessonBySlug(slug: string, content: SiteContent = defaultSiteContent) {

@@ -254,7 +254,7 @@ export function LessonClient({ slug }: { slug: string }) {
         <section className="mt-6 grid gap-6">
           <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
             <div className="mb-5 rounded-[22px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-5">
-              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.supportingTextHeading || 'Before you watch'}</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.supportingTextHeading || 'Todays Steps'}</p>
               <ul className="mt-4 space-y-3 text-[rgba(244,234,220,0.74)]">
                 {lesson.supportingPoints.map((point) => (
                   <li key={point} className="rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] px-4 py-3">{point}</li>
@@ -294,30 +294,28 @@ export function LessonClient({ slug }: { slug: string }) {
           </div>
         </section>
 
-        <section className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <section className="mt-6 grid gap-6">
           <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-            <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.reflectionPromptsHeading || 'Reflection questions'}</p>
-            {lesson.practice ? <p className="mt-3 text-sm leading-7 text-[rgba(244,234,220,0.72)]">{lesson.practice}</p> : null}
-            <p className="mt-3 text-sm leading-7 text-[rgba(244,234,220,0.72)]">Open your note book and write what comes to mind. Or type here directly. Your typed reflections will be saved as you go and emailed to you after you complete the full course.</p>
-            <div className="mt-4 grid gap-3">
-              {lesson.prompts.map((prompt, index) => (
-                <div key={prompt} className="rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] px-4 py-4">
-                  <span className="text-xs uppercase tracking-[0.14em] text-[#efc578]">{lesson.promptLabelPrefix || 'Reflection question'} {index + 1}</span>
-                  <p className="mt-2 text-[rgba(244,234,220,0.8)]">{prompt}</p>
+            <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.reflectionPromptsHeading || 'Heart Fitness Exercise'}</p>
+            <div className="mt-4 rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] p-5 text-[rgba(244,234,220,0.8)]">
+              {lesson.practice ? <p>{lesson.practice}</p> : null}
+              <p className={lesson.practice ? 'mt-3' : ''}>Open your note book and write what comes to mind. Or type here directly. Your typed reflections will be saved as you go and emailed to you after you complete the full course.</p>
+              {lesson.journalPrompt ? <p className="mt-3">{lesson.journalPrompt}</p> : null}
+              {lesson.prompts.length ? (
+                <div className="mt-4">
+                  <p className="text-xs uppercase tracking-[0.14em] text-[#efc578]">{lesson.promptLabelPrefix || 'Reflection'}</p>
+                  <ul className="mt-3 space-y-3">
+                    {lesson.prompts.map((prompt) => (
+                      <li key={prompt}>{prompt}</li>
+                    ))}
+                  </ul>
                 </div>
-              ))}
+              ) : null}
             </div>
             <textarea value={reflectionDraft} onChange={(event) => setReflectionDraft(event.target.value)} rows={8} className="mt-5 min-h-40 w-full rounded-[18px] border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-4 py-3 text-[#f4eadc] outline-none" placeholder="Type your reflection here..." />
             <button onClick={saveReflection} disabled={savingReflection} className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10] disabled:opacity-60">
               {savingReflection ? 'Saving…' : 'Save reflection'}
             </button>
-          </div>
-
-          <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-            <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.journalPromptHeading || 'Journal prompt'}</p>
-            <div className="mt-4 rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] p-5 text-[rgba(244,234,220,0.8)]">
-              {lesson.journalPrompt}
-            </div>
           </div>
         </section>
 
