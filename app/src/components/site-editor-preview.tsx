@@ -17,6 +17,12 @@ const partOneLessonBackground =
 const partTwoLessonBackground =
   "linear-gradient(135deg,rgba(5,18,22,0.72),rgba(11,23,24,0.54) 42%,rgba(9,12,10,0.92)),url('/images/part-two-golden-pond.jpg')"
 
+const partThreeBoxBackground =
+  "linear-gradient(135deg,rgba(9,15,10,0.7),rgba(31,20,12,0.54) 42%,rgba(9,10,7,0.88)),url('/images/part-three-intentions-planting.jpg')"
+
+const partThreeLessonBackground =
+  "linear-gradient(135deg,rgba(9,15,10,0.74),rgba(31,20,12,0.58) 42%,rgba(9,10,7,0.92)),url('/images/part-three-intentions-planting.jpg')"
+
 const partOneBackgroundStyle = {
   backgroundImage: partOneBoxBackground,
   backgroundSize: 'cover',
@@ -31,6 +37,18 @@ const partOneLessonBackgroundStyle = {
 
 const partTwoLessonBackgroundStyle = {
   backgroundImage: partTwoLessonBackground,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+}
+
+const partThreeBackgroundStyle = {
+  backgroundImage: partThreeBoxBackground,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+}
+
+const partThreeLessonBackgroundStyle = {
+  backgroundImage: partThreeLessonBackground,
   backgroundSize: 'cover',
   backgroundPosition: 'center',
 }
@@ -318,7 +336,7 @@ function PortalPreview({ content, interactionMode, selectedItemKey, onSelectItem
               <div
                 key={track.id}
                 className="relative overflow-hidden rounded-[22px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-4 text-sm text-[rgba(244,234,220,0.76)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
-                style={track.id === 'course-1' ? partOneBackgroundStyle : undefined}
+                style={track.id === 'course-1' ? partOneBackgroundStyle : track.id === 'course-3' ? partThreeBackgroundStyle : undefined}
               >
                 <div className="relative z-[1]">
                   <PreviewTarget target={{ itemKey: shellKey('portal', `trackLabels.${index}`), itemLabel: `${track.title} label` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
@@ -376,7 +394,9 @@ function PortalPreview({ content, interactionMode, selectedItemKey, onSelectItem
                             ? partOneLessonBackgroundStyle
                             : track.id === 'course-2'
                               ? partTwoLessonBackgroundStyle
-                              : undefined
+                              : track.id === 'course-3'
+                                ? partThreeLessonBackgroundStyle
+                                : undefined
                         }
                       >
                         <div className="block rounded-[12px]">
