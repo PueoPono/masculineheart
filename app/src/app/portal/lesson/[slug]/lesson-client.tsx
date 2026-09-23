@@ -253,14 +253,10 @@ export function LessonClient({ slug }: { slug: string }) {
 
         <section className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)]">
           <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-            <div className="mb-5 rounded-[22px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-5">
-              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Before you watch</p>
-              <p className="mt-2 text-[rgba(244,234,220,0.78)]">Watch the video, then complete the Heart Fitness Exercise below.</p>
-            </div>
             <div className="mb-4 flex items-center justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.videoLabel}</p>
-                <h2 className="mt-1 text-2xl font-semibold">Lesson video</h2>
+                <h2 className="mt-1 text-2xl font-semibold">{lesson.videoHeading || 'Lesson video'}</h2>
               </div>
             </div>
             <div className="overflow-hidden rounded-[22px] border border-[rgba(239,197,120,0.14)] bg-[linear-gradient(180deg,rgba(33,43,34,0.8),rgba(20,15,12,0.92))]">
@@ -277,12 +273,13 @@ export function LessonClient({ slug }: { slug: string }) {
                 </div>
               )}
             </div>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <button onClick={saveVideoComplete} disabled={savingVideo} className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10] disabled:opacity-60">
-                {savingVideo ? 'Saving…' : videoDone ? 'Video completion saved' : 'Mark video complete'}
+            {lesson.videoSupport ? <p className="mt-4 text-[rgba(244,234,220,0.74)]">{lesson.videoSupport}</p> : null}
+            <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
+              <button onClick={saveVideoComplete} disabled={savingVideo} className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 text-center font-bold text-[#2d1b10] disabled:opacity-60 sm:w-auto">
+                {savingVideo ? 'Saving…' : videoDone ? (lesson.videoCompleteSavedLabel || 'Video completion saved') : (lesson.markVideoCompleteLabel || 'Mark video complete')}
               </button>
-              <button onClick={markComplete} disabled={savingComplete} className="inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-5 font-semibold text-[#f4eadc] disabled:opacity-60">
-                {savingComplete ? 'Saving…' : nextLesson ? 'Complete lesson' : 'Complete final lesson'}
+              <button onClick={markComplete} disabled={savingComplete} className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-5 text-center font-semibold text-[#f4eadc] disabled:opacity-60 sm:w-auto">
+                {savingComplete ? 'Saving…' : nextLesson ? (lesson.completeLessonLabel || 'Complete lesson') : (lesson.completeFinalLessonLabel || 'Complete final lesson')}
               </button>
             </div>
             {status ? <div className="mt-4 rounded-[18px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-4 text-[rgba(244,234,220,0.74)]">{status}</div> : null}
@@ -290,7 +287,7 @@ export function LessonClient({ slug }: { slug: string }) {
 
           <div className="grid gap-6">
             <aside className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Heart Fitness Exercise</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.supportingTextHeading || 'Heart Fitness Exercise'}</p>
               <ul className="mt-4 space-y-3 text-[rgba(244,234,220,0.74)]">
                 {lesson.supportingPoints.map((point) => (
                   <li key={point} className="rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] px-4 py-3">{point}</li>
@@ -299,7 +296,7 @@ export function LessonClient({ slug }: { slug: string }) {
             </aside>
 
             <aside className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Practice</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.practiceHeading || 'Practice'}</p>
               <p className="mt-3 text-[rgba(244,234,220,0.74)]">{lesson.practice}</p>
             </aside>
           </div>
@@ -312,7 +309,7 @@ export function LessonClient({ slug }: { slug: string }) {
             <div className="mt-4 grid gap-3">
               {lesson.prompts.map((prompt, index) => (
                 <div key={prompt} className="rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] px-4 py-4">
-                  <span className="text-xs uppercase tracking-[0.14em] text-[#efc578]">Heart Fitness Exercise {index + 1}</span>
+                  <span className="text-xs uppercase tracking-[0.14em] text-[#efc578]">{lesson.promptLabelPrefix || 'Heart Fitness Exercise'} {index + 1}</span>
                   <p className="mt-2 text-[rgba(244,234,220,0.8)]">{prompt}</p>
                 </div>
               ))}
@@ -324,7 +321,7 @@ export function LessonClient({ slug }: { slug: string }) {
           </div>
 
           <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-            <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Journal prompt</p>
+            <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.journalPromptHeading || 'Journal prompt'}</p>
             <div className="mt-4 rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] p-5 text-[rgba(244,234,220,0.8)]">
               {lesson.journalPrompt}
             </div>

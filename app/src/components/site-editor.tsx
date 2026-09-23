@@ -688,13 +688,28 @@ export function SiteEditor({ adminEmail }: Props) {
             <>
               <Field label="Lesson title" value={activeLesson.title} onChange={(value) => updateLesson(activeLesson.id, { title: value })} />
               <Field label="Theme" value={activeLesson.theme} onChange={(value) => updateLesson(activeLesson.id, { theme: value })} multiline />
+              <Field label="Video label" value={activeLesson.videoLabel} onChange={(value) => updateLesson(activeLesson.id, { videoLabel: value })} />
+              <Field label="Video heading" value={activeLesson.videoHeading || ''} onChange={(value) => updateLesson(activeLesson.id, { videoHeading: value })} />
               <Field label="Video URL / embed URL" value={activeLesson.videoUrl} onChange={(value) => updateLesson(activeLesson.id, { videoUrl: value })} />
-              <Field label="Video support" value={activeLesson.videoSupport} onChange={(value) => updateLesson(activeLesson.id, { videoSupport: value })} multiline />
+              <Field label="Optional video summary/support (shown only when filled)" value={activeLesson.videoSupport} onChange={(value) => updateLesson(activeLesson.id, { videoSupport: value })} multiline />
+              <Field label="Mark video complete button" value={activeLesson.markVideoCompleteLabel || ''} onChange={(value) => updateLesson(activeLesson.id, { markVideoCompleteLabel: value })} />
+              <Field label="Video complete saved button" value={activeLesson.videoCompleteSavedLabel || ''} onChange={(value) => updateLesson(activeLesson.id, { videoCompleteSavedLabel: value })} />
+              <Field label="Complete lesson button" value={activeLesson.completeLessonLabel || ''} onChange={(value) => updateLesson(activeLesson.id, { completeLessonLabel: value })} />
+              <Field label="Complete final lesson button" value={activeLesson.completeFinalLessonLabel || ''} onChange={(value) => updateLesson(activeLesson.id, { completeFinalLessonLabel: value })} />
+              <Field label="Supporting text heading" value={activeLesson.supportingTextHeading || ''} onChange={(value) => updateLesson(activeLesson.id, { supportingTextHeading: value })} />
               <Field label="Supporting points (one per line)" value={toLines(activeLesson.supportingPoints)} onChange={(value) => updateLesson(activeLesson.id, { supportingPoints: fromLines(value) })} multiline />
-              <Field label="Integration body" value={activeLesson.integrationBody} onChange={(value) => updateLesson(activeLesson.id, { integrationBody: value })} multiline />
+              <Field label="Lesson rhythm heading" value={activeLesson.rhythmHeading || ''} onChange={(value) => updateLesson(activeLesson.id, { rhythmHeading: value })} />
+              <Field label="Integration body / lesson rhythm body" value={activeLesson.integrationBody} onChange={(value) => updateLesson(activeLesson.id, { integrationBody: value })} multiline />
+              <Field label="Practice heading" value={activeLesson.practiceHeading || ''} onChange={(value) => updateLesson(activeLesson.id, { practiceHeading: value })} />
               <Field label="Practice" value={activeLesson.practice} onChange={(value) => updateLesson(activeLesson.id, { practice: value })} multiline />
+              <Field label="Reflection prompts heading" value={activeLesson.reflectionPromptsHeading || ''} onChange={(value) => updateLesson(activeLesson.id, { reflectionPromptsHeading: value })} />
+              <Field label="Prompt label prefix" value={activeLesson.promptLabelPrefix || ''} onChange={(value) => updateLesson(activeLesson.id, { promptLabelPrefix: value })} />
               <Field label="Reflection prompts (one per line)" value={toLines(activeLesson.prompts)} onChange={(value) => updateLesson(activeLesson.id, { prompts: fromLines(value) })} multiline />
+              <Field label="Journal prompt heading" value={activeLesson.journalPromptHeading || ''} onChange={(value) => updateLesson(activeLesson.id, { journalPromptHeading: value })} />
               <Field label="Journal prompt" value={activeLesson.journalPrompt} onChange={(value) => updateLesson(activeLesson.id, { journalPrompt: value })} multiline />
+              <Field label="Previous lesson button" value={activeLesson.previousLessonLabel || ''} onChange={(value) => updateLesson(activeLesson.id, { previousLessonLabel: value })} />
+              <Field label="Back to portal button" value={activeLesson.backToPortalLabel || ''} onChange={(value) => updateLesson(activeLesson.id, { backToPortalLabel: value })} />
+              <Field label="Next lesson button" value={activeLesson.nextLessonLabel || ''} onChange={(value) => updateLesson(activeLesson.id, { nextLessonLabel: value })} />
             </>
           ) : null}
 

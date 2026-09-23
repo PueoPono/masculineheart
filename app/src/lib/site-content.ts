@@ -128,7 +128,7 @@ const lessons: LessonContent[] = [
     theme: 'Welcome... To your Heart 🫶',
     videoLabel: 'Heart Unlock · Intro · Introduction',
     videoUrl: 'https://app.groove.cm/grooveembeds/video/274627/GRtZBn0eSk1cGGfksh3i',
-    videoSupport: 'The First Step - Is Stepping Down To The Heart.',
+    videoSupport: '',
     supportingPoints: [
       'Only 10-20 minutes a day for 7 days.',
       '1- Watch the Intro Video,',
@@ -156,7 +156,7 @@ const lessons: LessonContent[] = [
     theme: 'Identifying the pain is the first step to understanding the pain and relieving the pain.',
     videoLabel: 'Heart Unlock · Day 1 · Purpose to Pain',
     videoUrl: 'https://app.groove.cm/grooveembeds/video/274629/xyyLSPiIRAYmKJYcidt5',
-    videoSupport: 'Watch the video, then complete the Heart Fitness Exercise below.',
+    videoSupport: '',
     supportingPoints: [
       '1- Watch the video on identifying emotional pain.',
       '2- Complete the Heart Fitness Exercise for Day 1',
@@ -181,7 +181,7 @@ const lessons: LessonContent[] = [
     theme: 'Sadness may be one of the first wounds we try to cover over... and it leaves scars.',
     videoLabel: 'Heart Unlock · Day 2 · On Scars',
     videoUrl: 'https://app.groove.cm/grooveembeds/video/274630/uwXUyPPgvVqmooDz9Iaf',
-    videoSupport: 'Identifying sources of Sadness is important to Life and being Human.',
+    videoSupport: '',
     supportingPoints: [
       'Watch the video, then complete the Heart Fitness Exercise below.',
       '1- Watch the video on identifying sadness',
@@ -207,7 +207,7 @@ const lessons: LessonContent[] = [
     theme: 'Emotional sovereignty is having the power and skill to maintain my own emotional state.',
     videoLabel: 'Heart Unlock · Day 3 · Anger and Defenses.',
     videoUrl: 'https://app.groove.cm/grooveembeds/video/274690/yxSxVfS4jmBTieY9gEVN',
-    videoSupport: 'Most of us lose sovereignty of our emotional core in some way.',
+    videoSupport: '',
     supportingPoints: [
       'Watch the video, then complete the Heart Fitness Exercise below.',
       '1- Watch the video on Anger',
@@ -233,7 +233,7 @@ const lessons: LessonContent[] = [
     theme: 'Stifled tears & pain ignored, means stifled smiles and stunted happiness.',
     videoLabel: 'Heart Unlock · Day 4 · Numbing',
     videoUrl: 'https://app.groove.cm/grooveembeds/video/274692/TkaaCNsAL3qRzumZOuCW',
-    videoSupport: 'Watch the video, then complete the Heart Fitness Exercise below.',
+    videoSupport: '',
     supportingPoints: [
       '1- Watch the video on Numbing',
       '2- Complete the Heart Fitness Exercise for Day 4',
@@ -258,7 +258,7 @@ const lessons: LessonContent[] = [
     theme: '"I am not enough" is never true, but recognize when it\'s there.',
     videoLabel: 'Heart Unlock · Day 5 · Shame',
     videoUrl: 'https://app.groove.cm/grooveembeds/video/274697/2c8QltDrMW15Uea5sKAo',
-    videoSupport: '"I see you" - Awareness is the greatest tool.',
+    videoSupport: '',
     supportingPoints: [
       'Watch the video, then complete the Heart Fitness Exercise below.',
       '1- Watch the video on Shame',
@@ -284,7 +284,7 @@ const lessons: LessonContent[] = [
     theme: 'What are the consequences of not knowing or acknowledging your pain?',
     videoLabel: 'Heart Unlock · Day 6 · Regret',
     videoUrl: 'https://app.groove.cm/grooveembeds/video/274701/4ICvM6mXTBhb2OvvymKC',
-    videoSupport: 'Watch the video, then complete the Heart Fitness Exercise below.',
+    videoSupport: '',
     supportingPoints: [
       '1- Watch the video on Regret',
       '2- Complete the Heart Fitness Exercise for Day 6',
@@ -309,7 +309,7 @@ const lessons: LessonContent[] = [
     theme: 'To live fully I need to FEEL fully as well!',
     videoLabel: 'Heart Unlock · Day 7 · Choosing to Feel',
     videoUrl: 'https://app.groove.cm/grooveembeds/video/274702/EWzoI8gYxYKd09Fwwspw',
-    videoSupport: 'A decision to allow the Heart to Feel: Will you commit to allow yourself to feel?',
+    videoSupport: '',
     supportingPoints: [
       'Watch the video, then complete the Heart Fitness Exercise below.',
       '1- Watch the video about choosing to Feel',
@@ -338,7 +338,7 @@ const lessons: LessonContent[] = [
     theme: 'Our Hearts, our imaginations, and our subconscious- these are all deeply connected- these use the language of stories and symbols.',
     videoLabel: 'Iron John / Language Of The Heart · Part 2 Intro · Introduction',
     videoUrl: 'https://player.vimeo.com/video/467500375?portrait=0&transparent=1',
-    videoSupport: 'Listen and ENJOY this journey with the story of Iron John... allow your heart to hear it.',
+    videoSupport: '',
     supportingPoints: [
       'We learn from stories with our heart when we enjoy them...',
       '1- Watch the Intro Video,',
@@ -364,7 +364,7 @@ const lessons: LessonContent[] = [
     theme: 'Stories, symbols, metaphors, emotions... these are the language of the heart.',
     videoLabel: 'Iron John / Language Of The Heart · Day 8 · Iron John Beginnings',
     videoUrl: 'https://player.vimeo.com/video/467494269?portrait=0&transparent=1',
-    videoSupport: 'As you allow yourselves to listen and enjoy a story, the heart is able to hear it.',
+    videoSupport: '',
     supportingPoints: [
       'Iron John Beginnings',
       '1- Listen to the first part of the story of Iron John for 3 days (try for consecutive). First thing in the morning, or before bed is a good time to access the Heart.',
@@ -391,7 +391,7 @@ const lessons: LessonContent[] = [
     theme: 'The cage I build, is all the stories and beliefs that keep me from being my authentic self.',
     videoLabel: 'Iron John / Language Of The Heart · Day 9 · The Cage',
     videoUrl: 'https://player.vimeo.com/video/468344269?portrait=0&transparent=1',
-    videoSupport: 'They are the things that keep me from growing and expanding.',
+    videoSupport: '',
     supportingPoints: [
       'Watch the video, then complete the Heart Fitness Exercise below.',
       'If you like to go deep, you can spend 4 consecutive days on this exercise. You can go back to portions of the recording as desired.',
@@ -420,7 +420,7 @@ const lessons: LessonContent[] = [
     theme: 'Non-Judgement, practiced with honesty, is KEY to emotional freedom.',
     videoLabel: 'Iron John / Language Of The Heart · Day 10 · Non-Judgement',
     videoUrl: 'https://player.vimeo.com/video/469815966?portrait=0&transparent=1',
-    videoSupport: 'Spend some time with the following questions...',
+    videoSupport: '',
     supportingPoints: [
       'You can spend 5 minutes brainstorming per question, all at once, or split over 4 consecutive days. Try using a 5 minute timer.',
       'For brainstorming, touch your Heart, address your Heart, and even if you are just looking at a blank page, spend time asking and considering the question.',
@@ -449,7 +449,7 @@ const lessons: LessonContent[] = [
     theme: 'Box Breathing- As a tool to Change, Shift, and Heal The Heart',
     videoLabel: 'Iron John / Language Of The Heart · Day 11 · Box Breathing',
     videoUrl: 'https://player.vimeo.com/video/469578165?portrait=0&transparent=1',
-    videoSupport: 'Choose one word that you want to breathe in... and connect it to your breath.',
+    videoSupport: '',
     supportingPoints: [
       'Maybe it\'s love, or light, or courage, or inspiration. Choose your "word" or set of words. "Life" works well for many.',
       '1- Inhale (4 counts, "Breathe in with Life")',
@@ -479,7 +479,7 @@ const lessons: LessonContent[] = [
     theme: 'How do we tend our Hearts?',
     videoLabel: 'Iron John / Language Of The Heart · Day 12 · Tending the Heart',
     videoUrl: 'https://player.vimeo.com/video/471745654?portrait=0&transparent=1',
-    videoSupport: 'Unhappiness, anxiety, and much of our internal negative experiences are because we have not learned and taken the time to tend our hearts...',
+    videoSupport: '',
     supportingPoints: [
       'Why is it important for you to realize that your heart exists? List at least one reason.',
       'How can you benefit by tending your heart as if it were a spring, or a fire, or a garden?',
@@ -509,7 +509,7 @@ const lessons: LessonContent[] = [
     theme: 'The Earth and The Masculine Heart',
     videoLabel: 'Iron John / Language Of The Heart · Day 13 · Father Earth',
     videoUrl: 'https://player.vimeo.com/video/471753829?portrait=0&transparent=1',
-    videoSupport: 'Consider giving space in your mind/heart to the phrase "father earth"...',
+    videoSupport: '',
     supportingPoints: [
       'Centuries of thought, passed down, may imprint and effect our thinking more than we know.',
       'Our language may even drive disconnection between Men and their Hearts.',
@@ -539,7 +539,7 @@ const lessons: LessonContent[] = [
     theme: 'Finding the big beliefs in life that you may need to let go of, may not happen in this sitting... But start to ask the question.',
     videoLabel: 'Iron John / Language Of The Heart · Day 14 · Letting Go',
     videoUrl: 'https://player.vimeo.com/video/475973182?portrait=0&transparent=1',
-    videoSupport: 'What do I need to let go of?',
+    videoSupport: '',
     supportingPoints: [
       'Name 2 BIG things that you associate strongly with your identity.',
       'The actual thing may not be negative at all... but is there some shadow belief or behavior associated with it?',
@@ -566,7 +566,7 @@ const lessons: LessonContent[] = [
     theme: 'We left off, with the boy being sent to work in the garden... here is the rest of the story.',
     videoLabel: 'Iron John / Language Of The Heart · Day 15 · Part 2/2 of the Story of Iron John',
     videoUrl: 'https://player.vimeo.com/video/476693295?h=2bee82ac19&portrait=0&transparent=1',
-    videoSupport: 'Stories impressed on the heart, give us space to learn in a different way.',
+    videoSupport: '',
     supportingPoints: [
       'Don\'t worry about the detail. Enjoy the listen. Enjoy the story.',
       'Listen and let yourself feel.',
@@ -594,7 +594,7 @@ const lessons: LessonContent[] = [
     theme: 'Setting these intentions heals the heart... As we plant them, and nurture them, they grow deep into the Heart and subconscious.',
     videoLabel: 'Intentions Worth Planting · Part 3 Intro · Introduction',
     videoUrl: 'https://player.vimeo.com/video/483878304?portrait=0&transparent=1',
-    videoSupport: 'This is how to tap into a more meaningful life, a deeper happiness in the Heart.',
+    videoSupport: '',
     supportingPoints: [
       'Don\'t be surprised when things just start working out more often.',
       'We ALWAYS have deeper intentions running our life, so getting conscious of the intentions that we want is KEY!',
@@ -622,7 +622,7 @@ const lessons: LessonContent[] = [
     theme: 'We are always creating, so let\'s get intentional about it!',
     videoLabel: 'Intentions Worth Planting · Day 16 · Be Creative',
     videoUrl: 'https://player.vimeo.com/video/491451277?portrait=0&transparent=1',
-    videoSupport: 'Mentioned here is one way to Be Creative, by using imagination...',
+    videoSupport: '',
     supportingPoints: [
       'What if you took 30 seconds to imagine something incredibly good that could happen. Try it. I dare you. And notice how you feel.',
       'There are unlimited ways for you to be creative.',
@@ -651,7 +651,7 @@ const lessons: LessonContent[] = [
     theme: 'True Kindness is Courage.',
     videoLabel: 'Intentions Worth Planting · Day 17 · Be Kind',
     videoUrl: 'https://player.vimeo.com/video/483727694?portrait=0&transparent=1',
-    videoSupport: 'It is an intention to truly build, to truly care, rather than just being nice.',
+    videoSupport: '',
     supportingPoints: [
       '1- What does it mean to you to Be Kind?',
       '2- Why is it important to you to Be Kind?',
@@ -677,7 +677,7 @@ const lessons: LessonContent[] = [
     theme: '"Truth is Beauty... Beauty is Truth" - Keats.',
     videoLabel: 'Intentions Worth Planting · Day 18 · Be Beauty',
     videoUrl: 'https://player.vimeo.com/video/483879872?portrait=0&transparent=1',
-    videoSupport: 'The Truth, that inspires Beauty is what we are after.',
+    videoSupport: '',
     supportingPoints: [
       'We will never know everything... but we can set the intention to look for truth, and align with it.',
       'Is there anything more beautiful than a man or woman connected deeply to the truth they carry in their soul? Maybe not.',
@@ -705,7 +705,7 @@ const lessons: LessonContent[] = [
     theme: 'Love... is a lousy word. But we use it anyway. :)',
     videoLabel: 'Intentions Worth Planting · Day 19 · Be Love',
     videoUrl: 'https://player.vimeo.com/video/488237870?portrait=0&transparent=1',
-    videoSupport: 'When the word lands well in the heart, it changes it.',
+    videoSupport: '',
     supportingPoints: [
       'The type of Love we\'re talking about, is fundamental to life.',
       'Love is one of the most important words we have.',
@@ -733,7 +733,7 @@ const lessons: LessonContent[] = [
     theme: 'Abundance is a belief... and this belief can change everything.',
     videoLabel: 'Intentions Worth Planting · Day 20 · Be Abundance',
     videoUrl: 'https://player.vimeo.com/video/483880757?portrait=0&transparent=1',
-    videoSupport: 'Choose to believe that abundance exists.',
+    videoSupport: '',
     supportingPoints: [
       '1- What does Abundance mean to you?',
       '2- Why is it important to Be Abundance, or believe in abundance?',
@@ -786,7 +786,7 @@ const lessons: LessonContent[] = [
     theme: 'Life grows and is ever growing. Life is ever-expansive.',
     videoLabel: 'Intentions Worth Planting · Day 22 · Be Ever-Expansive',
     videoUrl: 'https://player.vimeo.com/video/486241765?portrait=0&transparent=1',
-    videoSupport: 'Try connecting your Expansiveness/Life with the breathe...',
+    videoSupport: '',
     supportingPoints: [
       '1- What does it mean to you to Be Ever-Expanding?',
       '2- Why is it important to Be Ever-Expansive, or Ever-Expanding?',
@@ -812,7 +812,7 @@ const lessons: LessonContent[] = [
     theme: 'Planting these 7 intentions is finished... but you\'re not done yet...',
     videoLabel: 'Intentions Worth Planting · Summary · Summary',
     videoUrl: 'https://player.vimeo.com/video/486242220?portrait=0&transparent=1',
-    videoSupport: 'Planting seeds, means watering and tending.',
+    videoSupport: '',
     supportingPoints: [
       'I honor you for getting here.',
       'Keep tending these seeds by increasing your awareness of what they mean to you, and they will serve you well.',

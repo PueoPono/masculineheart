@@ -401,47 +401,38 @@ function StatusPreview({ content, interactionMode, selectedItemKey, onSelectItem
   )
 }
 
-function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem }: { lesson: LessonContent; interactionMode: SiteEditorInteractionMode; selectedItemKey?: string | null; onSelectItem?: (selection: SiteEditorPreviewSelectionWithRect) => void }) {
+function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem, viewport = 'desktop' }: { lesson: LessonContent; interactionMode: SiteEditorInteractionMode; selectedItemKey?: string | null; onSelectItem?: (selection: SiteEditorPreviewSelectionWithRect) => void; viewport?: 'desktop' | 'mobile' }) {
   const prefix = `lesson:${lesson.slug}`
+  const isMobile = viewport === 'mobile'
+  const shellClass = isMobile ? 'min-h-[1500px] bg-[linear-gradient(180deg,#090909,#10130f)] px-3 py-6 text-[#f4eadc]' : 'min-h-[1500px] bg-[linear-gradient(180deg,#090909,#10130f)] px-4 py-10 text-[#f4eadc]'
+  const titleClass = isMobile ? 'text-3xl font-semibold tracking-[-0.04em] text-[#e6bd74]' : 'text-5xl font-semibold tracking-[-0.04em] text-[#e6bd74]'
+  const firstGridClass = isMobile ? 'mt-6 grid gap-6' : 'mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)]'
+  const reflectionGridClass = isMobile ? 'mt-6 grid gap-6' : 'mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]'
+  const actionClass = isMobile ? 'mt-6 grid gap-3' : 'mt-6 flex flex-wrap gap-3'
 
   return (
-    <main className="min-h-[1500px] bg-[linear-gradient(180deg,#090909,#10130f)] px-4 py-10 text-[#f4eadc]">
+    <main className={shellClass}>
       <div className="mx-auto max-w-6xl">
         <section className="relative overflow-hidden rounded-[30px] border border-[rgba(228,183,103,0.18)] bg-[linear-gradient(135deg,rgba(18,27,21,0.96),rgba(20,15,12,0.84)_45%,rgba(12,10,9,0.98))] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.34)] md:p-8">
           <HeartCornerMark />
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
-            <div>
-              <PreviewTarget target={{ itemKey: `${prefix}.arc`, itemLabel: 'Lesson arc' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.arc}</p>
-              </PreviewTarget>
-              <div className="flex flex-wrap items-baseline gap-2">
-                <PreviewTarget target={{ itemKey: `${prefix}.stepLabel`, itemLabel: 'Lesson step label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                  <span className="text-5xl font-semibold tracking-[-0.04em] text-[#e6bd74]">{lesson.stepLabel}</span>
-                </PreviewTarget>
-                <span className="text-5xl font-semibold tracking-[-0.04em] text-[#e6bd74]">·</span>
-                <PreviewTarget target={{ itemKey: `${prefix}.title`, itemLabel: 'Lesson title' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                  <h1 className="text-5xl font-semibold tracking-[-0.04em] text-[#e6bd74]">{lesson.title}</h1>
-                </PreviewTarget>
-              </div>
-              <PreviewTarget target={{ itemKey: `${prefix}.theme`, itemLabel: 'Lesson theme' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-4 max-w-3xl">
-                <p className="text-lg leading-8 text-[rgba(244,234,220,0.8)]">{lesson.theme}</p>
-              </PreviewTarget>
-            </div>
-            <div className="rounded-[24px] border border-[rgba(239,197,120,0.14)] bg-[rgba(20,15,12,0.56)] p-5">
-              <PreviewTarget target={{ itemKey: `${prefix}.rhythmHeading`, itemLabel: 'Lesson rhythm heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.rhythmHeading}</p>
-              </PreviewTarget>
-              <PreviewTarget target={{ itemKey: `${prefix}.integrationBody`, itemLabel: 'Lesson rhythm body' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-3">
-                <p className="text-sm leading-7 text-[rgba(244,234,220,0.72)]">{lesson.integrationBody}</p>
-              </PreviewTarget>
-              <PreviewTarget target={{ itemKey: `${prefix}.adminUnlockedNote`, itemLabel: 'Lesson admin unlocked note' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-3">
-                <p className="text-sm text-[#efc578]">{lesson.adminUnlockedNote}</p>
-              </PreviewTarget>
-            </div>
+          <PreviewTarget target={{ itemKey: `${prefix}.arc`, itemLabel: 'Lesson arc' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+            <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.arc}</p>
+          </PreviewTarget>
+          <div className="flex flex-wrap items-baseline gap-2">
+            <PreviewTarget target={{ itemKey: `${prefix}.stepLabel`, itemLabel: 'Lesson step label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+              <span className={titleClass}>{lesson.stepLabel}</span>
+            </PreviewTarget>
+            <span className={titleClass}>·</span>
+            <PreviewTarget target={{ itemKey: `${prefix}.title`, itemLabel: 'Lesson title' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+              <h1 className={titleClass}>{lesson.title}</h1>
+            </PreviewTarget>
           </div>
+          <PreviewTarget target={{ itemKey: `${prefix}.theme`, itemLabel: 'Lesson theme' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-4 max-w-3xl">
+            <p className="text-lg leading-8 text-[rgba(244,234,220,0.8)]">{lesson.theme}</p>
+          </PreviewTarget>
         </section>
 
-        <section className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)]">
+        <section className={firstGridClass}>
           <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
             <div className="mb-4 flex items-center justify-between gap-4">
               <div>
@@ -449,24 +440,26 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem 
                   <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.videoLabel}</p>
                 </PreviewTarget>
                 <PreviewTarget target={{ itemKey: `${prefix}.videoHeading`, itemLabel: 'Lesson video heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-1">
-                  <h2 className="text-2xl font-semibold">{lesson.videoHeading}</h2>
+                  <h2 className="text-2xl font-semibold">{lesson.videoHeading || 'Lesson video'}</h2>
                 </PreviewTarget>
               </div>
             </div>
             <div className="overflow-hidden rounded-[22px] border border-[rgba(239,197,120,0.14)] bg-[linear-gradient(180deg,rgba(33,43,34,0.8),rgba(20,15,12,0.92))]">
               <PreviewTarget target={{ itemKey: `${prefix}.videoUrl`, itemLabel: 'Lesson video embed' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="aspect-video">
-                <iframe src={lesson.videoUrl} title={lesson.title} className="h-full w-full" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen />
+                {lesson.videoUrl ? <iframe src={lesson.videoUrl} title={lesson.title} className="h-full w-full" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen /> : <div className="grid h-full place-items-center px-6 text-center text-[rgba(244,234,220,0.7)]">Video placeholder</div>}
               </PreviewTarget>
             </div>
-            <PreviewTarget target={{ itemKey: `${prefix}.videoSupport`, itemLabel: 'Video support' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-4">
-              <p className="text-[rgba(244,234,220,0.74)]">{lesson.videoSupport}</p>
-            </PreviewTarget>
-            <div className="mt-6 flex flex-wrap gap-3">
+            {lesson.videoSupport ? (
+              <PreviewTarget target={{ itemKey: `${prefix}.videoSupport`, itemLabel: 'Video support' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-4">
+                <p className="text-[rgba(244,234,220,0.74)]">{lesson.videoSupport}</p>
+              </PreviewTarget>
+            ) : null}
+            <div className={actionClass}>
               <PreviewTarget target={{ itemKey: `${prefix}.markVideoCompleteLabel`, itemLabel: 'Mark video complete label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} fit="inline">
-                <div className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#f6d78e,#e0a948)] px-5 font-extrabold text-[#160d07] shadow-[0_10px_28px_rgba(0,0,0,0.34)] ring-1 ring-[rgba(255,255,255,0.18)]">{lesson.markVideoCompleteLabel}</div>
+                <div className={`${isMobile ? 'w-full' : ''} inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#f6d78e,#e0a948)] px-5 text-center font-extrabold text-[#160d07] shadow-[0_10px_28px_rgba(0,0,0,0.34)] ring-1 ring-[rgba(255,255,255,0.18)]`}>{lesson.markVideoCompleteLabel || 'Mark video complete'}</div>
               </PreviewTarget>
               <PreviewTarget target={{ itemKey: `${prefix}.completeLessonLabel`, itemLabel: 'Complete lesson label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} fit="inline">
-                <div className="inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-5 font-semibold text-[#f4eadc]">{lesson.completeLessonLabel}</div>
+                <div className={`${isMobile ? 'w-full' : ''} inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-5 text-center font-semibold text-[#f4eadc]`}>{lesson.completeLessonLabel || 'Complete lesson'}</div>
               </PreviewTarget>
             </div>
           </div>
@@ -474,7 +467,7 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem 
           <div className="grid gap-6">
             <aside className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
               <PreviewTarget target={{ itemKey: `${prefix}.supportingTextHeading`, itemLabel: 'Supporting text heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.supportingTextHeading}</p>
+                <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.supportingTextHeading || 'Heart Fitness Exercise'}</p>
               </PreviewTarget>
               <ul className="mt-4 space-y-3 text-[rgba(244,234,220,0.74)]">
                 {lesson.supportingPoints.map((point, index) => (
@@ -488,34 +481,27 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem 
             </aside>
 
             <aside className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-              <PreviewTarget target={{ itemKey: `${prefix}.integrationHeading`, itemLabel: 'Integration heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.integrationHeading}</p>
+              <PreviewTarget target={{ itemKey: `${prefix}.practiceHeading`, itemLabel: 'Practice heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+                <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.practiceHeading || 'Practice'}</p>
               </PreviewTarget>
-              <PreviewTarget target={{ itemKey: `${prefix}.integrationBody`, itemLabel: 'Integration body' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-3">
-                <p className="text-[rgba(244,234,220,0.74)]">{lesson.integrationBody}</p>
+              <PreviewTarget target={{ itemKey: `${prefix}.practice`, itemLabel: 'Practice' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-3">
+                <p className="text-[rgba(244,234,220,0.74)]">{lesson.practice}</p>
               </PreviewTarget>
-              <div className="mt-4 rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] p-4">
-                <PreviewTarget target={{ itemKey: `${prefix}.practiceHeading`, itemLabel: 'Practice heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                  <strong className="block text-[#f4eadc]">{lesson.practiceHeading}</strong>
-                </PreviewTarget>
-                <PreviewTarget target={{ itemKey: `${prefix}.practice`, itemLabel: 'Practice' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-2">
-                  <p className="text-[rgba(244,234,220,0.74)]">{lesson.practice}</p>
-                </PreviewTarget>
-              </div>
             </aside>
           </div>
         </section>
 
-        <section className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <section className={reflectionGridClass}>
           <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
             <PreviewTarget target={{ itemKey: `${prefix}.reflectionPromptsHeading`, itemLabel: 'Reflection prompts heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.reflectionPromptsHeading}</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.reflectionPromptsHeading || 'Heart Fitness Exercise'}</p>
             </PreviewTarget>
+            <p className="mt-3 text-sm leading-7 text-[rgba(244,234,220,0.72)]">Open your note book and write what comes to mind. Or type here directly. Your typed reflections will be saved as you go and emailed to you after you complete the full course.</p>
             <div className="mt-4 grid gap-3">
               {lesson.prompts.map((prompt, index) => (
                 <div key={`${lesson.id}-prompt-${index}`} className="rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] px-4 py-4">
                   <PreviewTarget target={{ itemKey: `${prefix}.promptLabelPrefix`, itemLabel: 'Prompt label prefix' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                    <span className="text-xs uppercase tracking-[0.14em] text-[#efc578]">{lesson.promptLabelPrefix} {index + 1}</span>
+                    <span className="text-xs uppercase tracking-[0.14em] text-[#efc578]">{lesson.promptLabelPrefix || 'Heart Fitness Exercise'} {index + 1}</span>
                   </PreviewTarget>
                   <PreviewTarget target={{ itemKey: `${prefix}.prompts.${index}`, itemLabel: `Prompt ${index + 1}` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-2">
                     <p className="text-[rgba(244,234,220,0.8)]">{prompt}</p>
@@ -523,26 +509,40 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem 
                 </div>
               ))}
             </div>
+            <div className="mt-5 min-h-40 w-full rounded-[18px] border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-4 py-3 text-[rgba(244,234,220,0.46)]">Type your reflection here...</div>
+            <div className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10]">Save reflection</div>
           </div>
 
           <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
             <PreviewTarget target={{ itemKey: `${prefix}.journalPromptHeading`, itemLabel: 'Journal prompt heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.journalPromptHeading}</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.journalPromptHeading || 'Journal prompt'}</p>
             </PreviewTarget>
             <PreviewTarget target={{ itemKey: `${prefix}.journalPrompt`, itemLabel: 'Journal prompt' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-4 rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] p-5">
               <div className="text-[rgba(244,234,220,0.8)]">{lesson.journalPrompt}</div>
             </PreviewTarget>
-            <div className="mt-6 flex flex-wrap gap-3 text-sm">
-              <PreviewTarget target={{ itemKey: `${prefix}.previousLessonLabel`, itemLabel: 'Previous lesson label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                <div className="inline-flex min-h-11 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] px-4 text-[#f4eadc]">{lesson.previousLessonLabel}</div>
-              </PreviewTarget>
-              <PreviewTarget target={{ itemKey: `${prefix}.backToPortalLabel`, itemLabel: 'Back to portal label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                <div className="inline-flex min-h-11 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] px-4 text-[#f4eadc]">{lesson.backToPortalLabel}</div>
-              </PreviewTarget>
-              <PreviewTarget target={{ itemKey: `${prefix}.nextLessonLabel`, itemLabel: 'Next lesson label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                <div className="inline-flex min-h-11 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] px-4 text-[#f4eadc]">{lesson.nextLessonLabel}</div>
-              </PreviewTarget>
-            </div>
+          </div>
+        </section>
+
+        <section className="mt-6 rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
+          <PreviewTarget target={{ itemKey: `${prefix}.rhythmHeading`, itemLabel: 'Lesson rhythm heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+            <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.rhythmHeading || 'Lesson rhythm'}</p>
+          </PreviewTarget>
+          <PreviewTarget target={{ itemKey: `${prefix}.integrationBody`, itemLabel: 'Lesson rhythm body' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-3">
+            <p className="text-[rgba(244,234,220,0.74)]">{lesson.integrationBody}</p>
+          </PreviewTarget>
+          <PreviewTarget target={{ itemKey: `${prefix}.adminUnlockedNote`, itemLabel: 'Lesson admin unlocked note' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-3">
+            <p className="text-sm text-[#efc578]">{lesson.adminUnlockedNote || 'Admin unlocked view active on lesson pages.'}</p>
+          </PreviewTarget>
+          <div className={isMobile ? 'mt-6 grid gap-3 text-sm' : 'mt-6 flex flex-wrap gap-3 text-sm'}>
+            <PreviewTarget target={{ itemKey: `${prefix}.previousLessonLabel`, itemLabel: 'Previous lesson label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+              <div className="inline-flex min-h-11 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] px-4 text-[#f4eadc]">{lesson.previousLessonLabel || 'Previous lesson'}</div>
+            </PreviewTarget>
+            <PreviewTarget target={{ itemKey: `${prefix}.backToPortalLabel`, itemLabel: 'Back to portal label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+              <div className="inline-flex min-h-11 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] px-4 text-[#f4eadc]">{lesson.backToPortalLabel || 'Back to portal'}</div>
+            </PreviewTarget>
+            <PreviewTarget target={{ itemKey: `${prefix}.nextLessonLabel`, itemLabel: 'Next lesson label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+              <div className="inline-flex min-h-11 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] px-4 text-[#f4eadc]">{lesson.nextLessonLabel || 'Next lesson'}</div>
+            </PreviewTarget>
           </div>
         </section>
       </div>
@@ -558,5 +558,5 @@ export function SiteEditorPreview({ selected, content, courseTracks, interaction
   if (selected === 'complete') return <StatusPreview content={content} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} section="complete" adminEmail={adminEmail} />
   const slug = selected.replace('lesson:', '')
   const lesson = content.lessons.find((entry) => entry.slug === slug) || content.lessons[0]
-  return <LessonPreview lesson={lesson} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} />
+  return <LessonPreview lesson={lesson} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} viewport={viewport} />
 }
