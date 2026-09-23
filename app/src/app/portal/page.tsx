@@ -29,6 +29,9 @@ const partOneBoxBackground =
 const partOneLessonBackground =
   "linear-gradient(135deg,rgba(7,12,20,0.7),rgba(12,10,9,0.56) 45%,rgba(12,10,9,0.9)),url('/images/part-one-heart-locks-fence.jpg')"
 
+const partTwoBoxBackground =
+  "linear-gradient(135deg,rgba(5,18,22,0.68),rgba(11,23,24,0.5) 42%,rgba(9,12,10,0.88)),url('/images/part-two-golden-pond.jpg')"
+
 const partTwoLessonBackground =
   "linear-gradient(135deg,rgba(5,18,22,0.72),rgba(11,23,24,0.54) 42%,rgba(9,12,10,0.92)),url('/images/part-two-golden-pond.jpg')"
 
@@ -52,6 +55,12 @@ const partOneLessonBackgroundStyle = {
 
 const partTwoLessonBackgroundStyle = {
   backgroundImage: partTwoLessonBackground,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+}
+
+const partTwoBackgroundStyle = {
+  backgroundImage: partTwoBoxBackground,
   backgroundSize: 'cover',
   backgroundPosition: 'center',
 }
@@ -298,7 +307,15 @@ export default function PortalPage() {
               <div
                 key={track.id}
                 className="relative overflow-hidden rounded-[22px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-4 text-sm text-[rgba(244,234,220,0.76)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
-                style={track.id === 'course-1' ? partOneBackgroundStyle : track.id === 'course-3' ? partThreeBackgroundStyle : undefined}
+                style={
+                  track.id === 'course-1'
+                    ? partOneBackgroundStyle
+                    : track.id === 'course-2'
+                      ? partTwoBackgroundStyle
+                      : track.id === 'course-3'
+                        ? partThreeBackgroundStyle
+                        : undefined
+                }
               >
                 <div className="relative z-[1]">
                   <div className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{track.label}</div>

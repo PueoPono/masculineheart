@@ -12,9 +12,20 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 })
 
+const courseDescription = 'The art and exercise of sovereignty of your Heart.'
+
 export const metadata: Metadata = {
   title: 'Masculine Heart Quest',
-  description: 'Premium forest-rooted course portal for the Archetypal Masculine Heart Quest.',
+  description: courseDescription,
+  openGraph: {
+    title: 'Masculine Heart Quest',
+    description: courseDescription,
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Masculine Heart Quest',
+    description: courseDescription,
+  },
 }
 
 export default function RootLayout({

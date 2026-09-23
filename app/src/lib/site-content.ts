@@ -772,7 +772,7 @@ export const defaultSiteContent: SiteContent = {
     nextAvailableCta: 'Open lesson',
     allLessonsOpenBody: 'All available lessons are open. Continue from your lesson map below.',
     mapHeading: 'Quest map',
-    mapBody: 'This 21-day path moves through Heart Unlock, Iron John / Language Of The Heart, and Intentions Worth Planting. Some days now carry two video steps so the course rhythm stays true to the original material.',
+    mapBody: 'A daily path through feeling, story, and intention — the art and exercise of sovereignty of your Heart.',
     integrationHeading: 'Pacing note',
     integrationBody: 'One day at a time is best. Intro steps open the next lesson immediately, while the rest of the path opens at your next midnight when your time zone is confirmed, or 20 hours after completion otherwise.',
     integrationAdminBypass: 'Admin view bypasses drip locks so you can inspect the full course experience.',
@@ -781,9 +781,9 @@ export const defaultSiteContent: SiteContent = {
     trackDaysLabels: ['Intro + Days 1–7', 'Part 2 Intro + Days 8–14', 'Part 3 Intro + Days 15–21 + Summary'],
     trackStatusLabel: 'Admin open',
     trackNotes: [
-      'Mirrors https://heartunlock.paulcropper.com/ and uses direct source language wherever possible.',
-      'Mirrors https://ironjohn.paulcropper.com/ and uses direct source language wherever possible.',
-      'Mirrors https://intentions.paulcropper.com/ and uses direct source language wherever possible.',
+      'Descend into the heart, meet pain honestly, and reopen the capacity to feel.',
+      'Learn the heart’s language through story, symbol, breath, and emotional sovereignty.',
+      'Plant seven living intentions — creative, kind, beauty, love, abundance, receptivity, and expansion.',
     ],
   },
   locked: {
@@ -834,7 +834,7 @@ export const courseTracks: CourseTrack[] = [
     title: 'Heart Unlock',
     lessonIds: ['heart-intro', 'heart-day-1', 'heart-day-2', 'heart-day-3', 'heart-day-4', 'heart-day-5', 'heart-day-6', 'heart-day-7'],
     daysLabel: 'Intro + Days 1–7',
-    editorNote: 'Mirrors https://heartunlock.paulcropper.com/ and uses direct source language wherever possible.',
+    editorNote: 'Descend into the heart, meet pain honestly, and reopen the capacity to feel.',
   },
   {
     id: 'course-2',
@@ -842,7 +842,7 @@ export const courseTracks: CourseTrack[] = [
     title: 'Iron John / Language Of The Heart',
     lessonIds: ['iron-intro', 'iron-day-1', 'iron-day-2', 'iron-day-3', 'iron-day-4', 'iron-day-5', 'iron-day-6', 'iron-day-7', 'iron-day-8'],
     daysLabel: 'Part 2 Intro + Days 8–14',
-    editorNote: 'Mirrors https://ironjohn.paulcropper.com/ and uses direct source language wherever possible.',
+    editorNote: 'Learn the heart’s language through story, symbol, breath, and emotional sovereignty.',
   },
   {
     id: 'course-3',
@@ -850,6 +850,6 @@ export const courseTracks: CourseTrack[] = [
     title: 'Intentions Worth Planting',
     lessonIds: ['intentions-intro', 'intentions-1', 'intentions-2', 'intentions-3', 'intentions-4', 'intentions-5', 'intentions-6', 'intentions-7', 'intentions-summary'],
     daysLabel: 'Part 3 Intro + Days 15–21 + Summary',
-    editorNote: 'Mirrors https://intentions.paulcropper.com/ and uses direct source language wherever possible.',
+    editorNote: 'Plant seven living intentions — creative, kind, beauty, love, abundance, receptivity, and expansion.',
   },
 ]
