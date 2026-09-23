@@ -13,18 +13,27 @@ const geistMono = Geist_Mono({
 })
 
 const courseDescription = 'The art and exercise of sovereignty of your Heart.'
+const shareImage = {
+  url: '/images/mhq-share-as-within.jpg',
+  width: 1200,
+  height: 630,
+  alt: 'A man journaling over a mythic landscape with the words as within, so without.',
+}
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://masculineheart.vercel.app'),
   title: 'Masculine Heart Quest',
   description: courseDescription,
   openGraph: {
     title: 'Masculine Heart Quest',
     description: courseDescription,
+    images: [shareImage],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'Masculine Heart Quest',
     description: courseDescription,
+    images: [shareImage],
   },
 }
 
