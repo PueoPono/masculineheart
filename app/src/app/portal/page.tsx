@@ -29,6 +29,9 @@ const partOneBoxBackground =
 const partOneLessonBackground =
   "linear-gradient(135deg,rgba(7,12,20,0.7),rgba(12,10,9,0.56) 45%,rgba(12,10,9,0.9)),url('/images/part-one-heart-locks-fence.jpg')"
 
+const partTwoLessonBackground =
+  "linear-gradient(135deg,rgba(5,18,22,0.72),rgba(11,23,24,0.54) 42%,rgba(9,12,10,0.92)),url('/images/part-two-golden-pond.jpg')"
+
 const partOneBackgroundStyle = {
   backgroundImage: partOneBoxBackground,
   backgroundSize: 'cover',
@@ -37,6 +40,12 @@ const partOneBackgroundStyle = {
 
 const partOneLessonBackgroundStyle = {
   backgroundImage: partOneLessonBackground,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+}
+
+const partTwoLessonBackgroundStyle = {
+  backgroundImage: partTwoLessonBackground,
   backgroundSize: 'cover',
   backgroundPosition: 'center',
 }
@@ -342,7 +351,13 @@ export default function PortalPage() {
                                 ? 'border-[#dca453] bg-[rgba(51,82,63,0.28)]'
                                 : 'border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.03)] opacity-85'
                           }`}
-                          style={track.id === 'course-1' ? partOneLessonBackgroundStyle : undefined}
+                          style={
+                            track.id === 'course-1'
+                              ? partOneLessonBackgroundStyle
+                              : track.id === 'course-2'
+                                ? partTwoLessonBackgroundStyle
+                                : undefined
+                          }
                         >
                           <a
                             href={href}
