@@ -328,11 +328,6 @@ export function LessonClient({ slug }: { slug: string }) {
             <div className="mt-4 rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] p-5 text-[rgba(244,234,220,0.8)]">
               {lesson.journalPrompt}
             </div>
-            <div className="mt-6 flex flex-wrap gap-3 text-sm">
-              {previousLesson ? <a href={`/portal/lesson/${previousLesson.slug}`} className="inline-flex min-h-11 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] px-4 text-[#f4eadc]">Previous lesson</a> : null}
-              <a href="/portal" className="inline-flex min-h-11 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] px-4 text-[#f4eadc]">Back to portal</a>
-              {nextLesson ? <a href={`/portal/lesson/${nextLesson.slug}`} className="inline-flex min-h-11 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] px-4 text-[#f4eadc]">Next lesson</a> : null}
-            </div>
           </div>
         </section>
 
@@ -349,6 +344,11 @@ export function LessonClient({ slug }: { slug: string }) {
             </p>
           ) : null}
           {adminUnlocked ? <p className="mt-3 text-sm text-[#efc578]">Admin unlocked view active on lesson pages.</p> : null}
+          <div className="mt-6 flex flex-wrap gap-3 text-sm">
+            {previousLesson ? <a href={`/portal/lesson/${previousLesson.slug}`} className="inline-flex min-h-11 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] px-4 text-[#f4eadc]">Previous lesson</a> : null}
+            <a href="/portal" className="inline-flex min-h-11 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] px-4 text-[#f4eadc]">Back to portal</a>
+            {nextLesson ? <a href={`/portal/lesson/${nextLesson.slug}`} className="inline-flex min-h-11 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] px-4 text-[#f4eadc]">Next lesson</a> : null}
+          </div>
         </section>
       </div>
     </main>
