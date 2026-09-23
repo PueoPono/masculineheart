@@ -467,7 +467,7 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem,
           <div className="grid gap-6">
             <aside className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
               <PreviewTarget target={{ itemKey: `${prefix}.supportingTextHeading`, itemLabel: 'Supporting text heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.supportingTextHeading || 'Heart Fitness Exercise'}</p>
+                <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.supportingTextHeading || 'Before you watch'}</p>
               </PreviewTarget>
               <ul className="mt-4 space-y-3 text-[rgba(244,234,220,0.74)]">
                 {lesson.supportingPoints.map((point, index) => (
@@ -494,14 +494,14 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem,
         <section className={reflectionGridClass}>
           <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
             <PreviewTarget target={{ itemKey: `${prefix}.reflectionPromptsHeading`, itemLabel: 'Reflection prompts heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.reflectionPromptsHeading || 'Heart Fitness Exercise'}</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.reflectionPromptsHeading || 'Reflection questions'}</p>
             </PreviewTarget>
             <p className="mt-3 text-sm leading-7 text-[rgba(244,234,220,0.72)]">Open your note book and write what comes to mind. Or type here directly. Your typed reflections will be saved as you go and emailed to you after you complete the full course.</p>
             <div className="mt-4 grid gap-3">
               {lesson.prompts.map((prompt, index) => (
                 <div key={`${lesson.id}-prompt-${index}`} className="rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] px-4 py-4">
                   <PreviewTarget target={{ itemKey: `${prefix}.promptLabelPrefix`, itemLabel: 'Prompt label prefix' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                    <span className="text-xs uppercase tracking-[0.14em] text-[#efc578]">{lesson.promptLabelPrefix || 'Heart Fitness Exercise'} {index + 1}</span>
+                    <span className="text-xs uppercase tracking-[0.14em] text-[#efc578]">{lesson.promptLabelPrefix || 'Reflection question'} {index + 1}</span>
                   </PreviewTarget>
                   <PreviewTarget target={{ itemKey: `${prefix}.prompts.${index}`, itemLabel: `Prompt ${index + 1}` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-2">
                     <p className="text-[rgba(244,234,220,0.8)]">{prompt}</p>

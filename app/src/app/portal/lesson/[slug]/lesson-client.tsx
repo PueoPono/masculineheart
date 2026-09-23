@@ -251,8 +251,16 @@ export function LessonClient({ slug }: { slug: string }) {
           </div>
         </section>
 
-        <section className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)]">
+        <section className="mt-6 grid gap-6">
           <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
+            <div className="mb-5 rounded-[22px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-5">
+              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.supportingTextHeading || 'Before you watch'}</p>
+              <ul className="mt-4 space-y-3 text-[rgba(244,234,220,0.74)]">
+                {lesson.supportingPoints.map((point) => (
+                  <li key={point} className="rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] px-4 py-3">{point}</li>
+                ))}
+              </ul>
+            </div>
             <div className="mb-4 flex items-center justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.videoLabel}</p>
@@ -284,32 +292,17 @@ export function LessonClient({ slug }: { slug: string }) {
             </div>
             {status ? <div className="mt-4 rounded-[18px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-4 text-[rgba(244,234,220,0.74)]">{status}</div> : null}
           </div>
-
-          <div className="grid gap-6">
-            <aside className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.supportingTextHeading || 'Heart Fitness Exercise'}</p>
-              <ul className="mt-4 space-y-3 text-[rgba(244,234,220,0.74)]">
-                {lesson.supportingPoints.map((point) => (
-                  <li key={point} className="rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] px-4 py-3">{point}</li>
-                ))}
-              </ul>
-            </aside>
-
-            <aside className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.practiceHeading || 'Practice'}</p>
-              <p className="mt-3 text-[rgba(244,234,220,0.74)]">{lesson.practice}</p>
-            </aside>
-          </div>
         </section>
 
         <section className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
           <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-            <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Heart Fitness Exercise</p>
+            <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.reflectionPromptsHeading || 'Reflection questions'}</p>
+            {lesson.practice ? <p className="mt-3 text-sm leading-7 text-[rgba(244,234,220,0.72)]">{lesson.practice}</p> : null}
             <p className="mt-3 text-sm leading-7 text-[rgba(244,234,220,0.72)]">Open your note book and write what comes to mind. Or type here directly. Your typed reflections will be saved as you go and emailed to you after you complete the full course.</p>
             <div className="mt-4 grid gap-3">
               {lesson.prompts.map((prompt, index) => (
                 <div key={prompt} className="rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] px-4 py-4">
-                  <span className="text-xs uppercase tracking-[0.14em] text-[#efc578]">{lesson.promptLabelPrefix || 'Heart Fitness Exercise'} {index + 1}</span>
+                  <span className="text-xs uppercase tracking-[0.14em] text-[#efc578]">{lesson.promptLabelPrefix || 'Reflection question'} {index + 1}</span>
                   <p className="mt-2 text-[rgba(244,234,220,0.8)]">{prompt}</p>
                 </div>
               ))}
@@ -330,16 +323,17 @@ export function LessonClient({ slug }: { slug: string }) {
 
         <section className="mt-6 rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
           <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Lesson rhythm</p>
-          <p className="mt-3 text-[rgba(244,234,220,0.74)]">{lesson.integrationBody}</p>
           {nextLesson ? (
-            <p className="mt-3 text-sm text-[rgba(244,234,220,0.68)]">
+            <p className="mt-3 text-[rgba(244,234,220,0.74)]">
               {shouldUnlockNextImmediately(lesson)
-                ? `${nextLesson.title} is currently available after you complete this lesson.`
+                ? `${nextLesson.title} is available after you complete this lesson.`
                 : unlockAt
-                  ? `${nextLesson.title} will be available on ${new Date(unlockAt).toLocaleString()}.`
-                  : `${nextLesson.title} will be available tomorrow at your account unlock time after you complete this lesson.`}
+                  ? `Next lesson available: ${new Date(unlockAt).toLocaleString()}.`
+                  : 'Next lesson available after you complete this lesson at your account unlock time.'}
             </p>
-          ) : null}
+          ) : (
+            <p className="mt-3 text-[rgba(244,234,220,0.74)]">{lesson.integrationBody}</p>
+          )}
           {adminUnlocked ? <p className="mt-3 text-sm text-[#efc578]">Admin unlocked view active on lesson pages.</p> : null}
           <div className="mt-6 flex flex-wrap gap-3 text-sm">
             {previousLesson ? <a href={`/portal/lesson/${previousLesson.slug}`} className="inline-flex min-h-11 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] px-4 text-[#f4eadc]">Previous lesson</a> : null}

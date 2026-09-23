@@ -291,7 +291,7 @@ export default function PortalPage() {
                         state === 'integrating'
                           ? `Unlocks ${formatUnlock(unlockAt)}`
                           : state === 'locked'
-                            ? 'Complete the previous lesson video first. Once that is done, this card will show the exact unlock time.'
+                            ? 'You must complete the previous lesson first.'
                             : ''
                       const statusText =
                         lessonProgress?.status === 'complete'
