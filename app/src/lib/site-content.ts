@@ -138,7 +138,7 @@ const lessons: LessonContent[] = [
     ],
     integrationHeading: 'Course rhythm',
     integrationBody: 'Only 10-20 minutes a day for 7 days. One Day At A Time!',
-    practice: 'Get a blank notebook and write what comes to mind.',
+    practice: '',
     prompts: [
       'What does stepping down to the heart mean for me?',
       'What do I want to receive from these 7 days?',
@@ -163,7 +163,7 @@ const lessons: LessonContent[] = [
     ],
     integrationHeading: 'Course rhythm',
     integrationBody: 'Complete today’s Heart Fitness Exercise before continuing.',
-    practice: 'Complete the Heart Fitness Exercise for Day 1.',
+    practice: '',
     prompts: [
       'What pain do I need to identify more clearly?',
       'What happens when I do not identify the pain?',
@@ -189,7 +189,7 @@ const lessons: LessonContent[] = [
     ],
     integrationHeading: 'Course rhythm',
     integrationBody: 'Complete today’s Heart Fitness Exercise before continuing.',
-    practice: 'Complete the Heart Fitness Exercise for Day 2.',
+    practice: '',
     prompts: [
       'What sadness have I tried to cover over?',
       'What scars has that sadness left?',
@@ -215,7 +215,7 @@ const lessons: LessonContent[] = [
     ],
     integrationHeading: 'Course rhythm',
     integrationBody: 'Complete today’s Heart Fitness Exercise before continuing.',
-    practice: 'Complete the Heart Fitness Exercise for Day 3.',
+    practice: '',
     prompts: [
       'Where do I lose sovereignty of my emotional core?',
       'What is my anger defending?',
@@ -240,7 +240,7 @@ const lessons: LessonContent[] = [
     ],
     integrationHeading: 'Course rhythm',
     integrationBody: 'Complete today’s Heart Fitness Exercise before continuing.',
-    practice: 'Complete the Heart Fitness Exercise for Day 4.',
+    practice: '',
     prompts: [
       'Where have I ignored pain?',
       'How has that stifled smiles and happiness?',
@@ -266,7 +266,7 @@ const lessons: LessonContent[] = [
     ],
     integrationHeading: 'Course rhythm',
     integrationBody: 'Complete today’s Heart Fitness Exercise before continuing.',
-    practice: 'Complete the Heart Fitness Exercise for Day 5.',
+    practice: '',
     prompts: [
       'Where does "I am not enough" still appear?',
       'What changes when I meet that place with awareness?',
@@ -291,7 +291,7 @@ const lessons: LessonContent[] = [
     ],
     integrationHeading: 'Course rhythm',
     integrationBody: 'Complete today’s Heart Fitness Exercise before continuing.',
-    practice: 'Complete the Heart Fitness Exercise for Day 6.',
+    practice: '',
     prompts: [
       'What are the consequences of not knowing my pain?',
       'What are the consequences of not acknowledging my pain?',
@@ -319,7 +319,7 @@ const lessons: LessonContent[] = [
     ],
     integrationHeading: 'Course rhythm',
     integrationBody: 'Will you commit to allow yourself to feel?',
-    practice: 'Complete the Heart Fitness Exercise for Day 7 and fill out the questionnaire.',
+    practice: '',
     prompts: [
       'What would it mean to live fully and feel fully?',
       'What makes this commitment difficult for me?',
