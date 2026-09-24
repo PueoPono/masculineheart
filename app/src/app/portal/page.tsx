@@ -77,6 +77,29 @@ const partThreeLessonBackgroundStyle = {
   backgroundPosition: 'center',
 }
 
+const trackProgressStyles: Record<string, { dot: string; fill: string; glow: string }> = {
+  'course-1': {
+    dot: 'bg-[#b87a58]',
+    fill: 'bg-[linear-gradient(90deg,#8f4c3d,#efc578)]',
+    glow: 'shadow-[0_0_18px_rgba(239,197,120,0.28)]',
+  },
+  'course-2': {
+    dot: 'bg-[#63a7a7]',
+    fill: 'bg-[linear-gradient(90deg,#1b6f75,#e6bd74)]',
+    glow: 'shadow-[0_0_18px_rgba(99,167,167,0.26)]',
+  },
+  'course-3': {
+    dot: 'bg-[#78a15f]',
+    fill: 'bg-[linear-gradient(90deg,#4f7d3f,#e6bd74)]',
+    glow: 'shadow-[0_0_18px_rgba(120,161,95,0.26)]',
+  },
+}
+
+function getPercent(completed: number, total: number) {
+  if (!total) return 0
+  return Math.round((completed / total) * 100)
+}
+
 function getPreviousLesson(lesson: LessonContent, lessons: LessonContent[]) {
   const index = lessons.findIndex((candidate) => candidate.id === lesson.id)
   return index > 0 ? lessons[index - 1] : null
@@ -200,7 +223,13 @@ export default function PortalPage() {
     }
   }, [])
 
-  const completionCount = Object.values(progress).filter((p) => p.status === 'complete').length
+  const completionCount = lessons.filter((lesson) => progress[lesson.id]?.status === 'complete').length
+  const completionPercent = getPercent(completionCount, lessons.length)
+  const trackCompletion = courseTracks.map((track) => {
+    const total = track.lessonIds.length
+    const completed = track.lessonIds.filter((lessonId) => progress[lessonId]?.status === 'complete').length
+    return { track, total, completed, percent: getPercent(completed, total), styles: trackProgressStyles[track.id] }
+  })
   const nextAvailable = lessons.find((lesson) => getLessonState(lesson, progress, lessons, currentTime, adminUnlocked) === 'available') || null
   const nextIntegration = adminUnlocked ? null : (() => {
     for (const lesson of lessons) {
@@ -261,9 +290,30 @@ export default function PortalPage() {
             </div>
             <div className="grid gap-3">
               <div className="rounded-[20px] border border-[rgba(239,197,120,0.12)] bg-[rgba(31,23,18,0.56)] p-4 text-sm text-[rgba(244,234,220,0.78)]">
-                <strong className="text-[#f4eadc]">Progress</strong>
-                <div className="mt-2 text-3xl font-semibold text-[#e6bd74]">{completionCount} / {lessons.length}</div>
-                <div className="mt-1">Completed lessons</div>
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <strong className="text-[#f4eadc]">Completion map</strong>
+                  <span className="text-xl font-semibold text-[#e6bd74]">{completionPercent}%</span>
+                </div>
+                <div className="h-2.5 overflow-hidden rounded-full bg-[rgba(255,255,255,0.08)]">
+                  <div className="h-full rounded-full bg-[linear-gradient(90deg,#efc578,#dca453,#78a15f)] transition-all duration-500" style={{ width: `${completionPercent}%` }} />
+                </div>
+                <div className="mt-1 text-xs text-[rgba(244,234,220,0.62)]">{completionCount} / {lessons.length} lessons complete</div>
+                <div className="mt-4 grid gap-3">
+                  {trackCompletion.map(({ track, completed, total, percent, styles }) => (
+                    <div key={track.id} className="grid gap-1.5">
+                      <div className="flex items-center justify-between gap-2 text-xs">
+                        <div className="flex min-w-0 items-center gap-2">
+                          <span className={`h-3 w-3 shrink-0 rounded-full ${styles.dot} ${styles.glow}`} />
+                          <span className="truncate text-[#f4eadc]">{track.label}</span>
+                        </div>
+                        <span className="text-[rgba(244,234,220,0.68)]">{percent}% · {completed}/{total}</span>
+                      </div>
+                      <div className="h-1.5 overflow-hidden rounded-full bg-[rgba(255,255,255,0.08)]">
+                        <div className={`h-full rounded-full ${styles.fill} transition-all duration-500`} style={{ width: `${percent}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
               <div className="rounded-[20px] border border-[rgba(239,197,120,0.12)] bg-[rgba(31,23,18,0.56)] p-4 text-sm text-[rgba(244,234,220,0.78)]">
                 <strong className="text-[#f4eadc]">Drip cadence</strong>
