@@ -455,9 +455,35 @@ export function SiteEditor({ adminEmail }: Props) {
     setReferenceDraft(value)
   }
 
+  function updateQueuedReferenceNote(itemKey: string, value: string) {
+    const nextReferenceNotes = {
+      ...referenceNotes,
+      [itemKey]: value,
+    }
+    setReferenceNotes(nextReferenceNotes)
+    if (selected === itemKey) setSectionReferenceDraft(value)
+    if (selectedReference?.itemKey === itemKey) setReferenceDraft(value)
+  }
+
+  async function saveQueuedReferenceNote(itemKey: string) {
+    const value = referenceNotes[itemKey] || ''
+    if (!value.trim()) {
+      await deleteReferenceNote(itemKey)
+      return
+    }
+    try {
+      await save({ referenceNotes })
+      setStatus(`Saved edits to queued request ${itemKey} in Supabase.`)
+    } catch {
+      setStatus(`Queued request ${itemKey} was edited locally, but Supabase save failed. Use Save all to Supabase to retry.`)
+    }
+  }
+
   async function deleteReferenceNote(itemKey: string) {
     const nextReferenceNotes = Object.fromEntries(Object.entries(referenceNotes).filter(([key]) => key !== itemKey))
     setReferenceNotes(nextReferenceNotes)
+    if (selected === itemKey) setSectionReferenceDraft('')
+    if (selectedReference?.itemKey === itemKey) setReferenceDraft('')
     try {
       await save({ referenceNotes: nextReferenceNotes })
       setStatus(`Deleted queued request ${itemKey} from Supabase.`)
@@ -725,15 +751,26 @@ export function SiteEditor({ adminEmail }: Props) {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-xs uppercase tracking-[0.16em] text-[#d8e6ff]">Queued requests</p>
-                <p className="mt-2 text-sm text-[rgba(244,234,220,0.72)]">{queuedRequestCount} request{queuedRequestCount === 1 ? '' : 's'} currently saved in Supabase for agent review. Each request can be expanded or deleted.</p>
+                <p className="mt-2 text-sm text-[rgba(244,234,220,0.72)]">{queuedRequestCount} request{queuedRequestCount === 1 ? '' : 's'} currently saved in Supabase for agent review. Each request can be expanded, edited, saved, or deleted before the current queue is addressed.</p>
               </div>
             </div>
             <div className="mt-4 grid gap-3">
               {queuedRequestCount ? queuedRequests.map(([itemKey, note]) => (
                 <details key={itemKey} className="rounded-[16px] border border-white/10 bg-[rgba(0,0,0,0.18)] p-3">
                   <summary className="cursor-pointer text-sm font-medium text-white">{itemKey}</summary>
-                  <p className="mt-3 whitespace-pre-wrap text-sm text-[rgba(244,234,220,0.78)]">{note}</p>
-                  <button type="button" onClick={() => deleteReferenceNote(itemKey)} disabled={saving} className="mt-3 rounded-full border border-[rgba(255,154,120,0.28)] bg-[rgba(255,154,120,0.08)] px-3 py-1 text-xs text-[#ffd2c4] disabled:opacity-50">Delete this queued request</button>
+                  <label className="mt-3 grid gap-2 text-sm text-[rgba(244,234,220,0.78)]">
+                    <span className="text-xs uppercase tracking-[0.14em] text-[#d8e6ff]">Edit queued request</span>
+                    <textarea
+                      value={note}
+                      onChange={(event) => updateQueuedReferenceNote(itemKey, event.target.value)}
+                      rows={6}
+                      className="min-h-32 rounded-[14px] border border-white/10 bg-[rgba(255,255,255,0.04)] px-3 py-2 text-sm text-[#f4eadc] outline-none"
+                    />
+                  </label>
+                  <div className="mt-3 flex flex-wrap justify-end gap-2">
+                    <button type="button" onClick={() => saveQueuedReferenceNote(itemKey)} disabled={!note.trim() || saving} className="rounded-full border border-[rgba(159,184,255,0.28)] bg-[rgba(159,184,255,0.12)] px-3 py-1 text-xs text-[#d8e6ff] disabled:opacity-50">{saving ? 'Saving…' : 'Save queued request edits'}</button>
+                    <button type="button" onClick={() => deleteReferenceNote(itemKey)} disabled={saving} className="rounded-full border border-[rgba(255,154,120,0.28)] bg-[rgba(255,154,120,0.08)] px-3 py-1 text-xs text-[#ffd2c4] disabled:opacity-50">Delete this queued request</button>
+                  </div>
                 </details>
               )) : <p className="rounded-[16px] border border-white/10 bg-[rgba(0,0,0,0.14)] p-3 text-sm text-[rgba(244,234,220,0.64)]">No queued requests.</p>}
             </div>
