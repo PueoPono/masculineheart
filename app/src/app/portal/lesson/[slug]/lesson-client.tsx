@@ -287,7 +287,13 @@ export function LessonClient({ slug }: { slug: string }) {
                 </div>
               )}
             </div>
-            {lesson.videoSupport ? <p className="mt-4 text-[rgba(244,234,220,0.74)]">{lesson.videoSupport}</p> : null}
+            {lesson.videoSupport ? <p className="mt-4 whitespace-pre-line text-[rgba(244,234,220,0.74)]">{lesson.videoSupport}</p> : null}
+            {lesson.id === 'heart-day-7' ? (
+              <div className="mt-5 rounded-[20px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-4">
+                <p className="text-sm text-[rgba(244,234,220,0.78)]">When you finish Part 1, complete the in-app questionnaire. Your answers save as you go, and submitting notifies Paul.</p>
+                <a href="/portal/heart-unlock-questionnaire" className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] px-5 font-semibold text-[#f4eadc]">Open Part 1 questionnaire</a>
+              </div>
+            ) : null}
             <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
               <button onClick={saveVideoComplete} disabled={savingVideo} className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 text-center font-bold text-[#2d1b10] disabled:opacity-60 sm:w-auto">
                 {savingVideo ? 'Saving…' : videoDone ? (lesson.videoCompleteSavedLabel || 'Video completion saved') : (lesson.markVideoCompleteLabel || 'Mark video complete')}
@@ -307,8 +313,8 @@ export function LessonClient({ slug }: { slug: string }) {
             <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
               <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.reflectionPromptsHeading || 'Heart Fitness Exercise'}</p>
               <div className="mt-4 rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] p-5 text-[rgba(244,234,220,0.8)]">
-                {lesson.practice ? <p>{lesson.practice}</p> : null}
-                {lesson.journalPrompt ? <p className={lesson.practice ? 'mt-3' : ''}>{lesson.journalPrompt}</p> : null}
+                {lesson.practice ? <p className="whitespace-pre-line">{lesson.practice}</p> : null}
+                {lesson.journalPrompt ? <p className={`${lesson.practice ? 'mt-3 ' : ''}whitespace-pre-line`}>{lesson.journalPrompt}</p> : null}
                 {lesson.prompts.length ? (
                   <div className="mt-4">
                     <p className="text-xs uppercase tracking-[0.14em] text-[#efc578]">{lesson.promptLabelPrefix || 'Reflection'}</p>
@@ -320,7 +326,7 @@ export function LessonClient({ slug }: { slug: string }) {
                   </div>
                 ) : null}
               </div>
-              <textarea value={reflectionDraft} onChange={(event) => setReflectionDraft(event.target.value)} rows={8} className="mt-5 min-h-40 w-full rounded-[18px] border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-4 py-3 text-[#f4eadc] outline-none" placeholder="Type your reflection here..." />
+              <textarea value={reflectionDraft} onChange={(event) => setReflectionDraft(event.target.value)} rows={12} className="mt-5 min-h-64 w-full resize-y whitespace-pre-wrap rounded-[18px] border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-4 py-3 leading-7 text-[#f4eadc] outline-none" placeholder="Type your reflection here..." />
               <button onClick={saveReflection} disabled={savingReflection} className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10] disabled:opacity-60">
                 {savingReflection ? 'Saving…' : 'Save reflection'}
               </button>

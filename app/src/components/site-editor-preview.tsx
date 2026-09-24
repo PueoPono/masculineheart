@@ -559,7 +559,7 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem,
             </div>
             {lesson.videoSupport ? (
               <PreviewTarget target={{ itemKey: `${prefix}.videoSupport`, itemLabel: 'Video support' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-4">
-                <p className="text-[rgba(244,234,220,0.74)]">{lesson.videoSupport}</p>
+                <p className="whitespace-pre-line text-[rgba(244,234,220,0.74)]">{lesson.videoSupport}</p>
               </PreviewTarget>
             ) : null}
             <div className={actionClass}>
@@ -584,11 +584,11 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem,
             <div className="mt-4 rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] p-5 text-[rgba(244,234,220,0.8)]">
               {lesson.practice ? (
                 <PreviewTarget target={{ itemKey: `${prefix}.practice`, itemLabel: 'Practice' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
-                  <p>{lesson.practice}</p>
+                  <p className="whitespace-pre-line">{lesson.practice}</p>
                 </PreviewTarget>
               ) : null}
               {lesson.journalPrompt ? (
-                <PreviewTarget target={{ itemKey: `${prefix}.journalPrompt`, itemLabel: 'Journal prompt' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className={lesson.practice ? 'mt-3' : ''}>
+                <PreviewTarget target={{ itemKey: `${prefix}.journalPrompt`, itemLabel: 'Journal prompt' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className={`${lesson.practice ? 'mt-3 ' : ''}whitespace-pre-line`}>
                   <p>{lesson.journalPrompt}</p>
                 </PreviewTarget>
               ) : null}
