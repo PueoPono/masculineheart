@@ -116,6 +116,20 @@ export type CourseTrack = {
   editorNote: string
 }
 
+const lessonHeaderBackgrounds: Record<LessonContent['arc'], string> = {
+  'Heart Unlock': "linear-gradient(135deg,rgba(7,12,20,0.74),rgba(12,10,9,0.58) 42%,rgba(12,10,9,0.9)),url('/images/part-one-heart-locks-fence.jpg')",
+  'Iron John / Language Of The Heart': "linear-gradient(135deg,rgba(5,18,22,0.76),rgba(11,23,24,0.58) 42%,rgba(9,12,10,0.93)),url('/images/part-two-golden-pond.jpg')",
+  'Intentions Worth Planting': "linear-gradient(135deg,rgba(9,15,10,0.76),rgba(31,20,12,0.6) 42%,rgba(9,10,7,0.93)),url('/images/part-three-intentions-planting.jpg')",
+}
+
+export function getLessonHeaderBackgroundStyle(arc: LessonContent['arc']) {
+  return {
+    backgroundImage: lessonHeaderBackgrounds[arc],
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  }
+}
+
 const lessons: LessonContent[] = [
   {
     id: 'heart-intro',
@@ -127,20 +141,22 @@ const lessons: LessonContent[] = [
     slug: 'heart-intro',
     theme: 'Welcome... To your Heart 🫶',
     videoLabel: 'Heart Unlock · Intro · Introduction',
+    videoHeading: 'Intro video',
     videoUrl: 'https://app.groove.cm/grooveembeds/video/274627/GRtZBn0eSk1cGGfksh3i',
     videoSupport: "",
+    markVideoCompleteLabel: 'Go to Lesson 1',
+    videoCompleteSavedLabel: 'Lesson 1 is open',
     supportingPoints: [
       "Only 10-20 minutes a day for 7 days.",
-      "1- Watch the Intro Video,",
-      "2- Get a blank note book,",
-      "3- Open your notebook and write what comes to mind,",
+      "1- Watch the intro video.",
+      "2- Watch Lesson 1 video.",
       "One Day At A Time!",
     ],
     integrationHeading: 'Course rhythm',
     integrationBody: 'Only 10-20 minutes a day for 7 days. One Day At A Time!',
     practice: "",
     prompts: [],
-    journalPrompt: 'Write what it means for you to step down to the heart.',
+    journalPrompt: '',
   },
   {
     id: 'heart-day-1',
@@ -329,17 +345,21 @@ const lessons: LessonContent[] = [
     slug: 'iron-intro',
     theme: 'Our Hearts, our imaginations, and our subconscious- these are all deeply connected- these use the language of stories and symbols.',
     videoLabel: 'Iron John / Language Of The Heart · Part 2 Intro · Introduction',
+    videoHeading: 'Intro video',
     videoUrl: 'https://player.vimeo.com/video/467500375?portrait=0&transparent=1',
     videoSupport: "We learn from stories with our heart when we enjoy them...",
+    markVideoCompleteLabel: 'Go to Lesson 1',
+    videoCompleteSavedLabel: 'Lesson 1 is open',
     supportingPoints: [
-      "1- Watch the Intro Video,",
-      "One Day At A Time Is Best :)",
+      "1- Watch the intro video.",
+      "2- Watch Lesson 1 video.",
+      "3- Let the story work on you through imagination, symbols, and felt sense.",
     ],
     integrationHeading: 'Course rhythm',
     integrationBody: 'One Day At A Time Is Best :)',
-    practice: "Watch the intro video, then write what comes to mind.",
+    practice: "",
     prompts: [],
-    journalPrompt: 'Write about what it means to let your heart hear the story.',
+    journalPrompt: '',
   },
   {
     id: 'iron-day-1',
@@ -550,18 +570,21 @@ const lessons: LessonContent[] = [
     slug: 'intentions-intro',
     theme: 'Setting these intentions heals the heart... As we plant them, and nurture them, they grow deep into the Heart and subconscious.',
     videoLabel: 'Intentions Worth Planting · Part 3 Intro · Introduction',
+    videoHeading: 'Intro video',
     videoUrl: 'https://player.vimeo.com/video/483878304?portrait=0&transparent=1',
     videoSupport: "Don't be surprised when things just start working out more often.\n\nWe ALWAYS have deeper intentions running our life, so getting conscious of the intentions that we want is KEY!",
+    markVideoCompleteLabel: 'Go to Lesson 1',
+    videoCompleteSavedLabel: 'Lesson 1 is open',
     supportingPoints: [
-      "1- Limit yourself to a one video per day. (May even sit with one intention video for several days)",
-      "2- Take the time to ask yourself the questions.",
-      "3- Incorporating the breath, with the word, is how to become a kung fu master of INTENTION.",
+      "1- Watch the intro video.",
+      "2- Watch Lesson 1 video.",
+      "3- Watch the videos in order and let each intention build on the last.",
     ],
     integrationHeading: 'Instructions',
     integrationBody: 'Learning to set intentions... is the best tool to face life, and be prepared for EVERY situation in life.',
-    practice: "Limit yourself to one video per day and take the time to ask yourself the questions. Even just 2 minutes, asking yourself the questions, will start to get the juices of growth and change flowing. Incorporating the breath with the word is how to become a kung fu master of intention.",
+    practice: "",
     prompts: [],
-    journalPrompt: 'Write about the intention you most want to plant now.',
+    journalPrompt: '',
   },
   {
     id: 'intentions-1',

@@ -5,7 +5,7 @@ import { HeartCornerMark } from '@/components/heart-mark'
 import { AdminMenu } from '@/components/admin-menu'
 import { useSiteContent } from '@/lib/site-content-store'
 import { supabase } from '@/lib/supabase'
-import { getNextLesson, getPreviousLesson, shouldUnlockNextImmediately } from '@/lib/site-content'
+import { getLessonHeaderBackgroundStyle, getNextLesson, getPreviousLesson, shouldUnlockNextImmediately } from '@/lib/site-content'
 import { getUnlockAtForProfile, getVideoCompleteStatus, type UnlockProfilePreference } from '@/lib/unlock-schedule'
 
 type LessonProgress = {
@@ -115,27 +115,30 @@ export function LessonClient({ slug }: { slug: string }) {
 
       const existing = existingRes.data as LessonProgress | null
       const completedAt = existing?.completed_at || new Date().toISOString()
+      const isIntro = shouldUnlockNextImmediately(currentLesson)
       const payload = {
         user_id: user.id,
         lesson_id: currentLesson.id,
-        status: existing?.status === 'complete' ? 'complete' : 'video_complete',
+        status: isIntro ? 'complete' : existing?.status === 'complete' ? 'complete' : 'video_complete',
         completed_at: completedAt,
         unlock_at: existing?.unlock_at || unlockAtValue,
       }
 
       const upsertRes = await supabase.from('lesson_progress').upsert(payload, { onConflict: 'user_id,lesson_id' })
       if (upsertRes.error) {
-        setStatus('Could not save video completion yet.')
+        setStatus(isIntro ? 'Could not open the next lesson yet.' : 'Could not save video completion yet.')
         return
       }
 
       setVideoDone(true)
       setUnlockAt(payload.unlock_at)
+      if (isIntro && nextLesson) {
+        window.location.href = `/portal/lesson/${nextLesson.slug}`
+        return
+      }
       setStatus(
         nextLesson
-          ? shouldUnlockNextImmediately(currentLesson)
-            ? `Video complete. ${nextLesson.title} is now open.`
-            : getVideoCompleteStatus(nextLesson.title, profilePreference)
+          ? getVideoCompleteStatus(nextLesson.title, profilePreference)
           : 'Video complete. Final lesson reached.',
       )
     } finally {
@@ -238,13 +241,16 @@ export function LessonClient({ slug }: { slug: string }) {
     }
   }
 
+  const isIntro = shouldUnlockNextImmediately(lesson)
+  const lessonHeaderStyle = getLessonHeaderBackgroundStyle(lesson.arc)
+
   return (
     <main className="min-h-screen px-4 py-10 text-[#f4eadc]">
       <AdminMenu portalHref="/portal" adminHref="/admin" extraLinks={lesson ? [{ href: `/portal/lesson/${lesson.slug}`, label: 'Refresh this lesson' }] : []} />
       <div className="mx-auto max-w-6xl">
-        <section className="relative overflow-hidden rounded-[30px] border border-[rgba(228,183,103,0.18)] bg-[linear-gradient(135deg,rgba(18,27,21,0.96),rgba(20,15,12,0.84)_45%,rgba(12,10,9,0.98))] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.34)] md:p-8">
+        <section className="relative overflow-hidden rounded-[30px] border border-[rgba(228,183,103,0.18)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.34)] md:p-8" style={lessonHeaderStyle}>
           <HeartCornerMark />
-          <div>
+          <div className="relative z-[1]">
             <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.arc}</p>
             <h1 className="text-5xl font-semibold tracking-[-0.04em] text-[#e6bd74]">{lesson.stepLabel} · {lesson.title}</h1>
             <p className="mt-4 max-w-3xl text-lg leading-8 text-[rgba(244,234,220,0.8)]">{lesson.theme}</p>
@@ -286,38 +292,41 @@ export function LessonClient({ slug }: { slug: string }) {
               <button onClick={saveVideoComplete} disabled={savingVideo} className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 text-center font-bold text-[#2d1b10] disabled:opacity-60 sm:w-auto">
                 {savingVideo ? 'Saving…' : videoDone ? (lesson.videoCompleteSavedLabel || 'Video completion saved') : (lesson.markVideoCompleteLabel || 'Mark video complete')}
               </button>
-              <button onClick={markComplete} disabled={savingComplete} className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-5 text-center font-semibold text-[#f4eadc] disabled:opacity-60 sm:w-auto">
-                {savingComplete ? 'Saving…' : nextLesson ? (lesson.completeLessonLabel || 'Complete lesson') : (lesson.completeFinalLessonLabel || 'Complete final lesson')}
-              </button>
+              {!isIntro ? (
+                <button onClick={markComplete} disabled={savingComplete} className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-5 text-center font-semibold text-[#f4eadc] disabled:opacity-60 sm:w-auto">
+                  {savingComplete ? 'Saving…' : nextLesson ? (lesson.completeLessonLabel || 'Complete lesson') : (lesson.completeFinalLessonLabel || 'Complete final lesson')}
+                </button>
+              ) : null}
             </div>
             {status ? <div className="mt-4 rounded-[18px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-4 text-[rgba(244,234,220,0.74)]">{status}</div> : null}
           </div>
         </section>
 
-        <section className="mt-6 grid gap-6">
-          <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-            <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.reflectionPromptsHeading || 'Heart Fitness Exercise'}</p>
-            <div className="mt-4 rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] p-5 text-[rgba(244,234,220,0.8)]">
-              {lesson.practice ? <p>{lesson.practice}</p> : null}
-              <p className={lesson.practice ? 'mt-3' : ''}>Open your note book and write what comes to mind. Or type here directly. Your typed reflections will be saved as you go and emailed to you after you complete the full course.</p>
-              {lesson.journalPrompt ? <p className="mt-3">{lesson.journalPrompt}</p> : null}
-              {lesson.prompts.length ? (
-                <div className="mt-4">
-                  <p className="text-xs uppercase tracking-[0.14em] text-[#efc578]">{lesson.promptLabelPrefix || 'Reflection'}</p>
-                  <ul className="mt-3 space-y-3">
-                    {lesson.prompts.map((prompt) => (
-                      <li key={prompt}>{prompt}</li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
+        {!isIntro ? (
+          <section className="mt-6 grid gap-6">
+            <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
+              <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.reflectionPromptsHeading || 'Heart Fitness Exercise'}</p>
+              <div className="mt-4 rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] p-5 text-[rgba(244,234,220,0.8)]">
+                {lesson.practice ? <p>{lesson.practice}</p> : null}
+                {lesson.journalPrompt ? <p className={lesson.practice ? 'mt-3' : ''}>{lesson.journalPrompt}</p> : null}
+                {lesson.prompts.length ? (
+                  <div className="mt-4">
+                    <p className="text-xs uppercase tracking-[0.14em] text-[#efc578]">{lesson.promptLabelPrefix || 'Reflection'}</p>
+                    <ul className="mt-3 space-y-3">
+                      {lesson.prompts.map((prompt) => (
+                        <li key={prompt}>{prompt}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+              </div>
+              <textarea value={reflectionDraft} onChange={(event) => setReflectionDraft(event.target.value)} rows={8} className="mt-5 min-h-40 w-full rounded-[18px] border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-4 py-3 text-[#f4eadc] outline-none" placeholder="Type your reflection here..." />
+              <button onClick={saveReflection} disabled={savingReflection} className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10] disabled:opacity-60">
+                {savingReflection ? 'Saving…' : 'Save reflection'}
+              </button>
             </div>
-            <textarea value={reflectionDraft} onChange={(event) => setReflectionDraft(event.target.value)} rows={8} className="mt-5 min-h-40 w-full rounded-[18px] border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-4 py-3 text-[#f4eadc] outline-none" placeholder="Type your reflection here..." />
-            <button onClick={saveReflection} disabled={savingReflection} className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10] disabled:opacity-60">
-              {savingReflection ? 'Saving…' : 'Save reflection'}
-            </button>
-          </div>
-        </section>
+          </section>
+        ) : null}
 
         <section className="mt-6 rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
           <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">Lesson rhythm</p>

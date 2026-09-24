@@ -343,6 +343,15 @@ export default function PortalPage() {
               <div
                 key={track.id}
                 className="relative overflow-hidden rounded-[24px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-4"
+                style={
+                  track.id === 'course-1'
+                    ? partOneBackgroundStyle
+                    : track.id === 'course-2'
+                      ? partTwoBackgroundStyle
+                      : track.id === 'course-3'
+                        ? partThreeBackgroundStyle
+                        : undefined
+                }
               >
                 <div className="mb-1 text-xs uppercase tracking-[0.16em] text-[#efc578]">{track.label}</div>
                 <div className="mb-4 text-lg font-semibold text-[#f4eadc]">{track.title}</div>

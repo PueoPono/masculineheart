@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { HeartCornerMark } from '@/components/heart-mark'
-import type { CourseTrack, LessonContent, SiteContent } from '@/lib/site-content'
+import { getLessonHeaderBackgroundStyle, shouldUnlockNextImmediately, type CourseTrack, type LessonContent, type SiteContent } from '@/lib/site-content'
 
 export type SiteEditorInteractionMode = 'preview' | 'reference' | 'text-edit'
 
@@ -391,6 +391,15 @@ function PortalPreview({ content, interactionMode, selectedItemKey, onSelectItem
               <div
                 key={track.id}
                 className="relative overflow-hidden rounded-[24px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.03)] p-4"
+                style={
+                  track.id === 'course-1'
+                    ? partOneBackgroundStyle
+                    : track.id === 'course-2'
+                      ? partTwoBackgroundStyle
+                      : track.id === 'course-3'
+                        ? partThreeBackgroundStyle
+                        : undefined
+                }
               >
                 <PreviewTarget target={{ itemKey: shellKey('portal', `trackLabels.${courseTracks.findIndex((entry) => entry.id === track.id)}`), itemLabel: `${track.title} map label` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
                   <div className="mb-1 text-xs uppercase tracking-[0.16em] text-[#efc578]">{portal.trackLabels?.[courseTracks.findIndex((entry) => entry.id === track.id)] || track.label}</div>
@@ -491,12 +500,14 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem,
   const titleClass = isMobile ? 'text-3xl font-semibold tracking-[-0.04em] text-[#e6bd74]' : 'text-5xl font-semibold tracking-[-0.04em] text-[#e6bd74]'
   const firstGridClass = 'mt-6 grid gap-6'
   const actionClass = isMobile ? 'mt-6 grid gap-3' : 'mt-6 flex flex-wrap gap-3'
+  const isIntro = shouldUnlockNextImmediately(lesson)
 
   return (
     <main className={shellClass}>
       <div className="mx-auto max-w-6xl">
-        <section className="relative overflow-hidden rounded-[30px] border border-[rgba(228,183,103,0.18)] bg-[linear-gradient(135deg,rgba(18,27,21,0.96),rgba(20,15,12,0.84)_45%,rgba(12,10,9,0.98))] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.34)] md:p-8">
+        <section className="relative overflow-hidden rounded-[30px] border border-[rgba(228,183,103,0.18)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.34)] md:p-8" style={getLessonHeaderBackgroundStyle(lesson.arc)}>
           <HeartCornerMark />
+          <div className="relative z-[1]">
           <PreviewTarget target={{ itemKey: `${prefix}.arc`, itemLabel: 'Lesson arc' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
             <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.arc}</p>
           </PreviewTarget>
@@ -512,6 +523,7 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem,
           <PreviewTarget target={{ itemKey: `${prefix}.theme`, itemLabel: 'Lesson theme' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-4 max-w-3xl">
             <p className="text-lg leading-8 text-[rgba(244,234,220,0.8)]">{lesson.theme}</p>
           </PreviewTarget>
+          </div>
         </section>
 
         <section className={firstGridClass}>
@@ -535,8 +547,8 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem,
                 <PreviewTarget target={{ itemKey: `${prefix}.videoLabel`, itemLabel: 'Video label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
                   <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.videoLabel}</p>
                 </PreviewTarget>
-                <PreviewTarget target={{ itemKey: `${prefix}.videoHeading`, itemLabel: 'Lesson video heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-1">
-                  <h2 className="text-2xl font-semibold">{lesson.videoHeading || 'Lesson video'}</h2>
+                <PreviewTarget target={{ itemKey: `${prefix}.videoHeading`, itemLabel: isIntro ? 'Intro video heading' : 'Lesson video heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-1">
+                  <h2 className="text-2xl font-semibold">{lesson.videoHeading || (isIntro ? 'Intro video' : 'Lesson video')}</h2>
                 </PreviewTarget>
               </div>
             </div>
@@ -554,14 +566,17 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem,
               <PreviewTarget target={{ itemKey: `${prefix}.markVideoCompleteLabel`, itemLabel: 'Mark video complete label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} fit="inline">
                 <div className={`${isMobile ? 'w-full' : ''} inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#f6d78e,#e0a948)] px-5 text-center font-extrabold text-[#160d07] shadow-[0_10px_28px_rgba(0,0,0,0.34)] ring-1 ring-[rgba(255,255,255,0.18)]`}>{lesson.markVideoCompleteLabel || 'Mark video complete'}</div>
               </PreviewTarget>
-              <PreviewTarget target={{ itemKey: `${prefix}.completeLessonLabel`, itemLabel: 'Complete lesson label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} fit="inline">
-                <div className={`${isMobile ? 'w-full' : ''} inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-5 text-center font-semibold text-[#f4eadc]`}>{lesson.completeLessonLabel || 'Complete lesson'}</div>
-              </PreviewTarget>
+              {!isIntro ? (
+                <PreviewTarget target={{ itemKey: `${prefix}.completeLessonLabel`, itemLabel: 'Complete lesson label' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} fit="inline">
+                  <div className={`${isMobile ? 'w-full' : ''} inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-5 text-center font-semibold text-[#f4eadc]`}>{lesson.completeLessonLabel || 'Complete lesson'}</div>
+                </PreviewTarget>
+              ) : null}
             </div>
           </div>
         </section>
 
-        <section className="mt-6 grid gap-6">
+        {!isIntro ? (
+          <section className="mt-6 grid gap-6">
           <div className="rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
             <PreviewTarget target={{ itemKey: `${prefix}.reflectionPromptsHeading`, itemLabel: 'Reflection prompts heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
               <p className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{lesson.reflectionPromptsHeading || 'Heart Fitness Exercise'}</p>
@@ -572,9 +587,8 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem,
                   <p>{lesson.practice}</p>
                 </PreviewTarget>
               ) : null}
-              <p className={lesson.practice ? 'mt-3' : ''}>Open your note book and write what comes to mind. Or type here directly. Your typed reflections will be saved as you go and emailed to you after you complete the full course.</p>
               {lesson.journalPrompt ? (
-                <PreviewTarget target={{ itemKey: `${prefix}.journalPrompt`, itemLabel: 'Journal prompt' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-3">
+                <PreviewTarget target={{ itemKey: `${prefix}.journalPrompt`, itemLabel: 'Journal prompt' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className={lesson.practice ? 'mt-3' : ''}>
                   <p>{lesson.journalPrompt}</p>
                 </PreviewTarget>
               ) : null}
@@ -598,7 +612,8 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem,
             <div className="mt-5 min-h-40 w-full rounded-[18px] border border-[rgba(228,183,103,0.18)] bg-[rgba(255,255,255,0.04)] px-4 py-3 text-[rgba(244,234,220,0.46)]">Type your reflection here...</div>
             <div className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10]">Save reflection</div>
           </div>
-        </section>
+          </section>
+        ) : null}
 
         <section className="mt-6 rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.74)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
           <PreviewTarget target={{ itemKey: `${prefix}.rhythmHeading`, itemLabel: 'Lesson rhythm heading' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
