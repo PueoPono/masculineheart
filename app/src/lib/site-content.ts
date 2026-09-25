@@ -62,6 +62,90 @@ export type StatusPageContent = {
   cardHeading: string
   cardBody?: string
   backToPortalLabel?: string
+  loadingDetail?: string
+  missingSessionDetail?: string
+  missingPreviousDetail?: string
+  progressLoadErrorDetail?: string
+  videoNotCompleteDetail?: string
+  unlockReadyDetail?: string
+  savedWithoutNextDetail?: string
+  ceremonyEyebrow?: string
+  ceremonyTitle?: string
+  ceremonyBody?: string
+}
+
+export type QuestionnaireField = {
+  id: string
+  label: string
+  type: 'text' | 'textarea' | 'choice'
+  options?: string[]
+}
+
+export type QuestionnaireContent = {
+  eyebrow: string
+  title: string
+  introLines: string[]
+  quote: string
+  fields: QuestionnaireField[]
+  closingBody: string
+  saveButton: string
+  savingButton: string
+  submitButton: string
+  submitAgainButton: string
+  submittingButton: string
+  returnToCourseLabel: string
+  choosePlaceholder: string
+  progressSuffix: string
+  loadingStatus: string
+  localOnlyStatus: string
+  draftStatus: string
+  submittedStatus: string
+  submittedNotifiedStatus: string
+  savedStatus: string
+  alreadySubmittedStatus: string
+  loadErrorStatus: string
+  saveErrorStatus: string
+  submitErrorStatus: string
+}
+
+export type SiteShellContent = {
+  homeIntroLinkLabel: string
+  portalLoginTitle: string
+  portalLoginCta: string
+  portalNotEnrolledTitle: string
+  portalBackToLandingLabel: string
+  portalLoadingLabel: string
+  portalSignedInPrefix: string
+  portalCompletionTotalLabel: string
+  portalCompletionMapLabel: string
+  portalCompletionMapBody: string
+  portalLessonsCompleteSuffix: string
+  portalSectionCompleteSuffix: string
+  portalAvailableStatus: string
+  portalCompleteStatus: string
+  portalLockedStatus: string
+  portalAdminOpenStatus: string
+  portalUnlocksPrefix: string
+  lessonMissingTitle: string
+  lessonMissingBody: string
+  lessonMissingCta: string
+  lessonRefreshLabel: string
+  lessonDefaultSupportingHeading: string
+  lessonDefaultVideoHeading: string
+  lessonDefaultIntroVideoHeading: string
+  lessonDefaultMarkVideoCompleteLabel: string
+  lessonDefaultVideoCompleteSavedLabel: string
+  lessonDefaultCompleteLessonLabel: string
+  lessonDefaultCompleteFinalLessonLabel: string
+  lessonReflectionPlaceholder: string
+  lessonDefaultSaveReflectionLabel: string
+  lessonSavingLabel: string
+  lessonNextAvailableAfterCompletion: string
+  lessonNextAvailableAfterUnlock: string
+  lessonReflectionSavedStatus: string
+  lessonReflectionSaveErrorStatus: string
+  lessonCompletionSaveErrorStatus: string
+  lessonFinalReflectionEmailErrorStatus: string
 }
 
 export type LessonContent = {
@@ -104,6 +188,8 @@ export type SiteContent = {
   portal: PortalContent
   locked: StatusPageContent
   complete: StatusPageContent
+  questionnaire: QuestionnaireContent
+  shell: SiteShellContent
   lessons: LessonContent[]
 }
 
@@ -857,6 +943,12 @@ export const defaultSiteContent: SiteContent = {
     body: 'Good work. Let the previous lesson settle before the next gate opens.',
     cardHeading: 'Next unlock',
     cardBody: 'The previous lesson video has not been marked complete yet.',
+    loadingDetail: 'Checking your unlock time…',
+    missingSessionDetail: 'Sign in to see when your next lesson unlocks.',
+    missingPreviousDetail: 'We could not find the previous lesson for this unlock gate.',
+    progressLoadErrorDetail: 'We could not load your unlock time yet. Please return to the portal and try again.',
+    videoNotCompleteDetail: 'The previous lesson video has not been marked complete yet.',
+    unlockReadyDetail: 'Your next lesson is ready now. Return to the portal and open it.',
   },
   complete: {
     eyebrow: 'Quest Rhythm',
@@ -865,6 +957,86 @@ export const defaultSiteContent: SiteContent = {
     cardHeading: 'Next lesson unlocks in',
     cardBody: 'Completion saved. Return to the portal to continue.',
     backToPortalLabel: 'Back to portal',
+  },
+
+  questionnaire: {
+    eyebrow: 'Heart Unlock',
+    title: 'Part 1 - Heart Unlock - Questionnaire',
+    introLines: [
+      "Congratulations, on taking a few days, to step down into your Heart. The things we avoid, end up being the things that control our life... so we have to take time to see what we've been avoiding.",
+      "Heart work doesn't stop here, this is just the first step. There is so much more we can do to create a Healthy, Thriving, Heart.",
+      'Please take a minute for these questions!',
+    ],
+    quote: '“The privilege of a lifetime is to become who you truly are” - Carl Jung.',
+    fields: [
+      { id: 'name', label: 'Name', type: 'text' },
+      { id: 'completedSevenDays', label: 'Did you complete the 7-days, stepping down into the Heart?', type: 'choice', options: ['Yes', 'No'] },
+      { id: 'daysFromStartToFinish', label: 'How many days did you take from start to finish?', type: 'text' },
+      { id: 'learnedAboutSelf', label: 'What did you learn about yourself during the course?', type: 'textarea' },
+      { id: 'confusingOrSuggestions', label: 'Was there anything confusing about the course, or any suggestion you would have that could have made it better?', type: 'textarea' },
+      { id: 'nextStep', label: 'What do you think the next step is for you, in understanding your Heart?', type: 'text' },
+      { id: 'emotionsOpened', label: 'Did you feel your emotions open up in new ways? If so, how?', type: 'textarea' },
+      { id: 'criticalToFeel', label: "Why do you think it's critical to allow yourself to feel?", type: 'textarea' },
+      { id: 'mostImportantTakeaway', label: 'What is your most important take away from this mini-course?', type: 'textarea' },
+    ],
+    closingBody: "As we step down into our Hearts, we step into newness in life - we learn how to feel again, and with that how to play again, how to have fun - we gain skills to create life more consciously and intentionally, and tools to thrive. We start with Heart so we can thrive in the ways that matter most. I'm here, as your advocate for your Heart. -Paul",
+    saveButton: 'Save answers',
+    savingButton: 'Saving…',
+    submitButton: 'Submit questionnaire',
+    submitAgainButton: 'Submit again',
+    submittingButton: 'Submitting…',
+    returnToCourseLabel: 'Return to course',
+    choosePlaceholder: 'Choose…',
+    progressSuffix: 'answers started.',
+    loadingStatus: 'Loading your saved answers…',
+    localOnlyStatus: 'Answers saved on this device. Sign in to save them to your course account and submit.',
+    draftStatus: 'You can draft answers here. Sign in to save them to your course account and submit.',
+    submittedStatus: 'Questionnaire submitted.',
+    submittedNotifiedStatus: 'Questionnaire submitted. Paul has been notified.',
+    savedStatus: 'Answers saved to your course account.',
+    alreadySubmittedStatus: 'Questionnaire already submitted. You can still review your answers.',
+    loadErrorStatus: 'Could not load account answers yet. You can keep writing; this device will remember your answers.',
+    saveErrorStatus: 'Could not save answers yet.',
+    submitErrorStatus: 'Could not submit questionnaire yet.',
+  },
+  shell: {
+    homeIntroLinkLabel: 'Open intro lesson',
+    portalLoginTitle: 'Login required',
+    portalLoginCta: 'Go to login',
+    portalNotEnrolledTitle: 'Course access pending',
+    portalBackToLandingLabel: 'Back to landing page',
+    portalLoadingLabel: 'Loading your portal…',
+    portalSignedInPrefix: 'Signed in as',
+    portalCompletionTotalLabel: 'Total course',
+    portalCompletionMapLabel: 'Completion map',
+    portalCompletionMapBody: 'A small view of the whole path and each section of the Quest.',
+    portalLessonsCompleteSuffix: 'lessons complete',
+    portalSectionCompleteSuffix: 'complete',
+    portalAvailableStatus: 'Available',
+    portalCompleteStatus: 'Complete',
+    portalLockedStatus: 'Locked',
+    portalAdminOpenStatus: 'Admin open',
+    portalUnlocksPrefix: 'Unlocks',
+    lessonMissingTitle: 'Lesson not found',
+    lessonMissingBody: 'This lesson is not available yet.',
+    lessonMissingCta: 'Back to portal',
+    lessonRefreshLabel: 'Refresh this lesson',
+    lessonDefaultSupportingHeading: 'Todays Steps',
+    lessonDefaultVideoHeading: 'Lesson video',
+    lessonDefaultIntroVideoHeading: 'Intro video',
+    lessonDefaultMarkVideoCompleteLabel: 'Mark video complete',
+    lessonDefaultVideoCompleteSavedLabel: 'Video completion saved',
+    lessonDefaultCompleteLessonLabel: 'Complete lesson',
+    lessonDefaultCompleteFinalLessonLabel: 'Complete final lesson',
+    lessonReflectionPlaceholder: 'Type your reflection here...',
+    lessonDefaultSaveReflectionLabel: 'Save reflection',
+    lessonSavingLabel: 'Saving…',
+    lessonNextAvailableAfterCompletion: 'is available after you complete this lesson.',
+    lessonNextAvailableAfterUnlock: 'Next lesson available after you complete this lesson at your account unlock time.',
+    lessonReflectionSavedStatus: 'Reflection saved to your account. Your saved reflections will be emailed to you after you complete the full course.',
+    lessonReflectionSaveErrorStatus: 'Could not save your reflection yet.',
+    lessonCompletionSaveErrorStatus: 'Could not save completion yet. Please try again.',
+    lessonFinalReflectionEmailErrorStatus: 'Course completion saved, but your reflection email could not be queued yet. Please try completing the final lesson again in a moment.',
   },
   lessons: lessons.map((lesson) => ({
     ...lesson,

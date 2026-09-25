@@ -136,6 +136,7 @@ export default function PortalPage() {
   const { content } = useSiteContent()
   const lessons = content.lessons
   const portal = content.portal
+  const shell = content.shell
   const [email, setEmail] = useState('')
   const [progress, setProgress] = useState<Record<string, ProgressRow>>({})
   const [loading, setLoading] = useState(true)
@@ -249,9 +250,9 @@ export default function PortalPage() {
         <AdminMenu portalHref="/portal" adminHref="/admin" />
         <div className="relative mx-auto w-full max-w-2xl overflow-hidden rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[linear-gradient(180deg,rgba(19,24,20,0.94),rgba(20,15,12,0.84))] p-8 text-center shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
           <HeartCornerMark />
-          <h1 className="mb-3 text-4xl font-semibold tracking-[-0.04em]">Login required</h1>
+          <h1 className="mb-3 text-4xl font-semibold tracking-[-0.04em]">{shell.portalLoginTitle}</h1>
           <p className="mb-6 text-[rgba(244,234,220,0.72)]">{status}</p>
-          <a href="/auth" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10]">Go to login</a>
+          <a href="/auth" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10]">{shell.portalLoginCta}</a>
         </div>
       </main>
     )
@@ -263,11 +264,11 @@ export default function PortalPage() {
         <AdminMenu portalHref="/portal" adminHref="/admin" />
         <div className="relative mx-auto w-full max-w-2xl overflow-hidden rounded-[28px] border border-[rgba(228,183,103,0.18)] bg-[linear-gradient(180deg,rgba(19,24,20,0.94),rgba(20,15,12,0.84))] p-8 text-center shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
           <HeartCornerMark />
-          <h1 className="mb-3 text-4xl font-semibold tracking-[-0.04em]">Access not active yet</h1>
+          <h1 className="mb-3 text-4xl font-semibold tracking-[-0.04em]">{shell.portalNotEnrolledTitle}</h1>
           <p className="mb-2 text-[rgba(244,234,220,0.72)]">{email}</p>
-          <p className="mb-6 text-[rgba(244,234,220,0.72)]">Your account is recognized, but enrollment has not been activated yet.</p>
+          <p className="mb-6 text-[rgba(244,234,220,0.72)]">{status}</p>
           <div className="rounded-[18px] border border-[rgba(239,197,120,0.12)] bg-[rgba(31,23,18,0.56)] p-4 text-[rgba(244,234,220,0.72)]">
-            If this should already be active, contact support and we’ll enable your access.
+            {shell.portalBackToLandingLabel}
           </div>
         </div>
       </main>
@@ -286,18 +287,18 @@ export default function PortalPage() {
               <h1 className="text-5xl font-semibold tracking-[-0.04em] text-[#e6bd74]">{portal.title}</h1>
               <p className="mt-2 text-[rgba(244,234,220,0.72)]">{email}</p>
               <p className="mt-5 max-w-2xl text-[rgba(244,234,220,0.78)]">{portal.mapBody}</p>
-              {adminUnlocked ? <p className="mt-3 text-sm text-[#efc578]">Admin unlocked view: all course pages are navigable from here.</p> : null}
+              {adminUnlocked ? <p className="mt-3 text-sm text-[#efc578]">{portal.adminUnlockedNote}</p> : null}
             </div>
             <div className="grid gap-3">
               <div className="rounded-[20px] border border-[rgba(239,197,120,0.12)] bg-[rgba(31,23,18,0.56)] p-4 text-sm text-[rgba(244,234,220,0.78)]">
                 <div className="mb-3 flex items-center justify-between gap-3">
-                  <strong className="text-[#f4eadc]">Completion map</strong>
+                  <strong className="text-[#f4eadc]">{shell.portalCompletionMapLabel}</strong>
                   <span className="text-xl font-semibold text-[#e6bd74]">{completionPercent}%</span>
                 </div>
                 <div className="h-2.5 overflow-hidden rounded-full bg-[rgba(255,255,255,0.08)]">
                   <div className="h-full rounded-full bg-[linear-gradient(90deg,#efc578,#dca453,#78a15f)] transition-all duration-500" style={{ width: `${completionPercent}%` }} />
                 </div>
-                <div className="mt-1 text-xs text-[rgba(244,234,220,0.62)]">{completionCount} / {lessons.length} lessons complete</div>
+                <div className="mt-1 text-xs text-[rgba(244,234,220,0.62)]">{completionCount} / {lessons.length} {shell.portalLessonsCompleteSuffix}</div>
                 <div className="mt-4 grid gap-3">
                   {trackCompletion.map(({ track, completed, total, percent, styles }) => (
                     <div key={track.id} className="grid gap-1.5">
@@ -316,9 +317,9 @@ export default function PortalPage() {
                 </div>
               </div>
               <div className="rounded-[20px] border border-[rgba(239,197,120,0.12)] bg-[rgba(31,23,18,0.56)] p-4 text-sm text-[rgba(244,234,220,0.78)]">
-                <strong className="text-[#f4eadc]">Drip cadence</strong>
+                <strong className="text-[#f4eadc]">{portal.dripHeading}</strong>
                 <div className="mt-2">{getDripCadenceDescription()}</div>
-                <div className="mt-1">Your reflection can continue after the next lesson opens.</div>
+                <div className="mt-1">{portal.dripSupport}</div>
               </div>
             </div>
           </div>
@@ -331,11 +332,11 @@ export default function PortalPage() {
                   <div className="mt-1 text-2xl font-semibold">{nextAvailable.stepLabel} · {nextAvailable.title}</div>
                   <div className="mt-2 text-[rgba(244,234,220,0.72)]">{nextAvailable.theme}</div>
                   <div className="mt-4">
-                    <a href={`/portal/lesson/${nextAvailable.slug}`} className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10]">Open lesson</a>
+                    <a href={`/portal/lesson/${nextAvailable.slug}`} className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10]">{portal.nextAvailableCta}</a>
                   </div>
                 </>
               ) : (
-                <div className="mt-2 text-[rgba(244,234,220,0.72)]">All available lessons are open. Continue from your lesson map below.</div>
+                <div className="mt-2 text-[rgba(244,234,220,0.72)]">{portal.allLessonsOpenBody}</div>
               )}
             </div>
 
@@ -343,11 +344,11 @@ export default function PortalPage() {
               <div className="text-xs uppercase tracking-[0.16em] text-[#efc578]">{portal.integrationHeading}</div>
               {nextIntegration ? (
                 <>
-                  <div className="mt-1 text-2xl font-semibold">{nextIntegration.lesson.stepLabel} · {nextIntegration.lesson.title} opens next</div>
-                  <div className="mt-2 text-[rgba(244,234,220,0.72)]">Unlocks {formatUnlock(nextIntegration.unlockAt)}</div>
+                  <div className="mt-1 text-2xl font-semibold">{nextIntegration.lesson.stepLabel} · {nextIntegration.lesson.title}</div>
+                  <div className="mt-2 text-[rgba(244,234,220,0.72)]">{shell.portalUnlocksPrefix} {formatUnlock(nextIntegration.unlockAt)}</div>
                 </>
               ) : (
-                <div className="mt-2 text-[rgba(244,234,220,0.72)]">{adminUnlocked ? 'Admin view bypasses drip locks so you can inspect the full course experience.' : portal.integrationBody}</div>
+                <div className="mt-2 text-[rgba(244,234,220,0.72)]">{adminUnlocked ? portal.integrationAdminBypass : portal.integrationBody}</div>
               )}
             </div>
           </div>
@@ -425,16 +426,16 @@ export default function PortalPage() {
                             : ''
                       const statusText =
                         lessonProgress?.status === 'complete'
-                          ? 'Complete ✓'
+                          ? `${shell.portalCompleteStatus} ✓`
                           : state === 'integrating'
                             ? `Unlocks ${formatUnlock(unlockAt)}`
                             : state === 'locked'
-                              ? 'Locked until previous video is complete'
+                              ? shell.portalLockedStatus
                               : lessonProgress?.status === 'video_complete'
                                 ? 'Video complete · reflection still open'
                                 : adminUnlocked
-                                  ? 'Admin open'
-                                  : 'Available'
+                                  ? shell.portalAdminOpenStatus
+                                  : shell.portalAvailableStatus
                       return (
                         <div
                           key={lesson.id}

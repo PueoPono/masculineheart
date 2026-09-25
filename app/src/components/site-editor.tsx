@@ -6,7 +6,7 @@ import { SiteEditorPreview, type SiteEditorInteractionMode, type SiteEditorPrevi
 import { courseTracks } from '@/lib/site-content'
 import { useEditableSiteContent, type ReferenceNotes, type SiteContentOverrides } from '@/lib/site-content-store'
 
-type SectionKey = 'landing' | 'portal' | 'locked' | 'complete' | `lesson:${string}`
+type SectionKey = 'landing' | 'portal' | 'locked' | 'complete' | 'questionnaire' | 'shell' | `lesson:${string}`
 
 type Props = {
   adminEmail: string
@@ -62,6 +62,8 @@ export function SiteEditor({ adminEmail }: Props) {
     updateLandingField,
     updatePortalField,
     updateStatusField,
+    updateQuestionnaireField,
+    updateShellField,
     updateLesson,
     resetSection,
     save,
@@ -90,6 +92,8 @@ export function SiteEditor({ adminEmail }: Props) {
     if (selected === 'portal') return '/portal'
     if (selected === 'locked') return '/portal/locked?previous=heart-intro&next=heart-day-1'
     if (selected === 'complete') return '/portal/complete?from=heart-intro&next=heart-day-1'
+    if (selected === 'questionnaire') return '/portal/heart-unlock-questionnaire'
+    if (selected === 'shell') return '/portal'
     return `/portal/lesson/${selected.replace('lesson:', '')}`
   }, [selected])
 
@@ -99,7 +103,20 @@ export function SiteEditor({ adminEmail }: Props) {
   const queuedRequests = Object.entries(referenceNotes).filter(([, value]) => value.trim())
   const queuedRequestCount = queuedRequests.length
 
+  function updateQuestionnaireIntroLine(index: number, value: string) {
+    updateQuestionnaireField('introLines', content.questionnaire.introLines.map((entry, entryIndex) => (entryIndex === index ? value : entry)))
+  }
+
+  function updateQuestionnaireFieldLabel(index: number, value: string) {
+    updateQuestionnaireField('fields', content.questionnaire.fields.map((entry, entryIndex) => (entryIndex === index ? { ...entry, label: value } : entry)))
+  }
+
+  function updateQuestionnaireFieldOptions(index: number, value: string) {
+    updateQuestionnaireField('fields', content.questionnaire.fields.map((entry, entryIndex) => (entryIndex === index ? { ...entry, options: fromLines(value) } : entry)))
+  }
+
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSectionReferenceDraft(referenceNotes[selected] || '')
   }, [referenceNotes, selected])
 
@@ -233,6 +250,38 @@ export function SiteEditor({ adminEmail }: Props) {
       return false
     }
 
+    if (itemKey.startsWith('questionnaire.')) {
+      const field = itemKey.replace('questionnaire.', '')
+      if (field.startsWith('introLines.')) {
+        const [, indexText] = field.split('.')
+        const index = Number(indexText)
+        if (Number.isNaN(index)) return false
+        updateQuestionnaireIntroLine(index, value)
+        return true
+      }
+      if (field.startsWith('fields.')) {
+        const [, indexText] = field.split('.')
+        const index = Number(indexText)
+        if (Number.isNaN(index)) return false
+        updateQuestionnaireFieldLabel(index, value)
+        return true
+      }
+      if (field in content.questionnaire) {
+        updateQuestionnaireField(field as keyof typeof content.questionnaire, value as never)
+        return true
+      }
+      return false
+    }
+
+    if (itemKey.startsWith('shell.')) {
+      const field = itemKey.replace('shell.', '')
+      if (field in content.shell) {
+        updateShellField(field as keyof typeof content.shell, value as never)
+        return true
+      }
+      return false
+    }
+
     if (itemKey.startsWith('lesson:')) {
       const [lessonPrefix, field, indexText] = itemKey.split('.')
       const slug = lessonPrefix.replace('lesson:', '')
@@ -314,6 +363,26 @@ export function SiteEditor({ adminEmail }: Props) {
       return typeof value === 'string' ? value : ''
     }
 
+    if (itemKey.startsWith('questionnaire.')) {
+      const field = itemKey.replace('questionnaire.', '')
+      if (field.startsWith('introLines.')) {
+        const [, indexText] = field.split('.')
+        return content.questionnaire.introLines[Number(indexText)] || ''
+      }
+      if (field.startsWith('fields.')) {
+        const [, indexText] = field.split('.')
+        return content.questionnaire.fields[Number(indexText)]?.label || ''
+      }
+      const value = content.questionnaire[field as keyof typeof content.questionnaire]
+      return typeof value === 'string' ? value : ''
+    }
+
+    if (itemKey.startsWith('shell.')) {
+      const field = itemKey.replace('shell.', '')
+      const value = content.shell[field as keyof typeof content.shell]
+      return typeof value === 'string' ? value : ''
+    }
+
     if (itemKey.startsWith('lesson:')) {
       const [lessonPrefix, field, indexText] = itemKey.split('.')
       const slug = lessonPrefix.replace('lesson:', '')
@@ -391,6 +460,34 @@ export function SiteEditor({ adminEmail }: Props) {
       const field = itemKey.replace('complete.', '')
       if (!(field in nextContent.complete)) return null
       ;(nextContent.complete as Record<string, unknown>)[field] = value
+      return nextContent as SiteContentOverrides
+    }
+
+    if (itemKey.startsWith('questionnaire.')) {
+      const field = itemKey.replace('questionnaire.', '')
+      if (field.startsWith('introLines.')) {
+        const [, indexText] = field.split('.')
+        const index = Number(indexText)
+        if (Number.isNaN(index)) return null
+        nextContent.questionnaire.introLines[index] = value
+        return nextContent as SiteContentOverrides
+      }
+      if (field.startsWith('fields.')) {
+        const [, indexText] = field.split('.')
+        const index = Number(indexText)
+        if (Number.isNaN(index) || !nextContent.questionnaire.fields[index]) return null
+        nextContent.questionnaire.fields[index] = { ...nextContent.questionnaire.fields[index], label: value }
+        return nextContent as SiteContentOverrides
+      }
+      if (!(field in nextContent.questionnaire)) return null
+      ;(nextContent.questionnaire as Record<string, unknown>)[field] = value
+      return nextContent as SiteContentOverrides
+    }
+
+    if (itemKey.startsWith('shell.')) {
+      const field = itemKey.replace('shell.', '')
+      if (!(field in nextContent.shell)) return null
+      ;(nextContent.shell as Record<string, unknown>)[field] = value
       return nextContent as SiteContentOverrides
     }
 
@@ -567,6 +664,8 @@ export function SiteEditor({ adminEmail }: Props) {
             ['portal', 'Portal'],
             ['locked', 'Locked state'],
             ['complete', 'Complete state'],
+            ['questionnaire', 'Heart Unlock questionnaire'],
+            ['shell', 'Buttons + UI shell'],
           ].map(([key, label]) => (
             <button key={key} onClick={() => onSelectSection(key as SectionKey)} className={`rounded-[16px] px-4 py-3 text-left text-sm ${selected === key ? 'bg-[rgba(220,164,83,0.2)] text-[#f4eadc]' : 'bg-[rgba(255,255,255,0.03)] text-[rgba(244,234,220,0.75)]'}`}>
               {label}
@@ -698,15 +797,63 @@ export function SiteEditor({ adminEmail }: Props) {
 
           {selected === 'locked' ? (
             <>
+              <Field label="Locked eyebrow" value={content.locked.eyebrow} onChange={(value) => updateStatusField('locked', 'eyebrow', value)} />
               <Field label="Locked title" value={content.locked.title} onChange={(value) => updateStatusField('locked', 'title', value)} />
               <Field label="Locked body" value={content.locked.body} onChange={(value) => updateStatusField('locked', 'body', value)} multiline />
+              <Field label="Locked card heading" value={content.locked.cardHeading} onChange={(value) => updateStatusField('locked', 'cardHeading', value)} />
+              <Field label="Locked card body" value={content.locked.cardBody || ''} onChange={(value) => updateStatusField('locked', 'cardBody', value)} multiline />
+              <Field label="Back to portal button" value={content.locked.backToPortalLabel || ''} onChange={(value) => updateStatusField('locked', 'backToPortalLabel', value)} />
+              <Field label="Loading detail" value={content.locked.loadingDetail || ''} onChange={(value) => updateStatusField('locked', 'loadingDetail', value)} multiline />
+              <Field label="Missing session detail" value={content.locked.missingSessionDetail || ''} onChange={(value) => updateStatusField('locked', 'missingSessionDetail', value)} multiline />
+              <Field label="Video not complete detail" value={content.locked.videoNotCompleteDetail || ''} onChange={(value) => updateStatusField('locked', 'videoNotCompleteDetail', value)} multiline />
+              <Field label="Unlock ready detail" value={content.locked.unlockReadyDetail || ''} onChange={(value) => updateStatusField('locked', 'unlockReadyDetail', value)} multiline />
             </>
           ) : null}
 
           {selected === 'complete' ? (
             <>
+              <Field label="Complete eyebrow" value={content.complete.eyebrow} onChange={(value) => updateStatusField('complete', 'eyebrow', value)} />
               <Field label="Complete title" value={content.complete.title} onChange={(value) => updateStatusField('complete', 'title', value)} />
               <Field label="Complete body" value={content.complete.body} onChange={(value) => updateStatusField('complete', 'body', value)} multiline />
+              <Field label="Complete card heading" value={content.complete.cardHeading} onChange={(value) => updateStatusField('complete', 'cardHeading', value)} />
+              <Field label="Complete card body" value={content.complete.cardBody || ''} onChange={(value) => updateStatusField('complete', 'cardBody', value)} multiline />
+              <Field label="Part ceremony eyebrow" value={content.complete.ceremonyEyebrow || ''} onChange={(value) => updateStatusField('complete', 'ceremonyEyebrow', value)} />
+              <Field label="Part ceremony title" value={content.complete.ceremonyTitle || ''} onChange={(value) => updateStatusField('complete', 'ceremonyTitle', value)} />
+              <Field label="Part ceremony body" value={content.complete.ceremonyBody || ''} onChange={(value) => updateStatusField('complete', 'ceremonyBody', value)} multiline />
+              <Field label="Back to portal button" value={content.complete.backToPortalLabel || ''} onChange={(value) => updateStatusField('complete', 'backToPortalLabel', value)} />
+            </>
+          ) : null}
+
+          {selected === 'questionnaire' ? (
+            <>
+              <Field label="Questionnaire eyebrow" value={content.questionnaire.eyebrow} onChange={(value) => updateQuestionnaireField('eyebrow', value)} />
+              <Field label="Questionnaire title" value={content.questionnaire.title} onChange={(value) => updateQuestionnaireField('title', value)} multiline />
+              {content.questionnaire.introLines.map((line, index) => (
+                <Field key={`questionnaire-intro-${index}`} label={`Intro line ${index + 1}`} value={line} onChange={(value) => updateQuestionnaireIntroLine(index, value)} multiline />
+              ))}
+              <Field label="Quote" value={content.questionnaire.quote} onChange={(value) => updateQuestionnaireField('quote', value)} multiline />
+              {content.questionnaire.fields.map((field, index) => (
+                <div key={field.id} className="grid gap-3 rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.03)] p-4">
+                  <Field label={`Field label: ${field.id}`} value={field.label} onChange={(value) => updateQuestionnaireFieldLabel(index, value)} multiline />
+                  {field.type === 'choice' ? <Field label={`Options for ${field.id} (one per line)`} value={toLines(field.options || [])} onChange={(value) => updateQuestionnaireFieldOptions(index, value)} multiline /> : null}
+                </div>
+              ))}
+              <Field label="Closing body" value={content.questionnaire.closingBody} onChange={(value) => updateQuestionnaireField('closingBody', value)} multiline />
+              <Field label="Save button" value={content.questionnaire.saveButton} onChange={(value) => updateQuestionnaireField('saveButton', value)} />
+              <Field label="Submit button" value={content.questionnaire.submitButton} onChange={(value) => updateQuestionnaireField('submitButton', value)} />
+              <Field label="Return to course label" value={content.questionnaire.returnToCourseLabel} onChange={(value) => updateQuestionnaireField('returnToCourseLabel', value)} />
+              <Field label="Choose placeholder" value={content.questionnaire.choosePlaceholder} onChange={(value) => updateQuestionnaireField('choosePlaceholder', value)} />
+              <Field label="Submitted status" value={content.questionnaire.submittedStatus} onChange={(value) => updateQuestionnaireField('submittedStatus', value)} multiline />
+              <Field label="Save error status" value={content.questionnaire.saveErrorStatus} onChange={(value) => updateQuestionnaireField('saveErrorStatus', value)} multiline />
+              <Field label="Submit error status" value={content.questionnaire.submitErrorStatus} onChange={(value) => updateQuestionnaireField('submitErrorStatus', value)} multiline />
+            </>
+          ) : null}
+
+          {selected === 'shell' ? (
+            <>
+              {Object.entries(content.shell).map(([key, value]) => (
+                <Field key={key} label={key} value={String(value || '')} onChange={(next) => updateShellField(key as keyof typeof content.shell, next)} multiline={String(value || '').length > 70} />
+              ))}
             </>
           ) : null}
 

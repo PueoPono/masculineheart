@@ -6,7 +6,7 @@ import { getLessonHeaderBackgroundStyle, shouldUnlockNextImmediately, type Cours
 
 export type SiteEditorInteractionMode = 'preview' | 'reference' | 'text-edit'
 
-type SelectedSection = 'landing' | 'portal' | 'locked' | 'complete' | `lesson:${string}`
+type SelectedSection = 'landing' | 'portal' | 'locked' | 'complete' | 'questionnaire' | 'shell' | `lesson:${string}`
 
 const partOneBoxBackground =
   "linear-gradient(135deg,rgba(7,12,20,0.72),rgba(12,10,9,0.6) 42%,rgba(12,10,9,0.86)),url('/images/part-one-heart-locks-fence.jpg')"
@@ -642,12 +642,85 @@ function LessonPreview({ lesson, interactionMode, selectedItemKey, onSelectItem,
   )
 }
 
+function QuestionnairePreview({ content, interactionMode, selectedItemKey, onSelectItem }: PreviewBaseProps) {
+  const questionnaire = content.questionnaire
+  return (
+    <main className="min-h-[1100px] rounded-[30px] bg-[radial-gradient(circle_at_top,rgba(228,183,103,0.16),transparent_38%),linear-gradient(180deg,#080808,#10130f)] px-4 py-10 text-[#f4eadc]">
+      <div className="mx-auto w-full max-w-3xl rounded-[30px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.78)] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.34)] md:p-8">
+        <HeartCornerMark />
+        <PreviewTarget target={{ itemKey: 'questionnaire.eyebrow', itemLabel: 'Questionnaire eyebrow' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+          <p className="text-xs uppercase tracking-[0.18em] text-[#efc578]">{questionnaire.eyebrow}</p>
+        </PreviewTarget>
+        <PreviewTarget target={{ itemKey: 'questionnaire.title', itemLabel: 'Questionnaire title' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-3">
+          <h1 className="text-4xl font-semibold tracking-[-0.04em] text-[#e6bd74]">{questionnaire.title}</h1>
+        </PreviewTarget>
+        <div className="mt-4 grid gap-3 text-[rgba(244,234,220,0.76)]">
+          {questionnaire.introLines.map((line, index) => (
+            <PreviewTarget key={`intro-${index}`} target={{ itemKey: `questionnaire.introLines.${index}`, itemLabel: `Questionnaire intro line ${index + 1}` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+              <p>{line}</p>
+            </PreviewTarget>
+          ))}
+        </div>
+        <PreviewTarget target={{ itemKey: 'questionnaire.quote', itemLabel: 'Questionnaire quote' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-5 rounded-[20px] border border-[rgba(239,197,120,0.14)] bg-[rgba(255,255,255,0.04)] p-4">
+          <p className="italic text-[rgba(244,234,220,0.78)]">{questionnaire.quote}</p>
+        </PreviewTarget>
+        <div className="mt-6 grid gap-4">
+          {questionnaire.fields.map((field, index) => (
+            <div key={field.id} className="rounded-[20px] border border-[rgba(228,183,103,0.14)] bg-[rgba(255,255,255,0.035)] p-4">
+              <PreviewTarget target={{ itemKey: `questionnaire.fields.${index}`, itemLabel: `Questionnaire field ${field.id}` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+                <label className="text-sm font-medium text-[#f4eadc]">{field.label}</label>
+              </PreviewTarget>
+              <div className="mt-3 min-h-11 rounded-[14px] border border-white/10 bg-black/20 px-3 py-2 text-sm text-white/46">{field.type === 'choice' ? questionnaire.choosePlaceholder : 'Type response here...'}</div>
+            </div>
+          ))}
+        </div>
+        <PreviewTarget target={{ itemKey: 'questionnaire.closingBody', itemLabel: 'Questionnaire closing body' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} className="mt-5">
+          <p className="text-[rgba(244,234,220,0.72)]">{questionnaire.closingBody}</p>
+        </PreviewTarget>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <PreviewTarget target={{ itemKey: 'questionnaire.saveButton', itemLabel: 'Questionnaire save button' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} fit="inline">
+            <div className="inline-flex min-h-11 items-center justify-center rounded-full border border-[rgba(228,183,103,0.18)] px-4 text-[#f4eadc]">{questionnaire.saveButton}</div>
+          </PreviewTarget>
+          <PreviewTarget target={{ itemKey: 'questionnaire.submitButton', itemLabel: 'Questionnaire submit button' }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} fit="inline">
+            <div className="inline-flex min-h-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#efc578,#dca453)] px-5 font-bold text-[#2d1b10]">{questionnaire.submitButton}</div>
+          </PreviewTarget>
+        </div>
+      </div>
+    </main>
+  )
+}
+
+function ShellPreview({ content, interactionMode, selectedItemKey, onSelectItem }: PreviewBaseProps) {
+  const shell = content.shell
+  const entries = Object.entries(shell)
+  return (
+    <main className="min-h-[1000px] rounded-[30px] bg-[linear-gradient(180deg,#080808,#10130f)] px-4 py-10 text-[#f4eadc]">
+      <div className="mx-auto max-w-4xl rounded-[30px] border border-[rgba(228,183,103,0.18)] bg-[rgba(18,18,16,0.78)] p-6 md:p-8">
+        <p className="text-xs uppercase tracking-[0.18em] text-[#efc578]">Site-wide UI shell</p>
+        <h1 className="mt-2 text-3xl font-semibold text-[#e6bd74]">Buttons, fallback messages, progress labels, and status copy</h1>
+        <div className="mt-6 grid gap-3 md:grid-cols-2">
+          {entries.map(([key, value]) => (
+            <PreviewTarget key={key} target={{ itemKey: `shell.${key}`, itemLabel: `Shell ${key}` }} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem}>
+              <div className="h-full rounded-[18px] border border-[rgba(228,183,103,0.12)] bg-[rgba(255,255,255,0.035)] p-4">
+                <p className="text-[10px] uppercase tracking-[0.16em] text-[#efc578]">{key}</p>
+                <p className="mt-2 text-sm leading-6 text-[rgba(244,234,220,0.78)]">{String(value)}</p>
+              </div>
+            </PreviewTarget>
+          ))}
+        </div>
+      </div>
+    </main>
+  )
+}
+
 export function SiteEditorPreview({ selected, content, courseTracks, interactionMode = 'preview', selectedItemKey = null, onSelectItem, adminEmail, viewport = 'desktop' }: { selected: SelectedSection; content: SiteContent; courseTracks: CourseTrack[]; interactionMode?: SiteEditorInteractionMode; selectedItemKey?: string | null; onSelectItem?: (selection: SiteEditorPreviewSelectionWithRect) => void; adminEmail?: string; viewport?: 'desktop' | 'mobile' }) {
   void viewport
   if (selected === 'landing') return <LandingPreview content={content} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} adminEmail={adminEmail} />
   if (selected === 'portal') return <PortalPreview content={content} courseTracks={courseTracks} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} adminEmail={adminEmail} />
   if (selected === 'locked') return <StatusPreview content={content} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} section="locked" adminEmail={adminEmail} />
   if (selected === 'complete') return <StatusPreview content={content} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} section="complete" adminEmail={adminEmail} />
+  if (selected === 'questionnaire') return <QuestionnairePreview content={content} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} adminEmail={adminEmail} />
+  if (selected === 'shell') return <ShellPreview content={content} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} adminEmail={adminEmail} />
   const slug = selected.replace('lesson:', '')
   const lesson = content.lessons.find((entry) => entry.slug === slug) || content.lessons[0]
   return <LessonPreview lesson={lesson} interactionMode={interactionMode} selectedItemKey={selectedItemKey} onSelectItem={onSelectItem} viewport={viewport} />

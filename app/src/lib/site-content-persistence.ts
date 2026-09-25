@@ -10,6 +10,8 @@ export type SiteContentOverrides = {
   portal?: Partial<SiteContent['portal']>
   locked?: Partial<SiteContent['locked']>
   complete?: Partial<SiteContent['complete']>
+  questionnaire?: Partial<SiteContent['questionnaire']>
+  shell?: Partial<SiteContent['shell']>
   lessons?: Array<Partial<LessonContent> & { id: string }>
 }
 
@@ -76,6 +78,24 @@ function sanitizeSection<T extends Record<string, string | unknown>>(value: unkn
   return output as Partial<T>
 }
 
+
+function sanitizeQuestionnaireFields(value: unknown): SiteContent['questionnaire']['fields'] | undefined {
+  if (!Array.isArray(value)) return undefined
+  return value
+    .filter(isRecord)
+    .map((field): SiteContent['questionnaire']['fields'][number] | null => {
+      if (typeof field.id !== 'string' || typeof field.label !== 'string' || typeof field.type !== 'string') return null
+      const type: SiteContent['questionnaire']['fields'][number]['type'] = field.type === 'textarea' || field.type === 'choice' ? field.type : 'text'
+      return {
+        id: field.id,
+        label: field.label,
+        type,
+        options: isStringArray(field.options) ? field.options : undefined,
+      }
+    })
+    .filter((field): field is SiteContent['questionnaire']['fields'][number] => !!field)
+}
+
 export function sanitizeSiteContentOverrides(value: unknown): SiteContentOverrides {
   if (!isRecord(value)) return {}
 
@@ -134,8 +154,18 @@ export function sanitizeSiteContentOverrides(value: unknown): SiteContentOverrid
       'trackStatusLabel',
       'trackNotes',
     ]),
-    locked: sanitizeSection<SiteContent['locked']>(value.locked, ['eyebrow', 'title', 'body', 'cardHeading', 'cardBody', 'backToPortalLabel']),
-    complete: sanitizeSection<SiteContent['complete']>(value.complete, ['eyebrow', 'title', 'body', 'cardHeading', 'cardBody', 'backToPortalLabel']),
+    locked: sanitizeSection<SiteContent['locked']>(value.locked, ['eyebrow', 'title', 'body', 'cardHeading', 'cardBody', 'backToPortalLabel', 'loadingDetail', 'missingSessionDetail', 'missingPreviousDetail', 'progressLoadErrorDetail', 'videoNotCompleteDetail', 'unlockReadyDetail', 'savedWithoutNextDetail', 'ceremonyEyebrow', 'ceremonyTitle', 'ceremonyBody']),
+    complete: sanitizeSection<SiteContent['complete']>(value.complete, ['eyebrow', 'title', 'body', 'cardHeading', 'cardBody', 'backToPortalLabel', 'loadingDetail', 'missingSessionDetail', 'missingPreviousDetail', 'progressLoadErrorDetail', 'videoNotCompleteDetail', 'unlockReadyDetail', 'savedWithoutNextDetail', 'ceremonyEyebrow', 'ceremonyTitle', 'ceremonyBody']),
+    questionnaire: (() => {
+      const section = sanitizeSection<SiteContent['questionnaire']>(value.questionnaire, ['eyebrow', 'title', 'introLines', 'quote', 'fields', 'closingBody', 'saveButton', 'savingButton', 'submitButton', 'submitAgainButton', 'submittingButton', 'returnToCourseLabel', 'choosePlaceholder', 'progressSuffix', 'loadingStatus', 'localOnlyStatus', 'draftStatus', 'submittedStatus', 'submittedNotifiedStatus', 'savedStatus', 'alreadySubmittedStatus', 'loadErrorStatus', 'saveErrorStatus', 'submitErrorStatus'])
+      if (!section) return undefined
+      if (section.introLines && !isStringArray(section.introLines)) delete section.introLines
+      const fields = sanitizeQuestionnaireFields(section.fields)
+      if (fields) section.fields = fields
+      else if (section.fields) delete section.fields
+      return section
+    })(),
+    shell: sanitizeSection<SiteContent['shell']>(value.shell, ['homeIntroLinkLabel', 'portalLoginTitle', 'portalLoginCta', 'portalNotEnrolledTitle', 'portalBackToLandingLabel', 'portalLoadingLabel', 'portalSignedInPrefix', 'portalCompletionTotalLabel', 'portalCompletionMapLabel', 'portalCompletionMapBody', 'portalLessonsCompleteSuffix', 'portalSectionCompleteSuffix', 'portalAvailableStatus', 'portalCompleteStatus', 'portalLockedStatus', 'portalAdminOpenStatus', 'portalUnlocksPrefix', 'lessonMissingTitle', 'lessonMissingBody', 'lessonMissingCta', 'lessonRefreshLabel', 'lessonDefaultSupportingHeading', 'lessonDefaultVideoHeading', 'lessonDefaultIntroVideoHeading', 'lessonDefaultMarkVideoCompleteLabel', 'lessonDefaultVideoCompleteSavedLabel', 'lessonDefaultCompleteLessonLabel', 'lessonDefaultCompleteFinalLessonLabel', 'lessonReflectionPlaceholder', 'lessonDefaultSaveReflectionLabel', 'lessonSavingLabel', 'lessonNextAvailableAfterCompletion', 'lessonNextAvailableAfterUnlock', 'lessonReflectionSavedStatus', 'lessonReflectionSaveErrorStatus', 'lessonCompletionSaveErrorStatus', 'lessonFinalReflectionEmailErrorStatus']),
     lessons,
   }
 }

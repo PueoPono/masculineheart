@@ -58,6 +58,16 @@ export function mergeSiteContent(base: SiteContent, patch?: SiteContentOverrides
       ...base.complete,
       ...(isObject(patch.complete) ? patch.complete : {}),
     },
+    questionnaire: {
+      ...base.questionnaire,
+      ...(isObject(patch.questionnaire) ? patch.questionnaire : {}),
+      introLines: Array.isArray(patch.questionnaire?.introLines) ? patch.questionnaire.introLines : base.questionnaire.introLines,
+      fields: Array.isArray(patch.questionnaire?.fields) ? patch.questionnaire.fields : base.questionnaire.fields,
+    },
+    shell: {
+      ...base.shell,
+      ...(isObject(patch.shell) ? patch.shell : {}),
+    },
     lessons: base.lessons.map((lesson) => mergeLesson(lesson, patchLessons.find((entry) => entry?.id === lesson.id))),
   }
 }
@@ -225,7 +235,27 @@ export function useEditableSiteContent() {
     })
   }
 
-  function resetSection(section: 'landing' | 'portal' | 'locked' | 'complete' | 'lesson', lessonId?: string) {
+  function updateQuestionnaireField<K extends keyof SiteContent['questionnaire']>(key: K, value: SiteContent['questionnaire'][K]) {
+    setOverrides((current) => ({
+      ...current,
+      questionnaire: {
+        ...current.questionnaire,
+        [key]: value,
+      },
+    }))
+  }
+
+  function updateShellField<K extends keyof SiteContent['shell']>(key: K, value: SiteContent['shell'][K]) {
+    setOverrides((current) => ({
+      ...current,
+      shell: {
+        ...current.shell,
+        [key]: value,
+      },
+    }))
+  }
+
+  function resetSection(section: 'landing' | 'portal' | 'locked' | 'complete' | 'questionnaire' | 'shell' | 'lesson', lessonId?: string) {
     setOverrides((current) => {
       if (section === 'lesson' && lessonId) {
         return {
@@ -236,7 +266,10 @@ export function useEditableSiteContent() {
       if (section === 'landing') return { ...current, landing: undefined }
       if (section === 'portal') return { ...current, portal: undefined }
       if (section === 'locked') return { ...current, locked: undefined }
-      return { ...current, complete: undefined }
+      if (section === 'complete') return { ...current, complete: undefined }
+      if (section === 'questionnaire') return { ...current, questionnaire: undefined }
+      if (section === 'shell') return { ...current, shell: undefined }
+      return current
     })
   }
 
@@ -288,6 +321,8 @@ export function useEditableSiteContent() {
     updatePortalField,
     updateStatusField,
     updateLesson,
+    updateQuestionnaireField,
+    updateShellField,
     resetSection,
     save,
     clearAll,
